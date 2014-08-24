@@ -59,7 +59,7 @@ public class Ship {
          * @param alive - status of ship
          * @return new Ship Object
          */
-        public Ship setShip(int size, Ship[] coordinates, boolean alive) {
+        public static Ship setShip(int size, Ship[] coordinates, boolean alive) {
 
             Ship ship = null;
             try {
@@ -74,7 +74,7 @@ public class Ship {
         /**
          * Creating new Ship
          */
-        public Ship setShip() {
+        public static Ship setShip() {
 
             Ship ship = null;
             try {
