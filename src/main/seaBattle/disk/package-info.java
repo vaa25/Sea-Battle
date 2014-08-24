@@ -6,4 +6,4 @@
  * Здесь будут находиться классы сохранения и загрузки состояния игры и таблицы личных достижений.
  * @author Alexander Vlasov
  */
-package disk;
+package seaBattle.disk;
