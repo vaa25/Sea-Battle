@@ -1,8 +1,10 @@
+package net.amboss;
+
 /**
  * This is test class
  *
  */
 
-public TestClass {
+public class TestClass {
 
         }
