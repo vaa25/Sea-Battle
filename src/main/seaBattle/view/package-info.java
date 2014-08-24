@@ -2,8 +2,8 @@
  * Created with IntelliJ IDEA.
  * User: Vlasov Alexander
  * Date: 24.08.2014
- * Time: 4:33
- * Классы сетевого взаимодействия.
+ * Time: 4:34
+ * Визуальное отображение игры.
  * @author Alexander Vlasov
  */
-package net;
+package seaBattle.view;

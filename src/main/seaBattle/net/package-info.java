@@ -2,8 +2,8 @@
  * Created with IntelliJ IDEA.
  * User: Vlasov Alexander
  * Date: 24.08.2014
- * Time: 4:36
- * Здесь будет связь view с model.
+ * Time: 4:33
+ * Классы сетевого взаимодействия.
  * @author Alexander Vlasov
  */
-package controller;
+package seaBattle.net;
