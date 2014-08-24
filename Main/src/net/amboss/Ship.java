@@ -8,7 +8,7 @@ public class Ship {
 
     private int shipSize;
 
-    private Ship[] coordinates;
+    private Cell[] coordinates;
 
     private boolean isAlive;
 
@@ -16,7 +16,7 @@ public class Ship {
 
     }
 
-    public Ship(int shipSize, Ship[] coordinates, boolean isAlive) {
+    public Ship(int shipSize, Cell[] coordinates, boolean isAlive) {
         this.shipSize = shipSize;
         this.coordinates = coordinates;
         this.isAlive = isAlive;
@@ -30,11 +30,11 @@ public class Ship {
         this.shipSize = shipSize;
     }
 
-    public Ship[] getCoordinates() {
+    public Cell[] getCoordinates() {
         return coordinates;
     }
 
-    public void setCoordinates(Ship[] coordinates) {
+    public void setCoordinates(Cell[] coordinates) {
         this.coordinates = coordinates;
     }
 
@@ -59,7 +59,7 @@ public class Ship {
          * @param alive - status of ship
          * @return new Ship Object
          */
-        public static Ship setShip(int size, Ship[] coordinates, boolean alive) {
+        public static Ship setShip(int size, Cell[] coordinates, boolean alive) {
 
             Ship ship = null;
             try {
