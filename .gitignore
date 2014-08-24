@@ -1,3 +1,7 @@
+.iml
+.idea/
+target/
+
 # Created by .gitignore support plugin (hsz.mobi)
 ### Java template
 *.class
