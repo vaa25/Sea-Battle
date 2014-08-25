@@ -6,4 +6,4 @@
  * Здесь будет находиться логика клиентов.
  * @author Alexander Vlasov
  */
-package seaBattle.model;
+package model;
