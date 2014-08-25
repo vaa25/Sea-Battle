@@ -1,4 +1,4 @@
-package src.net.amboss;
+package net.amboss;
 
 import java.io.Serializable;
 
