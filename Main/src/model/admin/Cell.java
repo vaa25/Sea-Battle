@@ -3,11 +3,6 @@ package model.admin;
 import common.Coord;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Vlasov Alexander
- * Date: 24.08.2014
- * Time: 23:38
- *
  * @author Alexander Vlasov
  */
 public class Cell {
