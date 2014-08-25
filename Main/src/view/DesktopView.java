@@ -1,4 +1,4 @@
-package seaBattle.view;/**
+package view;/**
  * Created with IntelliJ IDEA.
  * User: Vlasov Alexander
  * Date: 23.08.2014

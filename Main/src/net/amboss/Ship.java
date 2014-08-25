@@ -1,4 +1,4 @@
-package seaBattle.net.amboss;
+package src.net.amboss;
 
 /**
  * Model Class represents Ship POJO
