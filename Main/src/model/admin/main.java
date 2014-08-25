@@ -25,10 +25,19 @@ public class main implements ModelInterface{
         return getField(myField.getField());
 
     }
+
+    /**
+     * Он делает тото
+     *
+     * @param field -  бла бла бла
+     * @return- бла бла бла
+     */
     private int[][]getField(Cell[][] field){
         int[][] res=new int[width][height];
         for (int i = 0; i < field.length; i++) {
             Cell[] collumn = field[i];
+
+            /* это конкретно делает это */
             for (int j = 0; j < collumn.length; j++) {
                 Cell cell = collumn[j];
                 if (cell.getShip()!=null){
