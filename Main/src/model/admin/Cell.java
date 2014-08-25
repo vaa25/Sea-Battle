@@ -1,5 +1,7 @@
 package model.admin;
 
+import common.Coord;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Vlasov Alexander

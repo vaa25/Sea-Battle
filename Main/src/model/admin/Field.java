@@ -1,6 +1,8 @@
 package model.admin;
 
 
+import common.Coord;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,10 +15,12 @@ import java.util.List;
  *
  * @author Alexander Vlasov
  */
-public class Field {
+public class Field  {
     private Cell[][] field;
     private List<Ship>ships;
     private final int width,height;
+
+
 
 
     public Field(int width, int height) {
@@ -37,6 +41,10 @@ public class Field {
             }
 
         }
+    }
+
+    public Cell[][] getField() {
+        return field;
     }
 
     public boolean canPlace(Ship ship){
@@ -94,4 +102,6 @@ public class Field {
         }
         return false;
     }
+
+
 }
