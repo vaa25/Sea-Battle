@@ -1,10 +1,6 @@
 /**
- * Created with IntelliJ IDEA.
- * User: Vlasov Alexander
- * Date: 23.08.2014
- * Time: 22:08
- *
- * @author Alexander Vlasov
- *
+ * User     : Stepan Sobolev
+ * IDE      : Intellij IDEA
+ * vKontakte: http://vk.com/id180034203
  */
 package model.sobolevstp;
