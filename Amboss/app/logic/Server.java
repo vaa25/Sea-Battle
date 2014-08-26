@@ -5,8 +5,5 @@ package logic;
  */
 public class Server {
 
-//    Ship.ShipService f = new Ship.ShipService();
-
-
 
 }
