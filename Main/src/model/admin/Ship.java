@@ -67,6 +67,7 @@ public class Ship implements Comparable<Ship>{
         this.coordLeftUp=coordLeftUp;
         int x0=coordLeftUp.getX();
         int y0=coordLeftUp.getY();
+        coords[0]=coordLeftUp;
         for (int i = 1; i < coords.length; i++) {
             if (direction==Direction.Horizontal)coords[i]=new Coord(x0+i,y0);
             else if (direction==Direction.Vertical)coords[i]=new Coord(x0,y0+i);
@@ -127,5 +128,15 @@ public class Ship implements Comparable<Ship>{
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        String res="size="+size+" ";
+        for (int i = 0; i < coords.length; i++) {
+            Coord coord = coords[i];
+            res+=coord.toString()+" ";
+        }
+        return res;
     }
 }

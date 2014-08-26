@@ -19,7 +19,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -56,8 +56,6 @@ public class DesktopView extends Application {
         Menu menuFile = new Menu("Файл");
 
             MenuItem menuItemSave = new MenuItem("Сохранить поле");
-            menuItemSave.setStyle("-fx-text-fill:navy;-fx-font:bold italic 14pt Georgia;");
-            menuItemSave.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
             menuItemSave.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
@@ -66,8 +64,6 @@ public class DesktopView extends Application {
             });
 
             MenuItem menuItemLoad = new MenuItem("Загрузить поле");
-            menuItemLoad.setStyle("-fx-text-fill:navy;-fx-font:bold italic 14pt Georgia;");
-            menuItemLoad.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
             menuItemLoad.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
@@ -80,7 +76,6 @@ public class DesktopView extends Application {
         Menu menuNet = new Menu("Сеть");
 
             MenuItem menuItemWithServer=new MenuItem("Игра с сервером");
-            menuItemLoad.setStyle("-fx-text-fill:navy;-fx-font:bold italic 14pt Georgia;");
             menuItemLoad.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent e) {
@@ -106,6 +101,24 @@ public class DesktopView extends Application {
             menuWithoutServer.getItems().addAll(menuWithoutServerHost,menuWithoutServerClient);
         menuNet.getItems().addAll(menuItemWithServer,menuWithoutServer);
 
-        menuBar.getMenus().addAll(menuFile,menuNet);
+        Menu menuPlayer=new Menu("Игрок");
+            MenuItem menuItemPlayerInfo=new MenuItem("Информация");
+
+            menuPlayer.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    System.out.println("Вывожу таблицу рекордов");
+                }
+            });
+
+
+
+        menuBar.getMenus().addAll(menuFile,menuNet,menuPlayer);
+
+        BorderPane borderPane=new BorderPane();
+        borderPane.setTop(menuBar);
+
+
+        root.getChildren().addAll(borderPane);
     }
 }

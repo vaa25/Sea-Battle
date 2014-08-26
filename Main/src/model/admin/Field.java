@@ -4,7 +4,6 @@ package model.admin;
 import common.Coord;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -129,7 +128,7 @@ public class Field  {
      * @param ships
      */
     public void setRandom(List<Ship>ships){
-        Collections.sort(ships);
+//        Collections.sort(ships);
         while (!trySetRandom(ships));
     }
     public boolean trySetRandom(List<Ship>ships){
@@ -137,10 +136,10 @@ public class Field  {
         for (int i = 0; i < ships.size(); i++) {
             Ship ship=ships.get(i);
             Random random=new Random();
-            if (random.nextBoolean())ship.changeDirection();
             int x=random.nextInt(width);
             int y=random.nextInt(height);
             ship.setCoords(new Coord(x, y));
+            if (random.nextBoolean())ship.changeDirection();
             if (canPlace(ship))place(ship);
             else{
                 ship.changeDirection();
@@ -165,5 +164,21 @@ public class Field  {
 
     public void addKilled() {
         killed++;
+    }
+
+    public void printField(){
+        for (Cell[] cells : field) {
+            for (Cell cell : cells) {
+                if (cell.getShip()==null){
+                    if (cell.isShoot())System.out.print(". ");
+                    else System.out.print("  ");
+                }
+                else{
+                    if (cell.isShoot())System.out.print("* ");
+                    else System.out.print("O ");
+                }
+            }
+            System.out.println();
+        }
     }
 }

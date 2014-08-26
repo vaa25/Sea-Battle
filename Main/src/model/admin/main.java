@@ -5,7 +5,9 @@ import common.CurrentStatisticInterface;
 import common.ModelInterface;
 import common.ShootResult;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -72,6 +74,10 @@ public class main implements ModelInterface{
         return currentStatistic;
     }
 
+    /**
+     * помечает вражеское поле в соответствии с сообщением от оппонента о результатах выстрела
+     * @param shootResult сообщение
+     */
     public void setShootResult(ShootResult shootResult){
         switch (shootResult){
             case KILLED:
@@ -86,7 +92,7 @@ public class main implements ModelInterface{
     }
 
     /**
-     * восстанавливает убитый корабль
+     * восстанавливает убитый корабль по временным кораблям-маркерам
      * @return
      */
     private Ship constructKilledShip(){
@@ -100,6 +106,12 @@ public class main implements ModelInterface{
         }
         return ship;
     }
+
+    /**
+     * находит цепочку рядом стоящих частей корабля
+     * @param coords начальная точка поиска
+     * @param coord set найденных координат
+     */
     private void searchWrecks(Set<Coord>coords, Coord coord){
         if (coords.add(coord)){
             int x=coord.getX();
@@ -112,5 +124,21 @@ public class main implements ModelInterface{
         }
     }
 
+    public static void main(String[] args) {
+        Field my=new Field(10,10);
+        List<Ship>ships=new ArrayList<>();
+        ships.add(new Ship(4));
+        ships.add(new Ship(3));
+        ships.add(new Ship(3));
+        ships.add(new Ship(2));
+        ships.add(new Ship(2));
+        ships.add(new Ship(2));
+        ships.add(new Ship(1));
+        ships.add(new Ship(1));
+        ships.add(new Ship(1));
+        ships.add(new Ship(1));
+        my.setRandom(ships);
+        my.printField();
+    }
 
 }
