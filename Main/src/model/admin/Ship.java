@@ -21,15 +21,20 @@ public class Ship implements Comparable<Ship>{
     private Direction direction;
     private Coord[]coords;
     private Coord coordLeftUp;
-
+    private int health;
 
     public Ship(int size) {
         this.size = size;
         direction=Direction.Horizontal;
         coords=new Coord[size];
+        health=size;
     }
 
-
+    /**
+     * сравнение по размеру
+     * @param o
+     * @return положительное число, если аргумент меньше
+     */
     @Override
     public int compareTo(Ship o) {
         return size-o.size;
@@ -39,8 +44,26 @@ public class Ship implements Comparable<Ship>{
         Vertical, Horizontal
     }
 
+    /**
+     * Вызывается, когда по корабля попадают
+     */
+    public void shoot(){
+        health--;
+    }
 
-    public void place(Coord coordLeftUp){
+    /**
+     *
+     * @return true , если корабль не потоплен
+     */
+    public boolean isAlive(){
+        return health>0;
+    }
+
+    /**
+     * Рассчитывает координаты всего корабля по левой верхней координате
+     * @param coordLeftUp
+     */
+    public void setCoords(Coord coordLeftUp){
         this.coordLeftUp=coordLeftUp;
         int x0=coordLeftUp.getX();
         int y0=coordLeftUp.getY();
@@ -60,11 +83,11 @@ public class Ship implements Comparable<Ship>{
     public void changeDirection(){
         if (direction==Direction.Horizontal)direction=Direction.Vertical;
         else direction=Direction.Horizontal;
-        place(coordLeftUp);
+        setCoords(coordLeftUp);
     }
 
     /**
-     * Место вокруг корабля и сам корабль, чтобы не столкнуться с другим кораблем
+     * Координаты места вокруг корабля и самого корабля, чтобы не столкнуться с другим кораблем
      * @return
      */
     public Coord[] getAroundCoords(){
@@ -91,6 +114,12 @@ public class Ship implements Comparable<Ship>{
         }
         return res;
     }
+
+    /**
+     * Проверяет по координатам находится ли корабль в пределах одной клетки или ближе
+     * @param ship
+     * @return true если находится
+     */
     public boolean isCrossing(Ship ship){
         for (Coord coord : coords) {
             for (Coord anotherCoords : ship.getAroundCoords()) {
