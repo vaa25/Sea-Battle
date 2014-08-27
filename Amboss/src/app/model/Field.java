@@ -9,7 +9,7 @@ import java.util.List;
 public class Field {
 
     // dimension of the field
-    private int fieldSize = 10;
+    private int fieldSize;
 
     // list of ships
     private List<Ship> shipList;
@@ -19,22 +19,21 @@ public class Field {
 
     // def. constructor
     public Field() {
+        fieldSize = 10;
         fieldGrid = new Cell[fieldSize][fieldSize];
         shipList = new ArrayList<>();
+        setFieldGrid();
     }
 
     public Cell[][] getFieldGrid() {
         return fieldGrid;
     }
 
-    public void setFieldGrid(Cell[][] fieldGrid) {
-
-        this.fieldGrid = fieldGrid;
-        fieldGrid = new Cell[fieldSize][fieldSize];
-        for (int i = 0; i < fieldSize; i++) {
-            for (int j = 0; j < fieldSize; j++) {
-                fieldGrid[i][j].setX(i);
-                fieldGrid[i][j].setY(j);
+    public void setFieldGrid() {
+        this.fieldGrid = new Cell[fieldSize][fieldSize];
+        for (int i = 0; i < fieldGrid.length; i++) {
+            for (int j = 0; j < fieldGrid.length; j++) {
+                fieldGrid[i][j] = new Cell(i + 1, j + 1);
             }
         }
     }
@@ -43,17 +42,27 @@ public class Field {
         return fieldSize;
     }
 
-    public void setFieldSize(int fieldSize) {
-        this.fieldSize = fieldSize;
-    }
+//    public void setFieldSize(int fieldSize) {
+//        this.fieldSize = fieldSize;
+//    }
 
     public List<Ship> getShipList() {
         return shipList;
     }
 
-    public void setShipList(List<Ship> shipList) {
-        this.shipList = shipList;
+//    public void setShipList(Ship[] shipList) {
+//        this.shipList = shipList;
+//    }
+
+    public void initiateShipList() {
+
+        int[] sizes = {4, 3, 2, 1};
+
+        for (int i = 0; i < sizes.length; i++) {
+            for (int j: sizes) {
+                //shipList.add(new Ship())
+            }
+        }
+
     }
-
-
 }
