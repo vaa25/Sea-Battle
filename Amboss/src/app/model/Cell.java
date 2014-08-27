@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Enum for cell state
  */
 enum CellState {
-    NULL, BUSY, HIT, NO_HIT;
+    NULL, BUSY, HIT, NO_HIT
 
 }
 

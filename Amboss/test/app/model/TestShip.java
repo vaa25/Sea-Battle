@@ -19,7 +19,30 @@ public class TestShip {
     public void testGetShipState() {
         Cell[] cells = {new Cell(0, 1), new Cell(0, 2), new Cell(0, 3), new Cell(0, 4),};
         Ship ship = new Ship(cells);
-        assertEquals("state must be the same", ShipState.LIVE, ship.getShipState());
+        ship.setShipStatus(ShipStatus.BUSY);
+        assertEquals("STATE must be the same", ShipState.LIVE, ship.getShipState());
+    }
+
+    /**
+     * Test getShipStatus()
+     */
+    @Test
+    public void testGetShipStatus() {
+        Cell[] cells = {new Cell(0, 1), new Cell(0, 2), new Cell(0, 3), new Cell(0, 4),};
+        Ship ship = new Ship(cells);
+        assertEquals("STATUS must be the same", ShipStatus.AVAILABLE, ship.getShipStatus());
+    }
+
+    /**
+     * Test setShipStatus()
+     */
+    @Test
+    public void testSetShipStatus() {
+        Cell[] cells = {new Cell(0, 1), new Cell(0, 2), new Cell(0, 3), new Cell(0, 4),};
+        Ship ship = new Ship(cells);
+        ShipStatus newShipStatus = ShipStatus.BUSY;
+        ship.setShipStatus(newShipStatus);
+        assertEquals("STATUS must be the same", newShipStatus, ship.getShipStatus());
     }
 
     /**
@@ -43,4 +66,6 @@ public class TestShip {
         ship.setCells(newCells);
         assertTrue("Cells array must be the same", Arrays.equals(newCells, ship.getCells()));
     }
+
+
 }
