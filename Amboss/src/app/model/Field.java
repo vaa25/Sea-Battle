@@ -50,7 +50,7 @@ public class Field {
         return shipList;
     }
 
-//    public void setShipList(Ship[] shipList) {
+//    public void setShipList(model.Ship[] shipList) {
 //        this.shipList = shipList;
 //    }
 
@@ -60,7 +60,7 @@ public class Field {
 
         for (int i = 0; i < sizes.length; i++) {
             for (int j: sizes) {
-                //shipList.add(new Ship())
+                //shipList.add(new model.Ship())
             }
         }
 

@@ -7,7 +7,7 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 /**
- * Test Class for the Ship model and included methods
+ * Test Class for the model.Ship model and included methods
  */
 public class TestShip {
 
