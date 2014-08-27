@@ -19,12 +19,25 @@ public class Cell implements Serializable{
 
     private CellState cellState;
 
+    /**
+     * Constructor_1 with X, Y coordinates
+     *
+     * @param x - vertical
+     * @param y - horizontal
+     */
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
         this.cellState = CellState.NULL;
     }
 
+    /**
+     * Constructor_2 with X, Y coordinates
+     *
+     * @param x - vertical
+     * @param y - horizontal
+     * @param cellState - enum representation
+     */
     public Cell(int x, int y, CellState cellState) {
         this.x = x;
         this.y = y;

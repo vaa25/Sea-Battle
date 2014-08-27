@@ -1,5 +1,7 @@
 package app.model;
 
+import java.util.Arrays;
+
 /**
  * Representation of ship health
  */
@@ -160,5 +162,29 @@ public class Ship {
 
     public void setCells(Cell[] cells) {
         this.cells = cells;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Ship)) return false;
+
+        Ship ship = (Ship) o;
+
+        if (!Arrays.equals(cells, ship.cells)) return false;
+        if (shipSize != ship.shipSize) return false;
+        if (shipState != ship.shipState) return false;
+        if (shipStatus != ship.shipStatus) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = shipSize != null ? shipSize.hashCode() : 0;
+        result = 31 * result + (shipState != null ? shipState.hashCode() : 0);
+        result = 31 * result + (shipStatus != null ? shipStatus.hashCode() : 0);
+        result = 31 * result + (cells != null ? Arrays.hashCode(cells) : 0);
+        return result;
     }
 }

@@ -11,6 +11,37 @@ import static org.junit.Assert.assertNotEquals;
 public class TestCell {
 
     /**
+     * Test of Cell(int x, int y) Constructor
+     */
+    @Test
+    public void testCellConstructor_1() {
+        int x = 2, y = 5;
+        Cell cell = new Cell(x, y);
+
+        // x
+        assertEquals("X value must be the same", x, cell.getX());
+        // y
+        assertEquals("Y value must be the same", y, cell.getY());
+    }
+
+    /**
+     * Test of Cell(int x, int y, CellState cellState) Constructor
+     */
+    @Test
+    public void testCellConstructor_2() {
+        int x = 2, y = 5;
+        CellState cellState = CellState.HIT;
+        Cell cell = new Cell(x, y, cellState);
+
+        // x
+        assertEquals("X value must be the same", x, cell.getX());
+        // y
+        assertEquals("Y value must be the same", y, cell.getY());
+        // cellState
+        assertEquals("CELL STATE value must be the same", cellState, cell.getCellState());
+    }
+
+    /**
      * Test GetX()
      */
     @Test

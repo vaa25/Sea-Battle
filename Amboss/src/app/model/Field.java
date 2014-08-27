@@ -1,6 +1,8 @@
 package app.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -9,7 +11,7 @@ import java.util.List;
 public class Field {
 
     // dimension of the field
-    private int fieldSize;
+    private final static int FIELD_SIZE = 10;
 
     // list of ships
     private List<Ship> shipList;
@@ -19,9 +21,9 @@ public class Field {
 
     // def. constructor
     public Field() {
-        fieldSize = 10;
-        fieldGrid = new Cell[fieldSize][fieldSize];
         shipList = new ArrayList<>();
+        setShipList();
+        fieldGrid = new Cell[FIELD_SIZE][FIELD_SIZE];
         setFieldGrid();
     }
 
@@ -30,7 +32,7 @@ public class Field {
     }
 
     public void setFieldGrid() {
-        this.fieldGrid = new Cell[fieldSize][fieldSize];
+        Cell[][] cells = new Cell[FIELD_SIZE][FIELD_SIZE];
         for (int i = 0; i < fieldGrid.length; i++) {
             for (int j = 0; j < fieldGrid.length; j++) {
                 fieldGrid[i][j] = new Cell(i + 1, j + 1);
@@ -38,31 +40,20 @@ public class Field {
         }
     }
 
-    public int getFieldSize() {
-        return fieldSize;
-    }
-
-//    public void setFieldSize(int fieldSize) {
-//        this.fieldSize = fieldSize;
-//    }
-
     public List<Ship> getShipList() {
         return shipList;
     }
 
-//    public void setShipList(Ship[] shipList) {
-//        this.shipList = shipList;
-//    }
-
-    public void initiateShipList() {
-
-        int[] sizes = {4, 3, 2, 1};
-
-        for (int i = 0; i < sizes.length; i++) {
-            for (int j: sizes) {
-                //shipList.add(new Ship())
+    /**
+     * Creating Ship list with quantity-size specification
+     */
+    public void setShipList() {
+        List<ShipSize> shipSizes = Arrays.asList(ShipSize.values());
+        Collections.reverse(shipSizes);
+        for (int i = 0; i < shipSizes.size(); i++) {
+            for (int j = 1; j <= i + 1; j++) {
+                shipList.add(new Ship(shipSizes.get(i)));
             }
         }
-
     }
 }

@@ -2,7 +2,9 @@ package app.model;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -13,18 +15,49 @@ import static org.junit.Assert.assertTrue;
 public class TestField {
 
     /**
+     * Test of Field() Constructor
+     */
+    @Test
+    public void testFieldConstructor() {
+        /* ship list */
+        List<ShipSize> ships = new ArrayList<ShipSize>();
+        ships.add(ShipSize.FOUR);
+        ships.add(ShipSize.THREE);
+        ships.add(ShipSize.TWO);
+        ships.add(ShipSize.ONE);
+        List<Ship> shipList = new ArrayList<>();
+        for (int i = 0; i < ships.size(); i++) {
+            for (int j = 1; j <= i + 1; j++) {
+                shipList.add(new Ship(ships.get(i)));
+            }
+        }
+
+        /* ship grid */
+        int size = 10;
+        Cell[][] fieldGrid = new Cell[size][size];
+        for (int i = 0; i < fieldGrid.length; i++) {
+            for (int j = 0; j < fieldGrid.length; j++) {
+                fieldGrid[i][j] = new Cell(i + 1, j + 1);
+            }
+        }
+        Field field = new Field();
+
+        // shipList
+        assertEquals("LIST must be same", shipList, field.getShipList());
+        // fieldGrid
+        assertTrue("array must be the same", Arrays.deepEquals(fieldGrid, field.getFieldGrid()));
+    }
+
+    /**
      * Test getFieldGrid()
      */
     @Test
     public void testGetFieldGrid() {
-
         int size = 10;
         Cell[][] fieldGrid = new Cell[size][size];
-
         for (int i = 0; i < fieldGrid.length; i++) {
             for (int j = 0; j < fieldGrid.length; j++) {
                 fieldGrid[i][j] = new Cell(i + 1, j + 1);
-                //System.out.println();
             }
         }
 
@@ -34,36 +67,41 @@ public class TestField {
     }
 
     /**
-     * Test getFieldSize()
+     * Test getFieldGrid()
      */
     @Test
     public void testSetFieldGrid() {
+        int size = 10;
+        Cell[][] fieldGrid = new Cell[size][size];
+        for (int i = 0; i < fieldGrid.length; i++) {
+            for (int j = 0; j < fieldGrid.length; j++) {
+                fieldGrid[i][j] = new Cell(i + 1, j + 1);
+            }
+        }
+
+        /* assert with deepEquals*/
         Field field = new Field();
-        assertEquals("default size must be: 10", (Object)10, field.getFieldSize());
+        assertTrue("array must be the same", Arrays.deepEquals(fieldGrid, field.getFieldGrid()));
     }
 
     /**
-     * Test getShipState()
-     */
-    @Test
-    public void setFieldSize() {
-
-    }
-
-    /**
-     * Test getShipState()
-     */
-    @Test
-    public void getShipList() {
-
-    }
-
-    /**
-     * Test setShipList()
+     * Test getShipList()
      */
     @Test
     public void testGetShipList() {
+        List<ShipSize> ships = new ArrayList<ShipSize>();
+        ships.add(ShipSize.FOUR);
+        ships.add(ShipSize.THREE);
+        ships.add(ShipSize.TWO);
+        ships.add(ShipSize.ONE);
+        List<Ship> shipList = new ArrayList<>();
+        for (int i = 0; i < ships.size(); i++) {
+            for (int j = 1; j <= i + 1; j++) {
+                shipList.add(new Ship(ships.get(i)));
+            }
+        }
+        Field field = new Field();
 
+        assertEquals("LIST must be same", shipList, field.getShipList());
     }
-
 }
