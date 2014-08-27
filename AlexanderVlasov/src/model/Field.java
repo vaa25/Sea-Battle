@@ -1,7 +1,8 @@
-package model.admin;
+package model;
 
 
 import common.Coord;
+import common.ShootResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +55,11 @@ public class Field  {
      * @return
      */
     public boolean canPlace(Ship ship){
+        if (!inBorders(ship))return false;
         for (int i = 0; i < ships.size(); i++) {
             Ship alreadyPlaced = ships.get(i);
             if (ship.isCrossing(alreadyPlaced))return false;
         }
-        if (!inBorders(ship))return false;
         return true;
     }
 
@@ -70,7 +71,7 @@ public class Field  {
     public void place(Ship ship){
         ships.add(ship);
         for (Coord coord : ship.getShipCoords()) {
-            Cell cell=field[coord.getX()][coord.getY()];
+            Cell cell=getCell(coord);
             Ship temp=cell.getShip();
             if (temp!=null)ships.remove(temp);
             cell.setShip(ship);
@@ -118,7 +119,7 @@ public class Field  {
         if (ships.remove(ship)){
             for (int i = 0; i < ship.getShipCoords().length; i++) {
                 Coord coord = ship.getShipCoords()[i];
-                field[coord.getX()][coord.getY()].setShip(null);
+                getCell(coord).setShip(null);
             }
         }
     }
@@ -152,9 +153,27 @@ public class Field  {
         }
         return true;
     }
-
+    public ShootResult shoot(Coord coord){
+        Cell cell=getCell(coord);
+        Ship ship=cell.getShip();
+        if (ship!=null){
+            if (!cell.isShoot()){
+                setShoot(coord);
+                ship.shoot();
+            }
+            if (ship.isAlive())return ShootResult.HURT;
+            else return ShootResult.KILLED;
+        }
+        else {
+            setShoot(coord);
+            return ShootResult.MISSED;
+        }
+    }
     public void setShoot(Coord coord){
-        field[coord.getX()][coord.getY()].setShoot(true);
+        getCell(coord).setShoot(true);
+    }
+    public Cell getCell(Coord coord){
+        return field[coord.getX()][coord.getY()];
     }
     private void unPlace(List<Ship>ships){
         for (Ship ship : ships) {
@@ -162,10 +181,19 @@ public class Field  {
         }
     }
 
+    public int getKilled() {
+        return killed;
+    }
+
+    public int getShipSize(){
+        return ships.size();
+    }
     public void addKilled() {
         killed++;
     }
-
+    public boolean isLoose(){
+        return ships.size()==killed;
+    }
     public void printField(){
         for (Cell[] cells : field) {
             for (Cell cell : cells) {

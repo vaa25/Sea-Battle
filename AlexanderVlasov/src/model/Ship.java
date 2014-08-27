@@ -1,4 +1,4 @@
-package model.admin;
+package model;
 
 import common.Coord;
 
@@ -100,7 +100,11 @@ public class Ship implements Comparable<Ship>{
             res[3]=new Coord(coords[size-1].getX()+1,coords[size-1].getY()-1);
             res[4]=new Coord(coords[size-1].getX()+1,coords[size-1].getY());
             res[5]=new Coord(coords[size-1].getX()+1,coords[size-1].getY()+1);
-
+            for (int i = 0; i < size; i++) {
+                res[6+i]=new Coord(coords[i].getX(),coords[i].getY()-1);
+                res[6+i+size]=new Coord(coords[i].getX(),coords[i].getY());
+                res[6+i+size+size]=new Coord(coords[i].getX(),coords[i].getY()+1);
+            }
         }
         else{
             res[0]=new Coord(coords[0].getX()-1,coords[0].getY()-1);
@@ -109,10 +113,13 @@ public class Ship implements Comparable<Ship>{
             res[3]=new Coord(coords[size-1].getX()-1,coords[size-1].getY()+1);
             res[4]=new Coord(coords[size-1].getX(),coords[size-1].getY()+1);
             res[5]=new Coord(coords[size-1].getX()+1,coords[size-1].getY()+1);
+            for (int i = 0; i < size; i++) {
+                res[6+i]=new Coord(coords[i].getX()-1,coords[i].getY());
+                res[6+i+size]=new Coord(coords[i].getX(),coords[i].getY());
+                res[6+i+size+size]=new Coord(coords[i].getX()+1,coords[i].getY());
+            }
         }
-        for (int i = 0; i < size; i++) {
-            res[6+i]=new Coord(coords[i].getX(),coords[i].getY());
-        }
+
         return res;
     }
 
@@ -123,7 +130,8 @@ public class Ship implements Comparable<Ship>{
      */
     public boolean isCrossing(Ship ship){
         for (Coord coord : coords) {
-            for (Coord anotherCoords : ship.getAroundCoords()) {
+            Coord[]aroundCoords=ship.getAroundCoords();
+            for (Coord anotherCoords : aroundCoords) {
                 if (coord.equals(anotherCoords))return true;
             }
         }

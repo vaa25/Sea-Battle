@@ -4,5 +4,5 @@ package common;
  * @author Alexander Vlasov
  */
 public enum ShootResult {
-    MISSED, HURT, KILLED
+    MISSED, HURT, KILLED, SHIP, CLEAN
 }
