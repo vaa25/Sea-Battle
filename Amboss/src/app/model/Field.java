@@ -28,7 +28,15 @@ public class Field {
     }
 
     public void setFieldGrid(Cell[][] fieldGrid) {
+
         this.fieldGrid = fieldGrid;
+        fieldGrid = new Cell[fieldSize][fieldSize];
+        for (int i = 0; i < fieldSize; i++) {
+            for (int j = 0; j < fieldSize; j++) {
+                fieldGrid[i][j].setX(i);
+                fieldGrid[i][j].setY(j);
+            }
+        }
     }
 
     public int getFieldSize() {
