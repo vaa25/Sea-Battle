@@ -42,20 +42,78 @@ public class Ship {
 
     private Cell[] cells;
 
-    /* Constructors */
-
-    public Ship(Cell[] cells) {
-        this.shipSize = initiateShipSize(cells);
-        this.cells = cells;
-        this.shipState = ShipState.LIVE;
+    /**
+     * Constructor_1 with specified ship size
+     *
+     * @param shipSize - the length of the ship
+     */
+    public Ship(ShipSize shipSize) {
+        this.shipSize = shipSize;
+        this.cells = new Cell[shipSize.getValue()];
         this.shipStatus = ShipStatus.AVAILABLE;
     }
 
+    /**
+     * Constructor_2 with specified array of coordinates
+     *
+     * @param cells - array with coordinates
+     */
+    public Ship(Cell[] cells) {
+        this.shipSize = getShipSizeFromCellsLength(cells);
+        this.cells = cells;
+        this.shipStatus = ShipStatus.AVAILABLE;
+    }
+
+    /**
+     * Constructor_3 with specified array of coordinates and ship status
+     *
+     * @param cells - array with coordinates
+     * @param status - status of the ship
+     */
     public Ship(Cell[] cells, ShipStatus status) {
-        this.shipSize = initiateShipSize(cells);
+        this.shipSize = getShipSizeFromCellsLength(cells);
         this.cells = cells;
         this.shipStatus = status;
         this.shipState = initiateShipState(status);
+    }
+
+    /**
+     * Initiating Live status of ship if ship state is BUSY
+     *
+     * @param shipStatus - status of the ship
+     * @return Ship State
+     */
+    public ShipState initiateShipState(ShipStatus shipStatus) {
+        return shipStatus.equals(ShipStatus.BUSY)? ShipState.LIVE : null;
+    }
+
+    /**
+     * Initiating Size of the ship by counting Cell array size
+     *
+     * @param cells - cells of the ship
+     * @return ShipSize
+     */
+    public ShipSize getShipSizeFromCellsLength(Cell[] cells) {
+        ShipSize shipSize = null;
+        if (cells.length > 0 && cells.length < 5) {
+            switch (cells.length) {
+                case 4:
+                    shipSize = ShipSize.FOUR;
+                    break;
+                case 3:
+                    shipSize = ShipSize.THREE;
+                    break;
+                case 2:
+                    shipSize = ShipSize.TWO;
+                    break;
+                case 1:
+                    shipSize = ShipSize.ONE;
+                    break;
+                default:
+                    shipSize = null;
+            }
+        }
+        return shipSize;
     }
 
     /**
@@ -88,54 +146,12 @@ public class Ship {
         return shipSize;
     }
 
-    public void setShipSize(ShipSize shipSize) {
-        this.shipSize = shipSize;
-    }
-
-    /**
-     *
-     * @param cells - cells of the ship
-     * @return ShipSize
-     */
-    public ShipSize initiateShipSize(Cell[] cells) {
-        ShipSize shipSize = null;
-        if (cells.length > 0 && cells.length < 5) {
-            switch (cells.length) {
-                case 4:
-                    shipSize = ShipSize.FOUR;
-                    break;
-                case 3:
-                    shipSize = ShipSize.THREE;
-                    break;
-                case 2:
-                    shipSize = ShipSize.TWO;
-                    break;
-                case 1:
-                    shipSize = ShipSize.ONE;
-                    break;
-                default:
-                    shipSize = null;
-            }
-        }
-        return shipSize;
-    }
-
     public ShipStatus getShipStatus() {
         return shipStatus;
     }
 
     public void setShipStatus(ShipStatus shipStatus) {
         this.shipStatus = shipStatus;
-    }
-
-    /**
-     * Initiating Live status of ship if ship state is BUSY
-     *
-     * @param shipStatus - status of the ship
-     * @return Ship State
-     */
-    public ShipState initiateShipState(ShipStatus shipStatus) {
-        return shipStatus.equals(ShipStatus.BUSY)? ShipState.LIVE : null;
     }
 
     public Cell[] getCells() {
