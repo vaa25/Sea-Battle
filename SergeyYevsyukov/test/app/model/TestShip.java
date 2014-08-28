@@ -132,4 +132,23 @@ public class TestShip {
         ship.setCells(newCells);
         assertTrue("Cells array must be the same", Arrays.equals(newCells, ship.getCells()));
     }
+
+    /**
+     * Test Equals()
+     */
+    @Test
+    public void testEquals() {
+        Ship ship1 = new Ship(ShipSize.FOUR);
+        Ship ship2 = new Ship(ShipSize.FOUR);
+        assertEquals("ships must be the same", ship1, ship2);
+    }
+
+    /**
+     * Test HashCode()
+     */
+    @Test
+    public void testHashCode() {
+        assertNotEquals("HashCode cant be the same", new Ship(ShipSize.FOUR).hashCode(),
+                new Ship(ShipSize.TWO).hashCode());
+    }
 }
