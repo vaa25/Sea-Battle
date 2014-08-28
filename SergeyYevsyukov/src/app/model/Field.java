@@ -32,7 +32,6 @@ public class Field {
     }
 
     public void setFieldGrid() {
-        Cell[][] cells = new Cell[FIELD_SIZE][FIELD_SIZE];
         for (int i = 0; i < fieldGrid.length; i++) {
             for (int j = 0; j < fieldGrid.length; j++) {
                 fieldGrid[i][j] = new Cell(i + 1, j + 1);
