@@ -19,10 +19,10 @@ public class Field {
     // grid with coordinates for the field
     private Cell[][] fieldGrid;
 
-    // def. constructor
+    // constructor
     public Field() {
         shipList = new ArrayList<>();
-        setShipList();
+        initiateShipList();
         fieldGrid = new Cell[FIELD_SIZE][FIELD_SIZE];
         setFieldGrid();
     }
@@ -31,6 +31,9 @@ public class Field {
         return fieldGrid;
     }
 
+    /**
+     * Initiating field grid
+     */
     public void setFieldGrid() {
         for (int i = 0; i < fieldGrid.length; i++) {
             for (int j = 0; j < fieldGrid.length; j++) {
@@ -43,10 +46,14 @@ public class Field {
         return shipList;
     }
 
+    public void setShipList(List<Ship> shipList) {
+        this.shipList = shipList;
+    }
+
     /**
      * Creating Ship list with quantity-size specification
      */
-    public void setShipList() {
+    public void initiateShipList() {
         List<ShipSize> shipSizes = Arrays.asList(ShipSize.values());
         Collections.reverse(shipSizes);
         for (int i = 0; i < shipSizes.size(); i++) {
@@ -54,5 +61,36 @@ public class Field {
                 shipList.add(new Ship(shipSizes.get(i)));
             }
         }
+    }
+
+    /**
+     * TODO * test
+     * Deploy ship to field shipList
+     *
+     * @param ship - target ship to be placed
+     */
+    public void deployShipToField(Ship ship) {
+        if (ship.getCells() != null) {
+            for (Ship scannedShip : shipList) {
+                if (scannedShip.getShipSize() == ship.getShipSize() &&
+                        scannedShip.getShipStatus().equals(ShipStatus.AVAILABLE)) {
+                    scannedShip = new Ship(ship.getCells(), ShipStatus.BUSY);
+                }
+            }
+        }
+    }
+
+    /**
+     * TODO * test
+     * Deploy ship to field shipList
+     *
+     * @param ship - target ship to be placed
+     */
+    public void deleteShipFromField(Ship ship) {
+        int count = 0;
+        for (Cell c : ship.getCells()) {
+            if(c.getCellState() == CellState.HIT) count++;
+        }
+        if (count == ship.getCells().length) shipList.remove(ship);
     }
 }
