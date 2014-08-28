@@ -1,6 +1,5 @@
 package model;
 
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -13,7 +12,9 @@ public class Field {
     int [][] matrix;
     public static int EMPTY_CELL = 0;
     public static int ALIVE_CELL = 1;
-    public static int DEAD_CELL = 2;
+    public static int HIT_CELL = 3;
+    public static int MISSED_CELL = 4;
+
 
 
     public Field(int height, int width) {
@@ -34,12 +35,36 @@ public class Field {
         return matrix;
     }
 
-    public void print(){
+    public void setCell(Cell cell, boolean isShipHit){
+        int x = cell.getX();
+        int y = cell.getY();
+        if (isShipHit){
+            matrix[x][y] = HIT_CELL;
+        } else {
+            matrix[x][y] = MISSED_CELL;
+        }
+    }
+
+    public void printReal(){
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
                 if(matrix[i][j] == EMPTY_CELL) System.out.print(" . ");
                 else if (matrix[i][j] == ALIVE_CELL) System.out.print(" S ");
-                else if (matrix[i][j] == DEAD_CELL) System.out.print(" x ");
+            }
+            System.out.println();
+        }
+
+        System.out.println("-----------------------------------------------------------");
+        System.out.println();
+        System.out.println();
+    }
+
+    public void printGame(){
+        for(int i = 0; i < height; i++){
+            for(int j = 0; j < width; j++){
+                if(matrix[i][j] == EMPTY_CELL || matrix[i][j] == ALIVE_CELL) System.out.print(" . ");
+                else if (matrix[i][j] == HIT_CELL) System.out.print(" \u2605 ");
+                else if (matrix[i][j] == MISSED_CELL) System.out.print(" \u26aa ");
             }
             System.out.println();
         }

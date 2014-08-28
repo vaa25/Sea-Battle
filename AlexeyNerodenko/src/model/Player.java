@@ -1,6 +1,7 @@
 package model;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,28 +10,48 @@ import java.util.HashMap;
  */
 public class Player {
     private Field field;
-    private HashMap<Integer, Integer> ships = new HashMap<>(); //numberOfDecks, quantityOfShips
+    private ArrayList<Cell> madeShots = new ArrayList<>();
+    private ArrayList<Ship> ships = new ArrayList<>();
 
     public Player() {
-        ships.put(4, 1);
-        ships.put(3, 2);
-        ships.put(2, 3);
-        ships.put(1, 4);
+        ships.add(new Ship(0, 0, 4, new Random().nextInt(2)));
+
+        ships.add(new Ship(0, 0, 3, new Random().nextInt(2)));
+        ships.add(new Ship(0, 0, 3, new Random().nextInt(2)));
+
+        ships.add(new Ship(0, 0, 2, new Random().nextInt(2)));
+        ships.add(new Ship(0, 0, 2, new Random().nextInt(2)));
+        ships.add(new Ship(0, 0, 2, new Random().nextInt(2)));
+
+        ships.add(new Ship(0, 0, 1, new Random().nextInt(2)));
+        ships.add(new Ship(0, 0, 1, new Random().nextInt(2)));
+        ships.add(new Ship(0, 0, 1, new Random().nextInt(2)));
+        ships.add(new Ship(0, 0, 1, new Random().nextInt(2)));
+
+    }
+
+    public boolean shoot(Cell cell){
+        for(Ship ship : ships){
+            if(ship.getCoordinates().contains(cell)) {
+                ship.getCoordinates().remove(cell);
+                if(ship.getCoordinates().isEmpty()){
+                    ships.remove(ship);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     public int numberOfShip(){
-        int result = 0;
-        for(Integer s : ships.keySet()){
-            result += ships.get(s);
-        }
-        return result;
+        return ships.size();
     }
 
     public void setField(Field field) {
         this.field = field;
     }
 
-    public void setShips(HashMap<Integer, Integer> ships) {
+    public void setShips(ArrayList<Ship> ships) {
         this.ships = ships;
     }
 
@@ -39,8 +60,16 @@ public class Player {
         return field;
     }
 
-    public HashMap<Integer, Integer> getShips() {
+    public ArrayList<Ship> getShips() {
 
         return ships;
+    }
+
+    public ArrayList<Cell> getMadeShots() {
+        return madeShots;
+    }
+
+    public void setMadeShots(ArrayList<Cell> madeShots) {
+        this.madeShots = madeShots;
     }
 }

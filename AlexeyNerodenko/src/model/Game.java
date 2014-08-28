@@ -1,8 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Alexey Nerodenko
@@ -27,27 +24,76 @@ public class Game {
     }
 
     public void run(){
-
-
-        for(Integer s : playerOne.getShips().keySet()){
-            for(int i = 0; i < playerOne.getShips().get(s); i++){
-                Ship ship = new Ship(0, 0, s, new Random().nextInt(2));
+        for(Ship ship : playerOne.getShips()){
                 playerOne.getField().randomlyPutShip(ship);
-            }
         }
 
-        for(Integer s : playerTwo.getShips().keySet()){
-            for(int i = 0; i < playerTwo.getShips().get(s); i++){
-                Ship ship = new Ship(0, 0, s, new Random().nextInt(2));
+        for(Ship ship : playerTwo.getShips()){
                 playerTwo.getField().randomlyPutShip(ship);
-            }
         }
 
         System.out.println("Player 1, Number of ships: " + playerOne.numberOfShip());
-        playerOne.getField().print();
+        playerOne.getField().printReal();
 
         System.out.println("Player 2, Number of ships: " + playerTwo.numberOfShip());
-        playerTwo.getField().print();
+        playerTwo.getField().printReal();
+
+        int order = 1;
+        while(!isGameOver()){
+
+            switch (order){
+                case 1 :
+                    System.out.println("Player 1");
+                    System.out.println("Number of ships: " + playerOne.numberOfShip());
+                    System.out.println("Moves made : " + playerOne.getMadeShots());
+                    System.out.print("Move: "); //format of input "0 0"
+                    Cell shootCell1 = Cell.readCell();
+                    playerOne.getMadeShots().add(shootCell1);
+                    if(playerTwo.shoot(shootCell1)){
+                        System.out.println("HIT!");
+                        playerOne.getField().setCell(shootCell1, true);
+                        playerOne.getField().printGame();
+                        break;
+                    } else {
+                        System.out.println("MISSED!");
+                        playerOne.getField().setCell(shootCell1, false);
+                        playerOne.getField().printGame();
+                        order = 2;
+                        break;
+                    }
+                case 2 :
+                    System.out.println("Player 2");
+                    System.out.println("Number of ships: " + playerTwo.numberOfShip());
+                    System.out.println("Moves made : " + playerTwo.getMadeShots());
+                    System.out.print("Move: "); //format of input "2 3"
+                    Cell shootCell2 = Cell.readCell();
+                    playerTwo.getMadeShots().add(shootCell2);
+                    if(playerOne.shoot(shootCell2)){
+                        System.out.println("HIT!");
+                        playerTwo.getField().setCell(shootCell2, true);
+                        playerTwo.getField().printGame();
+                        break;
+                    } else {
+                        System.out.println("MISSED!");
+                        playerTwo.getField().setCell(shootCell2, false);
+                        playerTwo.getField().printGame();
+                        order = 1;
+                        break;
+                    }
+            }
+        }
 
     }
+
+    public boolean isGameOver(){
+        if(playerOne.numberOfShip() == 0){
+            System.out.println("Player 1 wins");
+            return true;
+        } else if (playerTwo.numberOfShip() == 0){
+            System.out.println("Player 2 wins");
+            return true;
+        } else return false;
+    }
+
+
 }
