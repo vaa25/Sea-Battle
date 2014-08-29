@@ -162,17 +162,18 @@ public class Ship {
     }
 
     /**
-     * TODO: finish
      * verifying that cells, where ship to be placed, are free
      *
      * @return boolean
      */
     public boolean isShipSpotIsFree(Field field) {
         if (cells.length > 0) {
-            for (Cell[] fieldCellsLine : field.getFieldGrid()) {
-                for (Cell fieldCellColumn : fieldCellsLine) {
-                    for (Cell shipCell : cells) {
-                        if (shipCell.equals(fieldCellColumn)) return false;
+            Cell[] shipPlusAura = getCellsAroundShip();
+            for (Ship shipFromList : field.getShipList()) {
+                for (Cell shipsCell: shipFromList.getCells()) {
+                    for (Cell thisShipCell: shipPlusAura) {
+                        System.out.println();
+                        if (shipsCell.equals(thisShipCell)) return false;
                     }
                 }
             }
@@ -239,9 +240,9 @@ public class Ship {
 
             for (int i = 1; i < cells.length; i++) {
                 if (shipDirection.equals(ShipDirection.HORISONTAL)) {
-                    cells[i] = new Cell(x, ++y);
+                    cells[i] = new Cell(x, ++y, CellState.BUSY);
                 } else {
-                    cells[i] = new Cell(++x, y);
+                    cells[i] = new Cell(++x, y, CellState.BUSY);
                 }
             }
             shipStatus = ShipStatus.BUSY;
