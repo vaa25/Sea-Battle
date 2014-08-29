@@ -74,7 +74,7 @@ public class Field {
             for (Ship scannedShip : shipList) {
                 if (scannedShip.getShipSize() == ship.getShipSize() &&
                         scannedShip.getShipStatus().equals(ShipStatus.AVAILABLE)) {
-                    scannedShip = new Ship(ship.getCells(), ShipStatus.BUSY);
+                    scannedShip = new Ship(ship.getCells(), ShipStatus.BUSY, ShipDirection.HORISONTAL);
                 }
             }
         }

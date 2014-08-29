@@ -67,7 +67,7 @@ public class TestCell {
         assertEquals("X value must be the same", newX, cell.getX());
 
         int negativeX = -1;
-        cell.setX(wrongX);
+        cell.setX(negativeX);
         assertEquals("X value must be the same", newX, cell.getX());
     }
 
@@ -93,11 +93,11 @@ public class TestCell {
         assertEquals("Y value must be the same", newY, cell.getY());
 
         int wrongY = 19;
-        cell.setY(newY);
+        cell.setY(wrongY);
         assertEquals("Y value must be the same", newY, cell.getY());
 
         int negativeY = -19;
-        cell.setY(newY);
+        cell.setY(negativeY);
         assertEquals("Y value must be the same", newY, cell.getY());
     }
 

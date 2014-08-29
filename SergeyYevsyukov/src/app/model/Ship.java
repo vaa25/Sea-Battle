@@ -1,6 +1,8 @@
 package app.model;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Representation of ship health
@@ -47,6 +49,9 @@ public class Ship {
 
     private ShipDirection shipDirection;
 
+    // starting cell
+    private Cell leftUpCell;
+
     private ShipSize shipSize;
 
     private ShipState shipState;
@@ -64,6 +69,7 @@ public class Ship {
         this.shipSize = shipSize;
         this.cells = new Cell[shipSize.getValue()];
         this.shipStatus = ShipStatus.AVAILABLE;
+        this.shipDirection = ShipDirection.HORISONTAL;
     }
 
     /**
@@ -75,6 +81,7 @@ public class Ship {
         this.shipSize = getShipSizeFromCellsLength(cells);
         this.cells = cells;
         this.shipStatus = ShipStatus.AVAILABLE;
+        this.shipDirection = ShipDirection.HORISONTAL;
     }
 
     /**
@@ -83,11 +90,12 @@ public class Ship {
      * @param cells  - array with coordinates
      * @param status - status of the ship
      */
-    public Ship(Cell[] cells, ShipStatus status) {
+    public Ship(Cell[] cells, ShipStatus status, ShipDirection shipDirection) {
         this.shipSize = getShipSizeFromCellsLength(cells);
         this.cells = cells;
         this.shipStatus = status;
         this.shipState = initiateShipState(status);
+        this.shipDirection = shipDirection;
     }
 
     /**
@@ -154,7 +162,7 @@ public class Ship {
     }
 
     /**
-     * TODO * + test
+     * TODO: finish
      * verifying that cells, where ship to be placed, are free
      *
      * @return boolean
@@ -173,15 +181,71 @@ public class Ship {
     }
 
     /**
-     * TODO *  + test
+     * Calculate cells around ship
      *
-     * @param ship
-     * @return
+     * @return Cell[]
      */
-    public Cell[] getCellsAroundShip(Ship ship) {
+    public Cell[] getCellsAroundShip() {
+        // size off array
+        List<Cell> list = new LinkedList<>();
 
-        Cell[] aroundShip = new Cell[(shipSize.getValue() + 2) * 3];
-        return null;
+        if (shipDirection != null) {
+            if (shipDirection.equals(ShipDirection.HORISONTAL)) {
+
+                list.add(new Cell(cells[0].getX() - 1, cells[0].getY() - 1, CellState.BUSY));
+                list.add(new Cell(cells[0].getX(), cells[0].getY() - 1, CellState.BUSY));
+                list.add(new Cell(cells[0].getX() + 1, cells[0].getY() - 1, CellState.BUSY));
+                for (Cell cell : cells) {
+                    list.add(new Cell(cell.getX() - 1, cell.getY(), CellState.BUSY));
+                    list.add(new Cell(cell.getX(), cell.getY(), CellState.BUSY));
+                    list.add(new Cell(cell.getX() + 1, cell.getY(), CellState.BUSY));
+                }
+                list.add(new Cell(cells[cells.length - 1].getX() - 1, cells[cells.length - 1].getY() + 1, CellState.BUSY));
+                list.add(new Cell(cells[cells.length - 1].getX(), cells[cells.length - 1].getY() + 1, CellState.BUSY));
+                list.add(new Cell(cells[cells.length - 1].getX() + 1, cells[cells.length - 1].getY() + 1, CellState.BUSY));
+            } else {
+                list.add(new Cell(cells[0].getX() - 1, cells[0].getY() - 1, CellState.BUSY));
+                list.add(new Cell(cells[0].getX() - 1, cells[0].getY(), CellState.BUSY));
+                list.add(new Cell(cells[0].getX() - 1, cells[0].getY() + 1, CellState.BUSY));
+                for (Cell cell : cells) {
+                    list.add(new Cell(cell.getX(), cell.getY() - 1, CellState.BUSY));
+                    list.add(new Cell(cell.getX(), cell.getY(), CellState.BUSY));
+                    list.add(new Cell(cell.getX(), cell.getY() + 1, CellState.BUSY));
+                }
+                list.add(new Cell(cells[cells.length - 1].getX() + 1, cells[cells.length - 1].getY() - 1, CellState.BUSY));
+                list.add(new Cell(cells[cells.length - 1].getX() + 1, cells[cells.length - 1].getY(), CellState.BUSY));
+                list.add(new Cell(cells[cells.length - 1].getX() + 1, cells[cells.length - 1].getY() + 1, CellState.BUSY));
+            }
+        }
+        Cell[] c = list.toArray(new Cell[list.size()]);
+        System.out.println();
+        return c;
+    }
+
+    /**
+     * Building ship cells by pointing LeftUpCell
+     * ShipCells array must be initiated!
+     * <p/>
+     * X (left to right) , Y (up to down)
+     *
+     * @param leftUpCell - pointing cell
+     */
+    public void setShipCellsByPointing(Cell leftUpCell) {
+        if (cells.length > 0 && cells.length <= 4) {
+            this.leftUpCell = leftUpCell;
+            int x = leftUpCell.getX();
+            int y = leftUpCell.getY();
+            cells[0] = leftUpCell;
+
+            for (int i = 1; i < cells.length; i++) {
+                if (shipDirection.equals(ShipDirection.HORISONTAL)) {
+                    cells[i] = new Cell(x, ++y);
+                } else {
+                    cells[i] = new Cell(++x, y);
+                }
+            }
+            shipStatus = ShipStatus.BUSY;
+        }
     }
 
     public ShipDirection getShipDirection() {
@@ -190,6 +254,14 @@ public class Ship {
 
     public void setShipDirection(ShipDirection shipDirection) {
         this.shipDirection = shipDirection;
+    }
+
+    public Cell getLeftUpCell() {
+        return leftUpCell;
+    }
+
+    public void setLeftUpCell(Cell leftUpCell) {
+        this.leftUpCell = leftUpCell;
     }
 
     public ShipSize getShipSize() {
@@ -220,6 +292,8 @@ public class Ship {
         Ship ship = (Ship) o;
 
         if (!Arrays.equals(cells, ship.cells)) return false;
+        if (leftUpCell != null ? !leftUpCell.equals(ship.leftUpCell) : ship.leftUpCell != null) return false;
+        if (shipDirection != ship.shipDirection) return false;
         if (shipSize != ship.shipSize) return false;
         if (shipState != ship.shipState) return false;
         if (shipStatus != ship.shipStatus) return false;
@@ -229,7 +303,9 @@ public class Ship {
 
     @Override
     public int hashCode() {
-        int result = shipSize != null ? shipSize.hashCode() : 0;
+        int result = shipDirection != null ? shipDirection.hashCode() : 0;
+        result = 31 * result + (leftUpCell != null ? leftUpCell.hashCode() : 0);
+        result = 31 * result + (shipSize != null ? shipSize.hashCode() : 0);
         result = 31 * result + (shipState != null ? shipState.hashCode() : 0);
         result = 31 * result + (shipStatus != null ? shipStatus.hashCode() : 0);
         result = 31 * result + (cells != null ? Arrays.hashCode(cells) : 0);
