@@ -104,4 +104,14 @@ public class TestField {
 
         assertEquals("LIST must be same", shipList, field.getShipList());
     }
+
+    /** TODO
+     * Test deployShipToField
+     */
+    public void testDeployShipToField() {}
+
+    /** TODO
+     * Test deleteShipFromField
+     */
+    public void testDeleteShipFromField() {}
 }
