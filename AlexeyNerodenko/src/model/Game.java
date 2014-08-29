@@ -11,8 +11,8 @@ public class Game {
 
 
     public Game(int width, int height){
-        playerOne.setField(new Field(width, height));
-        playerTwo.setField(new Field(width, height));
+        playerOne.setField(new Field(height, width));
+        playerTwo.setField(new Field(height, width));
 
 
     }
@@ -26,6 +26,7 @@ public class Game {
     public void run(){
         for(Ship ship : playerOne.getShips()){
                 playerOne.getField().randomlyPutShip(ship);
+
         }
 
         for(Ship ship : playerTwo.getShips()){
