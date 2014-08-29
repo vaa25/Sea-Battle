@@ -145,13 +145,17 @@ public class TestShip {
         Cell[] cells = new Cell[3];
         Ship ship = new Ship(cells, ShipStatus.AVAILABLE, ShipDirection.HORISONTAL);
         ship.setShipCellsByPointing(pointingCell);
-        Cell[] expectedHorCells = {new Cell(1, 2), new Cell(1, 3), new Cell(1, 4)};
+        Cell[] expectedHorCells = {new Cell(1, 2, CellState.BUSY),
+                new Cell(1, 3, CellState.BUSY),
+                new Cell(1, 4, CellState.BUSY)};
         assertTrue("Array must be the same", Arrays.deepEquals(expectedHorCells, ship.getCells()));
 
 
         ship.setShipDirection(ShipDirection.VERTICAL);
         ship.setShipCellsByPointing(pointingCell);
-        Cell[] expectedVertCells = {new Cell(1, 2), new Cell(2, 2), new Cell(3, 2)};
+        Cell[] expectedVertCells = {new Cell(1, 2, CellState.BUSY),
+                new Cell(2, 2, CellState.BUSY),
+                new Cell(3, 2, CellState.BUSY)};
         assertTrue("Array must be the same", Arrays.deepEquals(expectedVertCells, ship.getCells()));
     }
 

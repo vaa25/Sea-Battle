@@ -237,6 +237,7 @@ public class Ship {
             int x = leftUpCell.getX();
             int y = leftUpCell.getY();
             cells[0] = leftUpCell;
+            cells[0].setCellState(CellState.BUSY);
 
             for (int i = 1; i < cells.length; i++) {
                 if (shipDirection.equals(ShipDirection.HORISONTAL)) {
