@@ -39,7 +39,7 @@ enum ShipSize {
  * Represents direction of ship
  */
 enum ShipDirection {
-    HORISONTAL, VERTICAL
+    HORIZONTAL, VERTICAL
 }
 
 /**
@@ -69,7 +69,7 @@ public class Ship {
         this.shipSize = shipSize;
         this.cells = new Cell[shipSize.getValue()];
         this.shipStatus = ShipStatus.AVAILABLE;
-        this.shipDirection = ShipDirection.HORISONTAL;
+        this.shipDirection = ShipDirection.HORIZONTAL;
     }
 
     /**
@@ -81,7 +81,7 @@ public class Ship {
         this.shipSize = getShipSizeFromCellsLength(cells);
         this.cells = cells;
         this.shipStatus = ShipStatus.AVAILABLE;
-        this.shipDirection = ShipDirection.HORISONTAL;
+        this.shipDirection = ShipDirection.HORIZONTAL;
     }
 
     /**
@@ -96,6 +96,24 @@ public class Ship {
         this.shipStatus = status;
         this.shipState = initiateShipState(status);
         this.shipDirection = shipDirection;
+    }
+
+    /**
+     * Constructor_4
+     *
+     * @param shipSize - quantity of cells
+     * @param leftUpCell - pointed cell
+     * @param status - status of the ship
+     * @param shipDirection - direction
+     */
+    public Ship(ShipSize shipSize, Cell leftUpCell, ShipStatus status, ShipDirection shipDirection) {
+        this.shipSize = shipSize;
+        this.cells = new Cell[shipSize.getValue()];
+        this.shipDirection = shipDirection;
+        setShipCellsByPointing(leftUpCell);
+        this.shipStatus = status;
+        this.shipState = initiateShipState(status);
+
     }
 
     /**
@@ -161,25 +179,7 @@ public class Ship {
         return null;
     }
 
-    /**
-     * verifying that cells, where ship to be placed, are free
-     *
-     * @return boolean
-     */
-    public boolean isShipSpotIsFree(Field field) {
-        if (cells.length > 0) {
-            Cell[] shipPlusAura = getCellsAroundShip();
-            for (Ship shipFromList : field.getShipList()) {
-                for (Cell shipsCell: shipFromList.getCells()) {
-                    for (Cell thisShipCell: shipPlusAura) {
-                        System.out.println();
-                        if (shipsCell.equals(thisShipCell)) return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
+
 
     /**
      * Calculate cells around ship
@@ -191,7 +191,7 @@ public class Ship {
         List<Cell> list = new LinkedList<>();
 
         if (shipDirection != null) {
-            if (shipDirection.equals(ShipDirection.HORISONTAL)) {
+            if (shipDirection.equals(ShipDirection.HORIZONTAL)) {
 
                 list.add(new Cell(cells[0].getX() - 1, cells[0].getY() - 1, CellState.BUSY));
                 list.add(new Cell(cells[0].getX(), cells[0].getY() - 1, CellState.BUSY));
@@ -240,7 +240,7 @@ public class Ship {
             cells[0].setCellState(CellState.BUSY);
 
             for (int i = 1; i < cells.length; i++) {
-                if (shipDirection.equals(ShipDirection.HORISONTAL)) {
+                if (shipDirection.equals(ShipDirection.HORIZONTAL)) {
                     cells[i] = new Cell(x, ++y, CellState.BUSY);
                 } else {
                     cells[i] = new Cell(++x, y, CellState.BUSY);

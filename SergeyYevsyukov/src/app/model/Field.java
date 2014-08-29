@@ -64,20 +64,24 @@ public class Field {
     }
 
     /**
-     * TODO * test
      * Deploy ship to field shipList
      *
      * @param ship - target ship to be placed
      */
-    public void deployShipToField(Ship ship) {
+    public boolean deployShipToField(Ship ship) {
         if (ship.getCells() != null) {
             for (Ship scannedShip : shipList) {
                 if (scannedShip.getShipSize() == ship.getShipSize() &&
                         scannedShip.getShipStatus().equals(ShipStatus.AVAILABLE)) {
-                    scannedShip = new Ship(ship.getCells(), ShipStatus.BUSY, ShipDirection.HORISONTAL);
+                    if (isShipSpotIsFree(ship)) {
+                        scannedShip = ship;
+                        scannedShip.setShipStatus(ShipStatus.BUSY);
+                        return true;
+                    }
                 }
             }
         }
+        return false;
     }
 
     /**
@@ -89,8 +93,36 @@ public class Field {
     public void deleteShipFromField(Ship ship) {
         int count = 0;
         for (Cell c : ship.getCells()) {
-            if(c.getCellState() == CellState.HIT) count++;
+            if (c.getCellState() == CellState.HIT) count++;
         }
         if (count == ship.getCells().length) shipList.remove(ship);
+    }
+
+    /**
+     * verifying that cells, where ship to be placed, are free
+     *
+     * @return boolean
+     */
+    public boolean isShipSpotIsFree(Ship ship) {
+        if (ship.getCells().length > 0) {
+            Cell[] shipPlusAura = ship.getCellsAroundShip();
+            for (Ship shipFromList : shipList) {
+                for (Cell shipsCell : shipFromList.getCells()) {
+                    for (Cell thisShipCell : shipPlusAura) {
+                        System.out.println();
+                        if (shipsCell.equals(thisShipCell)) return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public List<Ship> getAvailableShipList() {
+        List<Ship> list = new ArrayList<>();
+        for (Ship ship : shipList) {
+            if (ship.getShipStatus().equals(ShipStatus.AVAILABLE)) list.add(ship);
+        }
+        return list;
     }
 }

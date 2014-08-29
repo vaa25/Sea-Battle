@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -105,13 +106,41 @@ public class TestField {
         assertEquals("LIST must be same", shipList, field.getShipList());
     }
 
-    /** TODO
+    /**
      * Test deployShipToField
      */
-    public void testDeployShipToField() {}
+    public void testDeployShipToField() {
+        Field field = new Field();
+
+        assertTrue(field.deployShipToField(new Ship(ShipSize.FOUR, new Cell(1,1),
+                ShipStatus.AVAILABLE, ShipDirection.VERTICAL)));
+
+        assertFalse(field.deployShipToField(new Ship(ShipSize.FOUR, new Cell(1,1),
+                ShipStatus.AVAILABLE, ShipDirection.VERTICAL)));
+
+    }
 
     /** TODO
      * Test deleteShipFromField
      */
     public void testDeleteShipFromField() {}
+
+    /**
+     * Test isShipSpotIsFree
+     */
+    @Test
+    public void testIsShipSpotIsFree() {
+        // first ship
+        Field field = new Field();
+        Ship ship1 = new Ship(ShipSize.THREE);
+        ship1.setShipCellsByPointing(new Cell(1,1));
+        List<Ship> list = new ArrayList<>();
+        list.add(ship1);
+        field.setShipList(list);
+        // target ship
+        Ship ship2 = new Ship(ShipSize.THREE);
+        ship2.setShipCellsByPointing(new Cell(1,2));
+        ship2.setShipDirection(ShipDirection.VERTICAL);
+        assertFalse("Second ship cant be placed", field.isShipSpotIsFree(ship2));
+    }
 }
