@@ -3,6 +3,10 @@ package model;
 import java.awt.*;
 import java.util.ArrayList;
 
+import static model.CellState.EMPTY;
+import static model.CellState.SHIP;
+import static model.ShipLayout.VERTICAL;
+
 /**
  * Nick:   sobolevstp
  * Date:   8/28/14
@@ -18,9 +22,10 @@ public class Field implements TakingShots
 
 	public Field()
 	{
+		this.cells = new Cell[SIZE][SIZE];
 		for (int i = 0; i < SIZE; i++) {
 			for (int j = 0; j < SIZE; j++) {
-				cells[i][j] = new Cell(i, j);
+				cells[i][j] = new Cell(i + 1, j + 1);
 			}
 		}
 		initializeShips();
@@ -46,8 +51,62 @@ public class Field implements TakingShots
 		return cells[p.x][p.y].getShot();
 	}
 
-//	public boolean locateShip(Ship ship)
-//	{
-//		ship.setLocation();
-//	}
+	public boolean locateShip(Ship ship, Point p)
+	{
+		if (!checkLocationOutOfBounds(ship, p)) return false;
+
+		Cell[] location = generateShipLocation(ship, p);
+		if (!checkLocationAvailability(location)) return false;
+
+		for (Cell cell : location) {
+			cell.setState(SHIP);
+			cell.setLocatedShip(ship);
+		}
+
+		ship.setLocation(location);
+
+		return true;
+	}
+
+	private boolean checkLocationOutOfBounds(Ship ship, Point p)
+	{
+		int shipSize = ship.getSIZE();
+		if (ship.getLayout() == VERTICAL) {
+			if (p.x > 0 && p.x <= SIZE && p.y > 0 && (p.y + shipSize - 1) <= SIZE) {
+				return true;
+			}
+		} else {
+			if (p.x > 0 && (p.x + shipSize - 1) <= 10 && p.y > 0 && p.y <= 10) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Cell[] generateShipLocation(Ship ship, Point p)
+	{
+		int shipSize = ship.getSIZE();
+		Cell[] location = new Cell[shipSize];
+		if (ship.getLayout() == VERTICAL) {
+			int i = 0;
+			for (int y = p.y; y < (p.y + shipSize); y++) {
+				location[i++] = cells[p.x - 1][y - 1];
+
+			}
+		} else {
+			for (int x = p.x; x < (p.x + shipSize); x++) {
+				int i = 0;
+				location[i++] = cells[x - 1][p.y - 1];
+			}
+		}
+		return location;
+	}
+
+	private boolean checkLocationAvailability(Cell[] location)
+	{
+		for (Cell cell : location) {
+			if (cell.getState() != EMPTY) return false;
+		}
+		return true;
+	}
 }

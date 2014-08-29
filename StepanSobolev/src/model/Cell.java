@@ -5,11 +5,12 @@ import static model.ShotResult.*;
 
 enum CellState
 {
+	FOG,
 	EMPTY,
-	WAS_SHOT,
+	SHELLED,
 	SHIP,
-	SHIP_WAS_SHOT,
-	SEPARATING_ZONE
+	DAMAGED_SHIP,
+	SHIP_OUTLINE
 }
 
 /**
@@ -36,16 +37,21 @@ class Cell
 	public ShotResult getShot()
 	{
 		if (state == EMPTY) {
-			state = WAS_SHOT;
-			return DO_NOT_HIT;
+			state = SHELLED;
+			return MISSES;
 		}
 		if (state == SHIP) {
-			state = SHIP_WAS_SHOT;
+			state = DAMAGED_SHIP;
 			if (locatedShip.isAlive()) {
 				return HIT;
 			}
 		}
 		return DESTROY;
+	}
+
+	public void setLocatedShip(AliveChecker locatedShip)
+	{
+		this.locatedShip = locatedShip;
 	}
 
 	public CellState getState()
@@ -56,11 +62,6 @@ class Cell
 	public void setState(CellState state)
 	{
 		this.state = state;
-	}
-
-	public void setLocatedShip(AliveChecker locatedShip)
-	{
-		this.locatedShip = locatedShip;
 	}
 
 	public int getX()

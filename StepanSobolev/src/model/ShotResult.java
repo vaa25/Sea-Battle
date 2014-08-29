@@ -10,7 +10,7 @@ package model;
  */
 public enum ShotResult
 {
-	DO_NOT_HIT,
+	MISSES,
 	HIT,
 	DESTROY
 }

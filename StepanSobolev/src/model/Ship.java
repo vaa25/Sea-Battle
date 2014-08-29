@@ -1,6 +1,13 @@
 package model;
 
-import java.util.ArrayList;
+import static model.ShipLayout.HORIZONTAL;
+import static model.ShipLayout.VERTICAL;
+
+enum ShipLayout
+{
+	VERTICAL,
+	HORIZONTAL
+}
 
 /**
  * Nick:   sobolevstp
@@ -12,11 +19,13 @@ import java.util.ArrayList;
 public class Ship implements AliveChecker
 {
 	private final int SIZE;
-	private ArrayList<Cell> location;
+	private ShipLayout layout;
+	private Cell[] location;
 
 	public Ship(int SIZE)
 	{
 		this.SIZE = SIZE;
+		this.layout = VERTICAL;
 	}
 
 	public int getSIZE()
@@ -35,8 +44,27 @@ public class Ship implements AliveChecker
 		return false;
 	}
 
-	public void setLocation(ArrayList<Cell> location)
+	public void setLocation(Cell[] location)
 	{
 		this.location = location;
+	}
+
+	public ShipLayout getLayout()
+	{
+		return layout;
+	}
+
+	public void setLayout(ShipLayout layout)
+	{
+		this.layout = layout;
+	}
+
+	public void changeLayout()
+	{
+		if (layout == HORIZONTAL) {
+			layout = VERTICAL;
+		} else {
+			layout = HORIZONTAL;
+		}
 	}
 }
