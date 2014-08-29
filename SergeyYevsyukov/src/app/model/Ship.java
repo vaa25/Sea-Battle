@@ -28,13 +28,24 @@ enum ShipSize {
         value = newValue;
     }
 
-    public int getValue() { return value; }
+    public int getValue() {
+        return value;
+    }
+}
+
+/**
+ * Represents direction of ship
+ */
+enum ShipDirection {
+    HORISONTAL, VERTICAL
 }
 
 /**
  * Class represents model and service functions of the Ship
  */
 public class Ship {
+
+    private ShipDirection shipDirection;
 
     private ShipSize shipSize;
 
@@ -69,7 +80,7 @@ public class Ship {
     /**
      * Constructor_3 with specified array of coordinates and ship status
      *
-     * @param cells - array with coordinates
+     * @param cells  - array with coordinates
      * @param status - status of the ship
      */
     public Ship(Cell[] cells, ShipStatus status) {
@@ -86,7 +97,7 @@ public class Ship {
      * @return Ship State
      */
     public ShipState initiateShipState(ShipStatus shipStatus) {
-        return shipStatus.equals(ShipStatus.BUSY)? ShipState.LIVE : null;
+        return shipStatus.equals(ShipStatus.BUSY) ? ShipState.LIVE : null;
     }
 
     /**
@@ -126,9 +137,7 @@ public class Ship {
     public ShipState getShipState() {
         if (shipStatus.equals(ShipStatus.BUSY)) {
             int count = 0;
-            for (Cell cell : cells) {
-                if (cell.getCellState() == CellState.HIT) count++;
-            }
+            for (Cell cell : cells) if (cell.getCellState() == CellState.HIT) count++;
 
             if (count > 0 && count == cells.length) {
                 shipState = ShipState.DESTROYED;
@@ -141,7 +150,46 @@ public class Ship {
                 return shipState;
             }
         }
-            return null;
+        return null;
+    }
+
+    /**
+     * TODO * + test
+     * verifying that cells, where ship to be placed, are free
+     *
+     * @return boolean
+     */
+    public boolean isShipSpotIsFree(Field field) {
+        if (cells.length > 0) {
+            for (Cell[] fieldCellsLine : field.getFieldGrid()) {
+                for (Cell fieldCellColumn : fieldCellsLine) {
+                    for (Cell shipCell : cells) {
+                        if (shipCell.equals(fieldCellColumn)) return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * TODO *  + test
+     *
+     * @param ship
+     * @return
+     */
+    public Cell[] getCellsAroundShip(Ship ship) {
+
+        Cell[] aroundShip = new Cell[(shipSize.getValue() + 2) * 3];
+        return null;
+    }
+
+    public ShipDirection getShipDirection() {
+        return shipDirection;
+    }
+
+    public void setShipDirection(ShipDirection shipDirection) {
+        this.shipDirection = shipDirection;
     }
 
     public ShipSize getShipSize() {

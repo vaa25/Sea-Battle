@@ -22,8 +22,8 @@ public class Cell implements Serializable{
     /**
      * Constructor_1 with X, Y coordinates
      *
-     * @param x - vertical
-     * @param y - horizontal
+     * @param x - horizontal
+     * @param y - vertical
      */
     public Cell(int x, int y) {
         this.x = x;
@@ -48,16 +48,28 @@ public class Cell implements Serializable{
         return x;
     }
 
+    /**
+     * X can be only > 0 and < 10
+     * @param x - coordinate
+     */
     public void setX(int x) {
-        this.x = x;
+        if (x >= 0 && x <= 10) {
+            this.x = x;
+        }
     }
 
     public int getY() {
         return y;
     }
 
+    /**
+     * Y can be only > 0 and < 10
+     * @param y - coordinate
+     */
     public void setY(int y) {
-        this.y = y;
+        if (y >= 0 && y <= 10) {
+            this.y = y;
+        }
     }
 
     public CellState getCellState() {
