@@ -16,29 +16,28 @@ import java.util.Random;
  *
  * @author Alexander Vlasov
  */
-public class Field  {
+public class Field {
     private Cell[][] field;
-    private List<Ship>ships;
-    private final int width,height;
+    private List<Ship> ships;
+    private final int width, height;
     private int killed;
-
 
 
     public Field(int width, int height) {
         this.width = width;
         this.height = height;
-        field=new Cell[width][height];
-        ships=new ArrayList<>();
+        field = new Cell[width][height];
+        ships = new ArrayList<>();
         createCells();
-        killed=0;
+        killed = 0;
 
     }
 
-    public void createCells(){
+    public void createCells() {
         for (int i = 0; i < field.length; i++) {
             Cell[] collumn = field[i];
             for (int j = 0; j < collumn.length; j++) {
-                collumn[j]=new Cell(new Coord(i,j));
+                collumn[j] = new Cell(new Coord(i, j));
 
             }
 
@@ -51,14 +50,16 @@ public class Field  {
 
     /**
      * проверяет, можно ли расположить корабль с заданными координатами на поле с расставленными ранее кораблями
+     *
      * @param ship
+     *
      * @return
      */
-    public boolean canPlace(Ship ship){
-        if (!inBorders(ship))return false;
+    public boolean canPlace(Ship ship) {
+        if (!inBorders(ship)) return false;
         for (int i = 0; i < ships.size(); i++) {
             Ship alreadyPlaced = ships.get(i);
-            if (ship.isCrossing(alreadyPlaced))return false;
+            if (ship.isCrossing(alreadyPlaced)) return false;
         }
         return true;
     }
@@ -66,39 +67,43 @@ public class Field  {
     /**
      * Устанавливает в ячейки корабль
      * Удаляет временные корабли, установленные при восстановлении убитых кораблей, когда поле является вражьим
+     *
      * @param ship
      */
-    public void place(Ship ship){
+    public void place(Ship ship) {
         ships.add(ship);
         for (Coord coord : ship.getShipCoords()) {
-            Cell cell=getCell(coord);
-            Ship temp=cell.getShip();
-            if (temp!=null)ships.remove(temp);
+            Cell cell = getCell(coord);
+            Ship temp = cell.getShip();
+            if (temp != null) ships.remove(temp);
             cell.setShip(ship);
         }
     }
 
     /**
      * Проверяет, находится ли весь корабль в границах поля
+     *
      * @param ship
+     *
      * @return true, если находится
      */
-    private boolean inBorders(Ship ship){
+    private boolean inBorders(Ship ship) {
         for (Coord coord : ship.getShipCoords()) {
-            if (coord.getX()<0||coord.getY()<0||coord.getX()>=width||coord.getY()>=height)return false;
+            if (coord.getX() < 0 || coord.getY() < 0 || coord.getX() >= width || coord.getY() >= height) return false;
         }
         return true;
     }
 
     /**
      * Ячейки вдали от кораблей
+     *
      * @return
      */
-    private List<Coord>getFreeCoords(){
-        List<Coord>res=new ArrayList<>();
+    private List<Coord> getFreeCoords() {
+        List<Coord> res = new ArrayList<>();
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                res.add(new Coord(i,j));
+                res.add(new Coord(i, j));
             }
         }
         for (Ship ship : ships) {
@@ -113,10 +118,11 @@ public class Field  {
 
     /**
      * Удаляет из ячеек корабль
+     *
      * @param ship
      */
-    public void unPlace(Ship ship){
-        if (ships.remove(ship)){
+    public void unPlace(Ship ship) {
+        if (ships.remove(ship)) {
             for (int i = 0; i < ship.getShipCoords().length; i++) {
                 Coord coord = ship.getShipCoords()[i];
                 getCell(coord).setShip(null);
@@ -126,26 +132,28 @@ public class Field  {
 
     /**
      * расставляет рандомно указанные корабли
+     *
      * @param ships
      */
-    public void setRandom(List<Ship>ships){
+    public void setRandom(List<Ship> ships) {
 //        Collections.sort(ships);
-        while (!trySetRandom(ships));
+        while (!trySetRandom(ships)) ;
     }
-    public boolean trySetRandom(List<Ship>ships){
+
+    public boolean trySetRandom(List<Ship> ships) {
 
         for (int i = 0; i < ships.size(); i++) {
-            Ship ship=ships.get(i);
-            Random random=new Random();
-            int x=random.nextInt(width);
-            int y=random.nextInt(height);
+            Ship ship = ships.get(i);
+            Random random = new Random();
+            int x = random.nextInt(width);
+            int y = random.nextInt(height);
             ship.setCoords(new Coord(x, y));
-            if (random.nextBoolean())ship.changeDirection();
-            if (canPlace(ship))place(ship);
-            else{
+            if (random.nextBoolean()) ship.changeDirection();
+            if (canPlace(ship)) place(ship);
+            else {
                 ship.changeDirection();
-                if (canPlace(ship))place(ship);
-                else{
+                if (canPlace(ship)) place(ship);
+                else {
                     unPlace(ships);
                     return false;
                 }
@@ -153,29 +161,32 @@ public class Field  {
         }
         return true;
     }
-    public ShootResult shoot(Coord coord){
-        Cell cell=getCell(coord);
-        Ship ship=cell.getShip();
-        if (ship!=null){
-            if (!cell.isShoot()){
+
+    public ShootResult shoot(Coord coord) {
+        Cell cell = getCell(coord);
+        Ship ship = cell.getShip();
+        if (ship != null) {
+            if (!cell.isShoot()) {
                 setShoot(coord);
                 ship.shoot();
             }
-            if (ship.isAlive())return ShootResult.HURT;
+            if (ship.isAlive()) return ShootResult.HURT;
             else return ShootResult.KILLED;
-        }
-        else {
+        } else {
             setShoot(coord);
             return ShootResult.MISSED;
         }
     }
-    public void setShoot(Coord coord){
+
+    public void setShoot(Coord coord) {
         getCell(coord).setShoot(true);
     }
-    public Cell getCell(Coord coord){
+
+    public Cell getCell(Coord coord) {
         return field[coord.getX()][coord.getY()];
     }
-    private void unPlace(List<Ship>ships){
+
+    private void unPlace(List<Ship> ships) {
         for (Ship ship : ships) {
             unPlace(ship);
         }
@@ -185,24 +196,26 @@ public class Field  {
         return killed;
     }
 
-    public int getShipSize(){
+    public int getShipSize() {
         return ships.size();
     }
+
     public void addKilled() {
         killed++;
     }
-    public boolean isLoose(){
-        return ships.size()==killed;
+
+    public boolean isLoose() {
+        return ships.size() == killed;
     }
-    public void printField(){
+
+    public void printField() {
         for (Cell[] cells : field) {
             for (Cell cell : cells) {
-                if (cell.getShip()==null){
-                    if (cell.isShoot())System.out.print(". ");
+                if (cell.getShip() == null) {
+                    if (cell.isShoot()) System.out.print(". ");
                     else System.out.print("  ");
-                }
-                else{
-                    if (cell.isShoot())System.out.print("* ");
+                } else {
+                    if (cell.isShoot()) System.out.print("* ");
                     else System.out.print("O ");
                 }
             }

@@ -10,7 +10,7 @@ import common.CurrentStatisticInterface;
  *
  * @author Alexander Vlasov
  */
-public class CurrentStatistic implements CurrentStatisticInterface{
+public class CurrentStatistic implements CurrentStatisticInterface {
     int shoots, missed, hit, myShipsSunk, myShipsLeft, enemyShipsSunk, enemyShipsLeft;
 
 
