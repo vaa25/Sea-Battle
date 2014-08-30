@@ -93,9 +93,9 @@ public class Field {
     public void deleteShipFromField(Ship ship) {
         int count = 0;
         for (Cell c : ship.getCells()) {
-            if (c.getCellState() == CellState.HIT) count++;
+            if (c.getCellState() == CellState.HIT) { count++; }
         }
-        if (count == ship.getCells().length) shipList.remove(ship);
+        if (count == ship.getCells().length) { shipList.remove(ship); }
     }
 
     /**
@@ -110,7 +110,7 @@ public class Field {
                 for (Cell shipsCell : shipFromList.getCells()) {
                     for (Cell thisShipCell : shipPlusAura) {
                         System.out.println();
-                        if (shipsCell.equals(thisShipCell)) return false;
+                        if (shipsCell.equals(thisShipCell)) { return false; }
                     }
                 }
             }
@@ -121,7 +121,7 @@ public class Field {
     public List<Ship> getAvailableShipList() {
         List<Ship> list = new ArrayList<>();
         for (Ship ship : shipList) {
-            if (ship.getShipStatus().equals(ShipStatus.AVAILABLE)) list.add(ship);
+            if (ship.getShipStatus().equals(ShipStatus.AVAILABLE)) { list.add(ship); }
         }
         return list;
     }

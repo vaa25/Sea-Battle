@@ -82,14 +82,14 @@ public class Cell implements Serializable{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Cell)) return false;
+        if (this == o) { return true; }
+        if (!(o instanceof Cell)) { return false; }
 
         Cell cell = (Cell) o;
 
-        if (x != cell.x) return false;
-        if (y != cell.y) return false;
-        if (cellState != cell.cellState) return false;
+        if (x != cell.x) { return false; }
+        if (y != cell.y) { return false; }
+        if (cellState != cell.cellState) { return false; }
 
         return true;
     }

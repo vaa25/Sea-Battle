@@ -288,17 +288,17 @@ public class Ship {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Ship)) return false;
+        if (this == o) { return true; }
+        if (!(o instanceof Ship)) { return false; }
 
         Ship ship = (Ship) o;
 
-        if (!Arrays.equals(cells, ship.cells)) return false;
-        if (leftUpCell != null ? !leftUpCell.equals(ship.leftUpCell) : ship.leftUpCell != null) return false;
-        if (shipDirection != ship.shipDirection) return false;
-        if (shipSize != ship.shipSize) return false;
-        if (shipState != ship.shipState) return false;
-        if (shipStatus != ship.shipStatus) return false;
+        if (!Arrays.equals(cells, ship.cells)) { return false; }
+        if (leftUpCell != null ? !leftUpCell.equals(ship.leftUpCell) : ship.leftUpCell != null) { return false; }
+        if (shipDirection != ship.shipDirection) { return false; }
+        if (shipSize != ship.shipSize) { return false; }
+        if (shipState != ship.shipState) { return false; }
+        if (shipStatus != ship.shipStatus) { return false; }
 
         return true;
     }
