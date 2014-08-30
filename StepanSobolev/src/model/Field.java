@@ -71,12 +71,13 @@ public class Field implements TakingShots
 			return false;
 		}
 
-
+		// изменяем состояние ячейки и присваиваем ей ссылку на корабль
 		for (Cell cell : location) {
 			cell.setState(SHIP);
 			cell.setLocatedShip(ship);
 		}
 
+		// присваиваем кораблю локацию
 		ship.setLocation(location);
 
 		return true;
