@@ -1,5 +1,7 @@
 package app.model;
 
+import app.model.enums.*;
+import app.service.ShipService;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -42,7 +44,8 @@ public class TestShip {
         // shipDirection
         assertEquals("DIRECTION must be the same", direction, ship.getShipDirection());
         // shipSize
-        assertEquals("SIZE must be the same", ship.getShipSizeFromCellsLength(cells), ship.getShipSize());
+        assertEquals("SIZE must be the same",
+                new ShipService().getShipSizeFromCellsLength(cells), ship.getShipSize());
         // shipState
         assertNull("must be NULL", ship.getShipState());
         // shipStatus
@@ -63,7 +66,8 @@ public class TestShip {
         // shipDirection
         assertEquals("DIRECTION must be the same", direction, ship.getShipDirection());
         // shipSize
-        assertEquals("SIZE must be the same", ship.getShipSizeFromCellsLength(cells), ship.getShipSize());
+        assertEquals("SIZE must be the same",
+                new ShipService().getShipSizeFromCellsLength(cells), ship.getShipSize());
         // shipState
         assertEquals("STATE must be same", ShipState.LIVE, ship.getShipState());
         // shipStatus
@@ -73,7 +77,8 @@ public class TestShip {
     }
 
     /**
-     * Test of Ship(ShipSize shipSize, Cell leftUpCell, ShipStatus status, ShipDirection shipDirection) Constructor
+     * Test of Ship(ShipSize shipSize, Cell leftUpCell, ShipStatus status,
+     * ShipDirection shipDirection) Constructor
      */
     @Test
     public void testShipConstructor_4() {
@@ -82,7 +87,7 @@ public class TestShip {
                 new Cell(2, 1, CellState.BUSY),
                 new Cell(3, 1, CellState.BUSY),
                 new Cell(4, 1, CellState.BUSY)};
-        Ship ship = new Ship(ShipSize.FOUR, new Cell(1,1), ShipStatus.AVAILABLE, ShipDirection.VERTICAL);
+        Ship ship = new Ship(ShipSize.FOUR, new Cell(1, 1), ShipStatus.AVAILABLE, ShipDirection.VERTICAL);
 
         // shipDirection
         assertEquals("DIRECTION must be the same", ShipDirection.VERTICAL, ship.getShipDirection());
@@ -108,61 +113,6 @@ public class TestShip {
     }
 
     /**
-     * Test  getCellsAroundShip()
-     */
-    @Test
-    public void testGetCellsAroundShip() {
-        Cell[] expectedArray1 = {
-                new Cell(0, 0, CellState.BUSY), new Cell(1, 0, CellState.BUSY), new Cell(2, 0, CellState.BUSY),
-                new Cell(0, 1, CellState.BUSY), new Cell(1, 1, CellState.BUSY), new Cell(2, 1, CellState.BUSY),
-                new Cell(0, 2, CellState.BUSY), new Cell(1, 2, CellState.BUSY), new Cell(2, 2, CellState.BUSY),
-                new Cell(0, 3, CellState.BUSY), new Cell(1, 3, CellState.BUSY), new Cell(2, 3, CellState.BUSY),
-                new Cell(0, 4, CellState.BUSY), new Cell(1, 4, CellState.BUSY), new Cell(2, 4, CellState.BUSY),
-                new Cell(0, 5, CellState.BUSY), new Cell(1, 5, CellState.BUSY), new Cell(2, 5, CellState.BUSY)};
-        Ship ship1 = new Ship(ShipSize.FOUR);
-        assertEquals("wrong ship direction", ShipDirection.HORIZONTAL, ship1.getShipDirection());
-        ship1.setShipCellsByPointing(new Cell(1, 1));
-        assertTrue("Arrays must be same", Arrays.deepEquals(expectedArray1, ship1.getCellsAroundShip()));
-
-
-        Cell[] expectedArray2 = {
-                new Cell(0, 0, CellState.BUSY), new Cell(0, 1, CellState.BUSY), new Cell(0, 2, CellState.BUSY),
-                new Cell(1, 0, CellState.BUSY), new Cell(1, 1, CellState.BUSY), new Cell(1, 2, CellState.BUSY),
-                new Cell(2, 0, CellState.BUSY), new Cell(2, 1, CellState.BUSY), new Cell(2, 2, CellState.BUSY),
-                new Cell(3, 0, CellState.BUSY), new Cell(3, 1, CellState.BUSY), new Cell(3, 2, CellState.BUSY),
-                new Cell(4, 0, CellState.BUSY), new Cell(4, 1, CellState.BUSY), new Cell(4, 2, CellState.BUSY),
-                new Cell(5, 0, CellState.BUSY), new Cell(5, 1, CellState.BUSY), new Cell(5, 2, CellState.BUSY)};
-        Ship ship2 = new Ship(ShipSize.FOUR);
-        ship2.setShipDirection(ShipDirection.VERTICAL);
-        assertEquals("wrong ship direction", ShipDirection.VERTICAL, ship2.getShipDirection());
-        ship2.setShipCellsByPointing(new Cell(1, 1));
-        assertTrue("Arrays must be same", Arrays.deepEquals(expectedArray2, ship2.getCellsAroundShip()));
-    }
-
-    /**
-     * Test setShipCellsByPointing
-     */
-    @Test
-    public void testSetShipCellsByPointing() {
-        Cell pointingCell = new Cell(1, 2);
-        Cell[] cells = new Cell[3];
-        Ship ship = new Ship(cells, ShipStatus.AVAILABLE, ShipDirection.HORIZONTAL);
-        ship.setShipCellsByPointing(pointingCell);
-        Cell[] expectedHorCells = {new Cell(1, 2, CellState.BUSY),
-                new Cell(1, 3, CellState.BUSY),
-                new Cell(1, 4, CellState.BUSY)};
-        assertTrue("Array must be the same", Arrays.deepEquals(expectedHorCells, ship.getCells()));
-
-
-        ship.setShipDirection(ShipDirection.VERTICAL);
-        ship.setShipCellsByPointing(pointingCell);
-        Cell[] expectedVertCells = {new Cell(1, 2, CellState.BUSY),
-                new Cell(2, 2, CellState.BUSY),
-                new Cell(3, 2, CellState.BUSY)};
-        assertTrue("Array must be the same", Arrays.deepEquals(expectedVertCells, ship.getCells()));
-    }
-
-    /**
      * Test getShipSize()
      */
     @Test
@@ -171,7 +121,7 @@ public class TestShip {
         Ship ship = new Ship(cells);
         ship.setShipStatus(ShipStatus.BUSY);
         assertEquals("STATE must be the same",
-                ship.getShipSizeFromCellsLength(cells), ship.getShipSize());
+                new ShipService().getShipSizeFromCellsLength(cells), ship.getShipSize());
     }
 
     /**
