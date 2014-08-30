@@ -51,12 +51,26 @@ public class Field implements TakingShots
 		return cells[p.x][p.y].getShot();
 	}
 
+	/**
+	 * Разместить корабль на поле
+	 *
+	 * @param ship
+	 * @param p
+	 * @return разместился ли корабль
+	 */
 	public boolean locateShip(Ship ship, Point p)
 	{
-		if (!checkLocationOutOfBounds(ship, p)) return false;
+		// проверка, вмещается ли корабль на поле
+		if (!checkLocationOutOfBounds(ship, p)) {
+			return false;
+		}
 
+		// проверка, доступны ли данные ячейки для размещения корабля
 		Cell[] location = generateShipLocation(ship, p);
-		if (!checkLocationAvailability(location)) return false;
+		if (!checkLocationAvailability(location)) {
+			return false;
+		}
+
 
 		for (Cell cell : location) {
 			cell.setState(SHIP);
@@ -68,6 +82,14 @@ public class Field implements TakingShots
 		return true;
 	}
 
+	/**
+	 * Проверка, не будет ли корабль вылазить за границы поля
+	 *
+	 * @param ship
+	 * @param p - начальная позиция размещения
+	 * @return true, если корабль помещается на поле, иначе
+	 * @return false
+	 */
 	private boolean checkLocationOutOfBounds(Ship ship, Point p)
 	{
 		int shipSize = ship.getSIZE();
@@ -105,7 +127,9 @@ public class Field implements TakingShots
 	private boolean checkLocationAvailability(Cell[] location)
 	{
 		for (Cell cell : location) {
-			if (cell.getState() != EMPTY) return false;
+			if (cell.getState() != EMPTY) {
+				return false;
+			}
 		}
 		return true;
 	}

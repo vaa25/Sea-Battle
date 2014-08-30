@@ -3,6 +3,14 @@ package model;
 import static model.CellState.*;
 import static model.ShotResult.*;
 
+/**
+ * Nick:   sobolevstp
+ * Date:   8/28/14
+ * Time:   00:29
+ *
+ * @author Stepan Sobolev
+ */
+
 enum CellState
 {
 	FOG,
@@ -13,13 +21,6 @@ enum CellState
 	SHIP_OUTLINE
 }
 
-/**
- * Nick:   sobolevstp
- * Date:   8/28/14
- * Time:   00:29
- *
- * @author Stepan Sobolev
- */
 class Cell
 {
 	private final int X;

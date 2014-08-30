@@ -3,12 +3,6 @@ package model;
 import static model.ShipLayout.HORIZONTAL;
 import static model.ShipLayout.VERTICAL;
 
-enum ShipLayout
-{
-	VERTICAL,
-	HORIZONTAL
-}
-
 /**
  * Nick:   sobolevstp
  * Date:   8/28/14
@@ -16,6 +10,13 @@ enum ShipLayout
  *
  * @author Stepan Sobolev
  */
+
+enum ShipLayout
+{
+	VERTICAL,
+	HORIZONTAL
+}
+
 public class Ship implements AliveChecker
 {
 	private final int SIZE;
