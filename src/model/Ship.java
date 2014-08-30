@@ -1,27 +1,14 @@
 package model;
 
+import static model.CellState.*;
 import static model.ShipLayout.HORIZONTAL;
 import static model.ShipLayout.VERTICAL;
 
-/**
- * Nick:   sobolevstp
- * Date:   8/28/14
- * Time:   00:17
- *
- * @author Stepan Sobolev
- */
-
-enum ShipLayout
-{
-	VERTICAL,
-	HORIZONTAL
-}
-
 public class Ship implements AliveChecker
 {
-	private final int SIZE;
-	private ShipLayout layout;
-	private Cell[] location;
+	final int SIZE;
+	ShipLayout layout;
+	Cell[] location;
 
 	public Ship(int SIZE)
 	{
@@ -29,35 +16,15 @@ public class Ship implements AliveChecker
 		this.layout = VERTICAL;
 	}
 
-	public int getSIZE()
-	{
-		return SIZE;
-	}
-
 	@Override
 	public boolean isAlive()
 	{
 		for (Cell cell : location) {
-			if (cell.getState() == CellState.SHIP) {
+			if (cell.state == SHIP) {
 				return true;
 			}
 		}
 		return false;
-	}
-
-	public void setLocation(Cell[] location)
-	{
-		this.location = location;
-	}
-
-	public ShipLayout getLayout()
-	{
-		return layout;
-	}
-
-	public void setLayout(ShipLayout layout)
-	{
-		this.layout = layout;
 	}
 
 	public void changeLayout()

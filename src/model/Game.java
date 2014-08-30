@@ -9,15 +9,20 @@ package model;
  */
 class Game
 {
-	private Player player1;
-	private Player player2;
+	PlayerController p1controller;
+	PlayerController p2controller;
 
 	public Game()
 	{
-		player1 = new Player();
-		player2 = new Player();
-		player1.setEnemy(player2);
-		player2.setEnemy(player1);
+		initializePlayers();
+	}
+
+	private void initializePlayers()
+	{
+		p1controller = new PlayerController();
+		p2controller = new PlayerController();
+		p1controller.player.enemy = p2controller;
+		p2controller.player.enemy = p1controller;
 	}
 
 }

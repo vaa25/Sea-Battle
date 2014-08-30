@@ -1,6 +1,6 @@
 package model;
 
-import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Nick:   sobolevstp
@@ -9,24 +9,10 @@ import java.awt.*;
  *
  * @author Stepan Sobolev
  */
-class Player implements TakingShots
+class Player
 {
-	private Field field;
-	private TakingShots enemy;
+	TakingShots enemy;
+	Field field;
+	ArrayList<Ship> ships;
 
-	public ShotResult shoot(Point p)
-	{
-		return enemy.getShot(p);
-	}
-
-	@Override
-	public ShotResult getShot(Point p)
-	{
-		return field.getShot(p);
-	}
-
-	public void setEnemy(TakingShots enemy)
-	{
-		this.enemy = enemy;
-	}
 }
