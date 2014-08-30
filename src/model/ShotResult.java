@@ -10,7 +10,7 @@ package model;
  */
 public enum ShotResult
 {
-	MISSES,
-	HIT,
-	DESTROY
+	MISSES, // мимо
+	HIT,    // ранил
+	DESTROY // убил
 }

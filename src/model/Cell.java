@@ -1,19 +1,20 @@
 package model;
 
+import java.awt.*;
+
 import static model.CellState.*;
 import static model.ShotResult.*;
 
 class Cell
 {
-	final int X;
-	final int Y;
+	final Point P;
 	AliveChecker locatedShip;
 	CellState state;
 
 	public Cell(int x, int y)
 	{
-		this.X = x;
-		this.Y = y;
+		this.P = new Point(x, y);
+		// default state
 		state = EMPTY;
 	}
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import static model.CellState.EMPTY;
 import static model.CellState.SHIP;
+import static model.CellState.OUTLINE;
 import static model.ShipLayout.VERTICAL;
 
 /**
@@ -18,6 +19,12 @@ public class PlayerController implements TakingShots
 {
 	Player player;
 
+	public PlayerController()
+	{
+		player = new Player();
+		initializeShips();
+	}
+
 	public ShotResult shoot(Point p)
 	{
 		return player.enemy.getShot(p);
@@ -29,6 +36,9 @@ public class PlayerController implements TakingShots
 		return player.field.cells[p.x][p.y].getShot();
 	}
 
+	/**
+	 * Метод создает массив с кораблями для игрока
+	 */
 	private void initializeShips()
 	{
 		player.ships = new ArrayList<>();
@@ -67,6 +77,9 @@ public class PlayerController implements TakingShots
 
 		// присваиваем кораблю локацию
 		ship.location = location;
+
+		// присваиваем соседним ячейкам состояние околокорабельного пространства
+		setOutlineStateAroundShip(location[0].P, location[ship.SIZE - 1].P);
 
 		return true;
 	}
@@ -126,5 +139,31 @@ public class PlayerController implements TakingShots
 		}
 		return true;
 	}
+
+	/**
+	 * Метод, присваивающий квадрату ячеек состояние околокорабельного пространства
+	 */
+	private void setOutlineStateAroundShip(Point start, Point end)
+	{
+		ArrayList<Cell> shipOutline = new ArrayList<>();
+
+		int x1 = start.x - 1;
+		int y1 = start.y - 1;
+		int x2 = end.x + 1;
+		int y2 = end.y + 1;
+
+		for (int i = x1; i <= x2; i++) {
+			for (int j = y1; j <= y2; j++) {
+				shipOutline.add(player.field.cells[i - 1][j - 1]);
+			}
+		}
+
+		for (Cell cell : shipOutline) {
+			if (cell.state != SHIP) {
+				cell.state = OUTLINE;
+			}
+		}
+	}
+
 
 }
