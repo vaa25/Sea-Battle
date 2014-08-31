@@ -5,7 +5,9 @@ import common.CurrentStatisticInterface;
 import common.ModelInterface;
 import common.ShootResult;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -163,7 +165,14 @@ public class Player implements ModelInterface {
         }
     }
 
-    public ShootResult shoot(Coord coord) {
+    /**
+     * определяет и возвращает результат выстрела врага
+     *
+     * @param coord координаты выстрела врага
+     *
+     * @return результат выстрела
+     */
+    public ShootResult receiveShoot(Coord coord) {
         myField.shoot(coord);
         return getShootResult(coord);
     }
@@ -176,98 +185,62 @@ public class Player implements ModelInterface {
         myField.printField();
     }
 
-    public boolean isAlreadyShooted(Coord coord) {
+    private boolean isAlreadyShooted(Coord coord) {
         return enemyField.getCell(coord).isShoot();
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        Player player = new Player(10, 10, "Player");
-        Field my = new Field(10, 10);
-        player.setMyField(my);
-        List<Ship> ships = new ArrayList<>();
-        ships.add(new Ship(4));
-        ships.add(new Ship(3));
-        ships.add(new Ship(3));
-        ships.add(new Ship(2));
-        ships.add(new Ship(2));
-        ships.add(new Ship(2));
-        ships.add(new Ship(1));
-        ships.add(new Ship(1));
-        ships.add(new Ship(1));
-        ships.add(new Ship(1));
-        my.setRandom(ships);
-        System.out.println("player map:");
-        player.printMy();
-        my.printField();
-
-        Player player2 = new Player(10, 10, "Player2");
-        Field enemy = new Field(10, 10);
-        player2.setMyField(enemy);
-        List<Ship> ships2 = new ArrayList<>();
-        ships2.add(new Ship(4));
-        ships2.add(new Ship(3));
-        ships2.add(new Ship(3));
-        ships2.add(new Ship(2));
-        ships2.add(new Ship(2));
-        ships2.add(new Ship(2));
-        ships2.add(new Ship(1));
-        ships2.add(new Ship(1));
-        ships2.add(new Ship(1));
-        ships2.add(new Ship(1));
-        enemy.setRandom(ships2);
-        System.out.println("player2 map:");
-        player2.printMy();
-
-//        Field myUnknown=new Field(10,10);
-//        myUnknown.printField();
-//        System.out.println("myUnknown");
-
-//        Field enemyUnknown=new Field(10,10);
-//        enemyUnknown.printField();
-//        System.out.println("enemyUnknown");
-
-//        ShootResult shootResult;
-        Player shooting = player;
-        Player shooted = player2;
-
-        while (turn(shooting, shooted) == DONTWON) {
-            Player temp = shooted;
-            shooted = shooting;
-            shooting = temp;
-        }
-        ;
-
-
-    }
-
-    private static boolean turn(Player shooting, Player shooted) {
-        ShootResult shootResult;
-
+    /**
+     * выбирает рандомно координаты выстрела по врагу
+     *
+     * @return
+     */
+    public Coord shooting() {
+        Random random = new Random();
+        Coord coord;
         do {
-            do {
-                Random random = new Random();
-                Coord coord;
-                do {
-                    coord = new Coord(random.nextInt(10), random.nextInt(10));
-                } while (shooting.isAlreadyShooted(coord));
-
-                shootResult = shooted.shoot(coord);
-                shooting.shootCoord = coord;
-                shooting.setShootResult(shootResult);
-                System.out.println(shooting.getName() + " now shoots at " + coord + " with result " + shootResult + ", overall killed " + shooting.enemyField.getKilled() + " enemy ships, enemy map:");
-                shooting.printEnemy();
-                System.out.println("in reality:");
-                shooted.printMy();
-            }
-            while (shootResult == ShootResult.HURT);
-            if (shootResult == ShootResult.KILLED) {
-                if (shooting.isEnemyLoose()) {
-                    System.out.println(shooting.getName() + " won");
-                    return WON;
-                }
-            } else break;
-        } while (true);
-        return DONTWON;
+            coord = new Coord(random.nextInt(10), random.nextInt(10));
+        } while (isAlreadyShooted(coord));
+        shootCoord = coord;
+        return coord;
     }
+
+    /**
+     * возвращает поле shootCoord
+     *
+     * @return shootCoord
+     */
+    public Coord getShootCoord() {
+        return shootCoord;
+    }
+
+//    public static boolean turn(Player shooting, Player shooted) {
+//        ShootResult shootResult;
+//
+//        do {
+//            do {
+//                Random random = new Random();
+//                Coord coord;
+//                do {
+//                    coord = new Coord(random.nextInt(10), random.nextInt(10));
+//                } while (shooting.isAlreadyShooted(coord));
+//
+//                shooting.shootCoord = coord;
+//                shootResult = shooted.receiveShoot(shooting.shootCoord);
+//                shooting.setShootResult(shootResult);
+//                System.out.println(shooting.getName() + " now shoots at " + coord + " with result " + shootResult + ", overall killed " + shooting.enemyField.getKilled() + " enemy ships, enemy map:");
+//                shooting.printEnemy();
+//                System.out.println("in reality:");
+//                shooted.printMy();
+//            }
+//            while (shootResult == ShootResult.HURT);
+//            if (shootResult == ShootResult.KILLED) {
+//                if (shooting.isEnemyLoose()) {
+//                    System.out.println(shooting.getName() + " won");
+//                    return WON;
+//                }
+//            } else break;
+//        } while (true);
+//        return DONTWON;
+//    }
 
 }

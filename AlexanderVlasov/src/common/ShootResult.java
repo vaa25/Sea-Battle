@@ -5,4 +5,5 @@ package common;
  */
 public enum ShootResult {
     MISSED, HURT, KILLED, SHIP, CLEAN
+
 }
