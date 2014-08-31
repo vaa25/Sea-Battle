@@ -25,4 +25,16 @@ public class Field
 			}
 		}
 	}
+
+	public Field(CellState state)
+	{
+		this.cells = new HashMap<>();
+		for (int i = 1; i <= SIZE; i++) {
+			for (int j = 1; j <= SIZE; j++) {
+				cells.put(new Point(i,j), new Cell(state));
+			}
+		}
+	}
+
+
 }

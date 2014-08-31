@@ -21,7 +21,7 @@ public class PlayerController implements TakingShots
 	public PlayerController()
 	{
 		player = new Player();
-		generateListOfShips();
+		player.ships = generateListOfShips();
 	}
 
 	public ShotResult shoot(Point p)
@@ -57,9 +57,15 @@ public class PlayerController implements TakingShots
 	/**
 	 * Метод размещает корабль на поле
 	 */
-	public boolean locateShipToField(Ship ship, Point p)
+	private boolean locateShipToField(Ship ship, Point p)
 	{
 		LinkedList<Point> shipLocation = generateShipLocation(ship, p);
+
+		// проверяем, не размещен ли корабль уже
+		if (!ship.location.isEmpty()) {
+			System.out.println("false ship already located");
+			return false;
+		}
 
 		// проверяем, вмещается ли корабль на поле
 		if (checkLocationOutOfBounds(shipLocation)) {
@@ -99,7 +105,7 @@ public class PlayerController implements TakingShots
 	/**
 	 * Метод удаляет корабль из поля
 	 */
-	public boolean removeShipFromField(Ship ship)
+	private boolean removeShipFromField(Ship ship)
 	{
 		for (Cell cell : ship.location) {
 			cell.state = EMPTY;
@@ -113,7 +119,7 @@ public class PlayerController implements TakingShots
 	/**
 	 * Метод очищает поле от кораблей и присваивает всем ячейкам статус пустой
 	 */
-	public void clearField()
+	private void clearField()
 	{
 		for (Cell cell : player.field.cells.values()) {
 			cell.state = EMPTY;
@@ -130,7 +136,7 @@ public class PlayerController implements TakingShots
 	 * - если размещение корабля вертикальное то локация строится с точки "p" и вниз;
 	 * - а если - горизонтальное, то вправо.
 	 */
-	public LinkedList<Point> generateShipLocation(Ship ship, Point p)
+	private LinkedList<Point> generateShipLocation(Ship ship, Point p)
 	{
 		LinkedList<Point> location = new LinkedList<>();
 
@@ -237,7 +243,20 @@ public class PlayerController implements TakingShots
 		return outlineRectangle;
 	}
 
-/*
+	/**
+	 * Метод проверяет, готов ли игрок к игре,
+	 * т.е. расставил ли он все корабли на поле
+	 */
+	public boolean isPlayerReadyForGame()
+	{
+		for (Ship ship : player.ships) {
+			if (ship.location.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public static void main(String[] args)
 	{
 		PlayerController controller = new PlayerController();
@@ -248,9 +267,15 @@ public class PlayerController implements TakingShots
 		Ship ship1 = new Ship(3);
 		Ship ship2 = new Ship(3);
 		System.out.println(controller.locateShipToField(ship1, new Point(1, 1)));
-		System.out.println(controller.locateShipToField(ship2, new Point(1, 4)));
 		System.out.println(controller.removeShipFromField(ship1));
-		System.out.println(controller.locateShipToField(ship2, new Point(1, 4)));
+		System.out.println(controller.locateShipToField(ship1, new Point(1, 1)));
+		System.out.println(controller.locateShipToField(ship2, new Point(1, 5)));
+		controller.clearField();
+		System.out.println(controller.locateShipToField(ship1, new Point(1, 1)));
+		System.out.println(controller.locateShipToField(ship2, new Point(1, 5)));
+		System.out.println(controller.removeShipFromField(ship1));
+		System.out.println(controller.removeShipFromField(ship2));
+		System.out.println(controller.locateShipToField(ship1, new Point(1, 1)));
+		System.out.println(controller.locateShipToField(ship2, new Point(1, 5)));
 	}
-*/
 }

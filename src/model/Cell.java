@@ -11,7 +11,12 @@ class Cell
 	public Cell()
 	{
 		// default state
-		state = EMPTY;
+		this.state = EMPTY;
+	}
+
+	Cell(CellState state)
+	{
+		this.state = state;
 	}
 
 	public ShotResult getShot()
