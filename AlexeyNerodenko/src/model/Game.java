@@ -88,10 +88,10 @@ public class Game {
 
     public boolean isGameOver(){
         if(playerOne.numberOfShip() == 0){
-            System.out.println("Player 1 wins");
+            System.out.println("Player 2 wins");
             return true;
         } else if (playerTwo.numberOfShip() == 0){
-            System.out.println("Player 2 wins");
+            System.out.println("Player 1 wins");
             return true;
         } else return false;
     }
