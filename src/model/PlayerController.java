@@ -57,7 +57,7 @@ public class PlayerController implements TakingShots
 	/**
 	 * Метод размещает корабль на поле
 	 */
-	public boolean locateShip(Ship ship, Point p)
+	public boolean locateShipToField(Ship ship, Point p)
 	{
 		LinkedList<Point> shipLocation = generateShipLocation(ship, p);
 
@@ -94,6 +94,35 @@ public class PlayerController implements TakingShots
 		}
 
 		return true;
+	}
+
+	/**
+	 * Метод удаляет корабль из поля
+	 */
+	public boolean removeShipFromField(Ship ship)
+	{
+		for (Cell cell : ship.location) {
+			cell.state = EMPTY;
+			cell.locatedShip = null;
+		}
+		ship.location.clear();
+
+		return true;
+	}
+
+	/**
+	 * Метод очищает поле от кораблей и присваивает всем ячейкам статус пустой
+	 */
+	public void clearField()
+	{
+		for (Cell cell : player.field.cells.values()) {
+			cell.state = EMPTY;
+			cell.locatedShip = null;
+		}
+
+		for (Ship ship : player.ships) {
+			ship.location.clear();
+		}
 	}
 
 	/**
@@ -208,14 +237,20 @@ public class PlayerController implements TakingShots
 		return outlineRectangle;
 	}
 
-//	public static void main(String[] args)
-//	{
-//		PlayerController controller = new PlayerController();
+/*
+	public static void main(String[] args)
+	{
+		PlayerController controller = new PlayerController();
 //		LinkedList<Point> shipLocation = controller.generateShipLocation(new Ship(3), new Point(1, 1));
 //		System.out.println(shipLocation);
 //		LinkedList<Point> shipOutline = controller.generateShipOutline(shipLocation);
 //		System.out.println(shipOutline);
-//		System.out.println(controller.locateShip(new Ship(3), new Point(1, 1)));
-//		System.out.println(controller.locateShip(new Ship(3), new Point(1, 4)));
-//	}
+		Ship ship1 = new Ship(3);
+		Ship ship2 = new Ship(3);
+		System.out.println(controller.locateShipToField(ship1, new Point(1, 1)));
+		System.out.println(controller.locateShipToField(ship2, new Point(1, 4)));
+		System.out.println(controller.removeShipFromField(ship1));
+		System.out.println(controller.locateShipToField(ship2, new Point(1, 4)));
+	}
+*/
 }
