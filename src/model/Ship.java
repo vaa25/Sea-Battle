@@ -1,6 +1,8 @@
 package model;
 
-import static model.CellState.*;
+import java.util.LinkedList;
+
+import static model.CellState.SHIP;
 import static model.ShipLayout.HORIZONTAL;
 import static model.ShipLayout.VERTICAL;
 
@@ -8,12 +10,13 @@ public class Ship implements AliveChecker
 {
 	final int SIZE;
 	ShipLayout layout;
-	Cell[] location;
+	LinkedList<Cell> location;
 
 	public Ship(int SIZE)
 	{
 		this.SIZE = SIZE;
 		this.layout = VERTICAL;
+		this.location = new LinkedList<>();
 	}
 
 	@Override

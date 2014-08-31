@@ -15,4 +15,8 @@ class Player
 	Field field;
 	ArrayList<Ship> ships;
 
+	Player()
+	{
+		this.field = new Field();
+	}
 }

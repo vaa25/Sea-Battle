@@ -15,5 +15,5 @@ enum CellState
 	SHELLED,      // обстрелянная
 	SHIP,         // корабль
 	DAMAGED_SHIP, // раненный корабль
-	OUTLINE  // околокорабельное пространство
+	OUTLINE       // контур корабля
 }

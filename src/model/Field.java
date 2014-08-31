@@ -1,5 +1,9 @@
 package model;
 
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Nick:   sobolevstp
  * Date:   8/28/14
@@ -10,14 +14,14 @@ package model;
 public class Field
 {
 	final int SIZE = 10;
-	Cell[][] cells;
+	Map<Point, Cell> cells;
 
 	public Field()
 	{
-		this.cells = new Cell[SIZE][SIZE];
-		for (int i = 0; i < SIZE; i++) {
-			for (int j = 0; j < SIZE; j++) {
-				cells[i][j] = new Cell(i + 1, j + 1);
+		this.cells = new HashMap<>();
+		for (int i = 1; i <= SIZE; i++) {
+			for (int j = 1; j <= SIZE; j++) {
+				cells.put(new Point(i,j), new Cell());
 			}
 		}
 	}

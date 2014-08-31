@@ -2,11 +2,10 @@ package model;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import static model.CellState.EMPTY;
 import static model.CellState.SHIP;
-import static model.CellState.OUTLINE;
-import static model.ShipLayout.VERTICAL;
 
 /**
  * Nick:   sobolevstp
@@ -22,7 +21,7 @@ public class PlayerController implements TakingShots
 	public PlayerController()
 	{
 		player = new Player();
-		initializeShips();
+		generateListOfShips();
 	}
 
 	public ShotResult shoot(Point p)
@@ -33,24 +32,26 @@ public class PlayerController implements TakingShots
 	@Override
 	public ShotResult getShot(Point p)
 	{
-		return player.field.cells[p.x][p.y].getShot();
+		return player.field.cells.get(p).getShot();
 	}
 
 	/**
 	 * Метод создает массив с кораблями для игрока
 	 */
-	private void initializeShips()
+	private ArrayList<Ship> generateListOfShips()
 	{
-		player.ships = new ArrayList<>();
+		ArrayList<Ship> ships = new ArrayList<>();
+		int qt = 4;
+		int size = 1;
 		for (int i = 0; i < 4; i++) {
-			int qt = 4;
-			int size = 1;
 			for (int j = 0; j < qt; j++) {
-				player.ships.add(new Ship(size));
+				ships.add(new Ship(size));
 			}
 			qt--;
 			size++;
 		}
+
+		return ships;
 	}
 
 	/**
@@ -58,49 +59,41 @@ public class PlayerController implements TakingShots
 	 */
 	public boolean locateShip(Ship ship, Point p)
 	{
-		// проверка, вмещается ли корабль на поле
-		if (!checkLocationOutOfBounds(ship, p)) {
+		LinkedList<Point> shipLocation = generateShipLocation(ship, p);
+
+		// проверяем, вмещается ли корабль на поле
+		if (checkLocationOutOfBounds(shipLocation)) {
+			System.out.println("false shipLocation outOfBounds");
 			return false;
 		}
 
-		// проверка, доступны ли данные ячейки для размещения корабля
-		Cell[] location = generateShipLocation(ship, p);
-		if (!checkLocationAvailability(location)) {
+		// проверяем, свободны ли ячейки под кораблем
+		if (!checkLocationAvailability(shipLocation)) {
+			System.out.println("false shipLocation availability");
 			return false;
 		}
 
-		// изменяем состояние ячейки и присваиваем ей ссылку на корабль
-		for (Cell cell : location) {
-			cell.state = SHIP;
-			cell.locatedShip = ship;
+		LinkedList<Point> shipOutline = generateShipOutline(shipLocation);
+
+		// проверяем, свободны ли ячейки по контуру корабля
+		if (!checkLocationAvailability(shipOutline)) {
+			System.out.println("false shipOutline availability");
+			return false;
 		}
 
-		// присваиваем кораблю локацию
-		ship.location = location;
+		// изменяем состояние ячеек под кораблем и присваиваем им ссылку на корабль
+		for (Point locationPoint : shipLocation) {
+			Cell locationCell = player.field.cells.get(locationPoint);
+			locationCell.state = SHIP;
+			locationCell.locatedShip = ship;
+		}
 
-		// присваиваем соседним ячейкам состояние околокорабельного пространства
-		setOutlineStateAroundShip(location[0].P, location[ship.SIZE - 1].P);
+		// присваиваем кораблю ссылки на ячейки для проверки своего состояния
+		for (Point point : shipLocation) {
+			ship.location.add(player.field.cells.get(point));
+		}
 
 		return true;
-	}
-
-	/**
-	 * Метод проверяет, не будет ли корабль вылазить за границы поля учитывая логику построения корабля (вниз или вправо от точки "p")
-	 * @param p - начальная позиция размещения
-	 */
-	private boolean checkLocationOutOfBounds(Ship ship, Point p)
-	{
-		int shipSize = ship.SIZE;
-		if (ship.layout == VERTICAL) {
-			if (p.x > 0 && p.x <= player.field.SIZE && p.y > 0 && (p.y + shipSize - 1) <= player.field.SIZE) {
-				return true;
-			}
-		} else {
-			if (p.x > 0 && (p.x + shipSize - 1) <= 10 && p.y > 0 && p.y <= 10) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -108,32 +101,57 @@ public class PlayerController implements TakingShots
 	 * - если размещение корабля вертикальное то локация строится с точки "p" и вниз;
 	 * - а если - горизонтальное, то вправо.
 	 */
-	private Cell[] generateShipLocation(Ship ship, Point p)
+	public LinkedList<Point> generateShipLocation(Ship ship, Point p)
 	{
-		int shipSize = ship.SIZE;
-		Cell[] location = new Cell[shipSize];
-		if (ship.layout == VERTICAL) {
-			int i = 0;
-			for (int y = p.y; y < (p.y + shipSize); y++) {
-				location[i++] = player.field.cells[p.x - 1][y - 1];
+		LinkedList<Point> location = new LinkedList<>();
 
-			}
-		} else {
-		for (int x = p.x; x < (p.x + shipSize); x++) {
-			int i = 0;
-			location[i++] = player.field.cells[x - 1][p.y - 1];
-			}
+		switch (ship.layout) {
+			case VERTICAL:
+				for (int y = p.y; y < (p.y + ship.SIZE); y++) {
+					location.add(new Point(p.x, y));
+				}
+				break;
+			case HORIZONTAL:
+				for (int x = p.x; x < (p.x + ship.SIZE); x++) {
+					location.add(new Point(x, p.y));
+				}
+				break;
 		}
+
 		return location;
+	}
+
+	/**
+	 * Метод проверяет не выходят ли координаты корабля за рамки поля
+	 */
+	private boolean checkLocationOutOfBounds(LinkedList<Point> location)
+	{
+		for (Point p : location) {
+			if (checkPointOutOfBounds(p)) {return true;}
+		}
+		return false;
+	}
+
+	/**
+	 * Метод проверяет не выходят ли координаты точки за рамки поля
+	 */
+	private boolean checkPointOutOfBounds(Point p)
+	{
+		if (p.x < 1) { return true;}
+		if (p.y < 1) { return true;}
+		if (p.x > player.field.SIZE) { return true;}
+		if (p.y > player.field.SIZE) { return true;}
+
+		return false;
 	}
 
 	/**
 	 * Метод проверяет все ли ячейки находятся в свободном состоянии;
 	 */
-	private boolean checkLocationAvailability(Cell[] location)
+	private boolean checkLocationAvailability(LinkedList<Point> location)
 	{
-		for (Cell cell : location) {
-			if (cell.state != EMPTY) {
+		for (Point p : location) {
+			if (player.field.cells.get(p).state != EMPTY) {
 				return false;
 			}
 		}
@@ -141,29 +159,63 @@ public class PlayerController implements TakingShots
 	}
 
 	/**
-	 * Метод, присваивающий квадрату ячеек состояние околокорабельного пространства
+	 * Метод, присваивающий ячейкам вокруг корабля состояние контура
 	 */
-	private void setOutlineStateAroundShip(Point start, Point end)
+	private LinkedList<Point> generateShipOutline(LinkedList<Point> location)
 	{
-		ArrayList<Cell> shipOutline = new ArrayList<>();
+		LinkedList<Point> outlineRectangle = new LinkedList<>();
 
-		int x1 = start.x - 1;
-		int y1 = start.y - 1;
-		int x2 = end.x + 1;
-		int y2 = end.y + 1;
+		// определяем координаты левого верхнего и правого нижнего угла контура
+		int x1 = location.getFirst().x - 1; //0
+		int y1 = location.getFirst().y - 1; //0
+		int x2 = location.getLast().x + 1;  //2
+		int y2 = location.getLast().y + 1;  //4
 
-		for (int i = x1; i <= x2; i++) {
-			for (int j = y1; j <= y2; j++) {
-				shipOutline.add(player.field.cells[i - 1][j - 1]);
+		// далее формируем массив координат данного квадрата
+
+		// линия направо
+		for (int x = x1; x <= x2; x++) {
+			Point p = new Point(x, y1);
+			if (!checkPointOutOfBounds(p)) {
+				outlineRectangle.add(p);
 			}
 		}
 
-		for (Cell cell : shipOutline) {
-			if (cell.state != SHIP) {
-				cell.state = OUTLINE;
+		// продолжение линии вниз
+		for (int y = y1 + 1; y <= y2; y++) {
+			Point p = new Point(x2, y);
+			if (!checkPointOutOfBounds(p)) {
+				outlineRectangle.add(p);
 			}
 		}
+
+		// продолжение линии налево
+		for (int x = x2 - 1; x >= x1; x--) {
+			Point p = new Point(x, y2);
+			if (!checkPointOutOfBounds(p)) {
+				outlineRectangle.add(p);
+			}
+		}
+
+		// продолжение линии вверх
+		for (int y = y2 - 1; y > y1; y--) {
+			Point p = new Point(x1, y);
+			if (!checkPointOutOfBounds(p)) {
+				outlineRectangle.add(p);
+			}
+		}
+
+		return outlineRectangle;
 	}
 
-
+//	public static void main(String[] args)
+//	{
+//		PlayerController controller = new PlayerController();
+//		LinkedList<Point> shipLocation = controller.generateShipLocation(new Ship(3), new Point(1, 1));
+//		System.out.println(shipLocation);
+//		LinkedList<Point> shipOutline = controller.generateShipOutline(shipLocation);
+//		System.out.println(shipOutline);
+//		System.out.println(controller.locateShip(new Ship(3), new Point(1, 1)));
+//		System.out.println(controller.locateShip(new Ship(3), new Point(1, 4)));
+//	}
 }
