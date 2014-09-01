@@ -2,7 +2,9 @@ package networksExample.server;
 
 import common.Message;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 
@@ -23,10 +25,10 @@ public class ConnectionHandler implements Runnable {
     @Override
     public void run() {
         try {
-            out = new ObjectOutputStream(new BufferedOutputStream(conn.getOutputStream()));
+            out = new ObjectOutputStream(conn.getOutputStream());
             System.out.println("Server: Создал исходящий поток " + out.toString());
             System.out.println("Server: Пытаюсь создать ObjectInputStream");
-            in = new ObjectInputStream(new BufferedInputStream(conn.getInputStream()));
+            in = new ObjectInputStream(conn.getInputStream());
             System.out.println("Server: Создал входящий поток " + in.toString());
             send(new Message("Server: Connected."));
             while (true) {

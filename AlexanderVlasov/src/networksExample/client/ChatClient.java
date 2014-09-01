@@ -22,12 +22,11 @@ public class ChatClient {
             System.out.println("Client: Есть подключение " + conn);
             InputStream inputStream = conn.getInputStream();
             System.out.println("Client: создал входящий поток " + inputStream);
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-            System.out.println("Client: буферизировал входящий поток" + bufferedInputStream);
+
             System.out.println("Client: Пытаюсь создать ObjectInputStream");
-            in = new ObjectInputStream(bufferedInputStream);
+            in = new ObjectInputStream(inputStream);
             System.out.println("Client: in = " + in.toString());
-            out = new ObjectOutputStream(new BufferedOutputStream(conn.getOutputStream()));
+            out = new ObjectOutputStream(conn.getOutputStream());
             System.out.println("Client: out = " + out.toString());
             userInput = new Scanner(new BufferedInputStream(System.in));
             run();
