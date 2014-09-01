@@ -8,7 +8,7 @@ import static model.ShipLayout.VERTICAL;
 
 public class Ship implements AliveChecker
 {
-	final int SIZE;
+	public final int SIZE;
 	ShipLayout layout;
 	LinkedList<Cell> location;
 
@@ -37,5 +37,15 @@ public class Ship implements AliveChecker
 		} else {
 			layout = HORIZONTAL;
 		}
+	}
+
+	public void setLayout(ShipLayout layout)
+	{
+		this.layout = layout;
+	}
+
+	public boolean isLocated()
+	{
+		return location.size() > 0;
 	}
 }

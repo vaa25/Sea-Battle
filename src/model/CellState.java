@@ -8,7 +8,7 @@ package model;
  * @author Stepan Sobolev
  */
 
-enum CellState
+public enum CellState
 {
 	FOG,          // туман, будет использоваться для отображения вражеского поля
 	EMPTY,        // пустая

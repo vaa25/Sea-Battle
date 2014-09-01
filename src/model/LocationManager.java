@@ -27,6 +27,10 @@ public class LocationManager
 	 */
 	public boolean removeShipFromField(Ship ship)
 	{
+		if (!ship.isLocated()) {
+			return false;
+		}
+
 		for (Cell cell : ship.location) {
 			cell.state = EMPTY;
 			cell.locatedShip = null;
@@ -42,12 +46,6 @@ public class LocationManager
 	public boolean locateShipToField(Ship ship, Point p)
 	{
 		LinkedList<Point> shipLocation = generateShipLocation(ship, p);
-
-		// проверяем, не размещен ли корабль уже
-		if (!ship.location.isEmpty()) {
-			System.out.println("false ship already located");
-			return false;
-		}
 
 		// проверяем, вмещается ли корабль на поле
 		if (checkLocationOutOfBounds(shipLocation)) {
@@ -75,6 +73,10 @@ public class LocationManager
 			locationCell.state = SHIP;
 			locationCell.locatedShip = ship;
 		}
+
+		// обнуляем локацию корабля
+		ship.location.clear();
+
 
 		// присваиваем кораблю ссылки на ячейки для проверки своего состояния
 		for (Point point : shipLocation) {
@@ -194,6 +196,21 @@ public class LocationManager
 		}
 
 		return outlineRectangle;
+	}
+
+	/**
+	 * Метод возвращает из списка кораблей еще не размещенный корабль данного размера
+	 */
+	public Ship getShipForLocation(int shipSize)
+	{
+		for (Ship ship : player.ships) {
+			if (ship.SIZE == shipSize) {
+				if (!ship.isLocated()) {
+					return ship;
+				}
+			}
+		}
+		return null;
 	}
 
 	/**

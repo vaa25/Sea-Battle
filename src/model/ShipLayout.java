@@ -8,7 +8,7 @@ package model;
  * @author Stepan Sobolev
  */
 
-enum ShipLayout
+public enum ShipLayout
 {
 	VERTICAL,
 	HORIZONTAL

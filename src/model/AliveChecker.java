@@ -8,7 +8,7 @@ package model;
  *
  * @author Stepan Sobolev
  */
-interface AliveChecker
+public interface AliveChecker
 {
 	public boolean isAlive();
 }

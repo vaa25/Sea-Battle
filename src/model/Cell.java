@@ -3,10 +3,10 @@ package model;
 import static model.CellState.*;
 import static model.ShotResult.*;
 
-class Cell
+public class Cell
 {
-	AliveChecker locatedShip;
 	CellState state;
+	AliveChecker locatedShip;
 
 	public Cell()
 	{
@@ -32,5 +32,10 @@ class Cell
 			}
 		}
 		return DESTROY;
+	}
+
+	public CellState getState()
+	{
+		return state;
 	}
 }

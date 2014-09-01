@@ -1,7 +1,6 @@
 package model;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * Nick:   sobolevstp
@@ -17,7 +16,6 @@ public class PlayerController implements TakingShots
 	public PlayerController()
 	{
 		player = new Player();
-		player.ships = generateListOfShips();
 	}
 
 	public ShotResult shoot(Point p)
@@ -29,25 +27,6 @@ public class PlayerController implements TakingShots
 	public ShotResult getShot(Point p)
 	{
 		return player.field.cells.get(p).getShot();
-	}
-
-	/**
-	 * Метод создает массив с кораблями для игрока
-	 */
-	private ArrayList<Ship> generateListOfShips()
-	{
-		ArrayList<Ship> ships = new ArrayList<>();
-		int qt = 4;
-		int size = 1;
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < qt; j++) {
-				ships.add(new Ship(size));
-			}
-			qt--;
-			size++;
-		}
-
-		return ships;
 	}
 
 	/**

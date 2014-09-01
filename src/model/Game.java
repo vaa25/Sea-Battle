@@ -7,7 +7,7 @@ package model;
  *
  * @author Stepan Sobolev
  */
-class Game
+public class Game
 {
 	PlayerController p1controller;
 	PlayerController p2controller;
