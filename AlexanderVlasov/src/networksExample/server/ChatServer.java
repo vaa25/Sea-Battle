@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class ChatServer {
+public class ChatServer implements Runnable {
 
 //	private static final Logger LOG = Logger.getLogger(ChatServer.class.getName());
 
@@ -23,7 +23,7 @@ public class ChatServer {
     public ChatServer(int port) {
         this.port = port;
         createUnexpectedErrorHandler();
-        startServer();
+
     }
 
     private void createUnexpectedErrorHandler() {
@@ -52,9 +52,9 @@ public class ChatServer {
         while (!shutdown) {
             Socket conn = null;
             try {
-                System.out.println("Жду подключение " + server);
+                System.out.println("Server: Жду подключение " + server);
                 conn = server.accept();
-                System.out.println("Есть подключение " + conn);
+                System.out.println("Server: Есть подключение " + conn);
 //				LOG.info("New connection");
             } catch (IOException e) {
 //				LOG.error("Connection not accepted", e);
@@ -68,4 +68,8 @@ public class ChatServer {
     }
 
 
+    @Override
+    public void run() {
+        startServer();
+    }
 }

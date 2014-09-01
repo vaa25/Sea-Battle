@@ -1,5 +1,7 @@
 package networksExample.client;
 
+import common.Message;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
@@ -13,16 +15,19 @@ public class MessageReceiver implements Runnable {
 
     @Override
     public void run() {
-        String message = null;
+        Message message = null;
         while (true) {
             try {
-                message = in.readObject().toString();
+                System.out.println("Client: Try to read object");
+                message = (Message) in.readObject();
+                System.out.println("Client: Read message successfully");
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            System.out.println(message);
+
+            System.out.println("Client: " + message);
         }
     }
 
