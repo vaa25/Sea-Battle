@@ -73,6 +73,10 @@ public class Message implements Serializable {
                 return coord.toString();
             case SHOOTRESULT:
                 return shootResult.toString();
+            case NOTIMEOUT:
+                return "NoTimeout";
+            case RANDOM:
+                return Double.toString(random);
         }
         return "Unknown message";
     }

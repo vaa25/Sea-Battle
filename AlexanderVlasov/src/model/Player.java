@@ -97,11 +97,17 @@ public class Player implements ModelInterface {
         return enemyField.getKilled() == myField.getShipSize();
     }
 
+    public boolean isLoose() {
+        return myField.getKilled() == myField.getShipSize();
+    }
+
+    public boolean isGameOver() {
+        return isLoose() || isEnemyLoose();
+    }
     @Override
     public CurrentStatisticInterface getCurrentStatistic() {
         return currentStatistic;
     }
-
     /**
      * помечает вражеское поле в соответствии с сообщением от оппонента о результатах выстрела
      *

@@ -14,11 +14,20 @@ import java.util.Random;
 /**
  * @author Alexander Vlasov
  */
-public class Main {
-    Player player = new Player(10, 10, "Player");
-    Double enemyRandom;
+public class Main implements Runnable {
+    private Player player;
+    private Double enemyRandom;
 
-    public void start() throws IOException {
+    public Main(String name) {
+        player = new Player(10, 10, name);
+    }
+
+    public String getName() {
+        return player.getName();
+    }
+
+    @Override
+    public void run() {
 
         Field my = new Field(10, 10);
         player.setMyField(my);
@@ -34,13 +43,13 @@ public class Main {
         ships.add(new Ship(1));
         ships.add(new Ship(1));
         my.setRandom(ships);
-        System.out.println("player map:");
+        System.out.println(System.nanoTime() + " " + player.getName() + " map:");
         player.printMy();
         Network network = null;
         try {
             network = new Network(this, InetAddress.getLocalHost(), 1000);
         } catch (IOException e) {
-            System.out.println("Проблемы с сетью");
+            System.out.println(System.nanoTime() + " " + player.getName() + "Проблемы с сетью");
             e.printStackTrace();
         }
         Thread networkThread = new Thread(network);
@@ -48,7 +57,11 @@ public class Main {
         Random random = new Random();
         Double myRandom = random.nextDouble();
 
-        network.sendMessage(new Message(myRandom));
+        try {
+            network.sendMessage(new Message(myRandom));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         while (enemyRandom == null) {
             try {
                 Thread.sleep(100);
@@ -56,11 +69,27 @@ public class Main {
                 e.printStackTrace();
             }
         }
-        ;
+        boolean myTurn;
         if (enemyRandom < myRandom) {
-            System.out.println(" Враг ходит первый");
+            System.out.println(System.nanoTime() + " " + player.getName() + " Враг ходит первый");
+            myTurn = false;
+        } else {
+            System.out.println(System.nanoTime() + " " + player.getName() + " Я хожу первый");
+            myTurn = true;
         }
-        System.out.println(" Я хожу первый");
+        int turn = 0;
+        while (!player.isGameOver()) {
+            if (myTurn) {
+                try {
+                    network.sendMessage(new Message(player.shooting()));
+                    myTurn = !myTurn;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+
+            }
+        }
         ShootResult shootResult;
 
 
@@ -86,8 +115,10 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        Main main = new Main();
-        main.start();
+    public static void main(String[] args) throws IOException, InterruptedException {
+        new Thread(new Main("Player 1: ")).start();
+        Thread.sleep(2000);
+        new Thread(new Main("Player 2: ")).start();
+
     }
 }
