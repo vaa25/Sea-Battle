@@ -1,5 +1,6 @@
 package app.model;
 
+import app.model.enums.CellState;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

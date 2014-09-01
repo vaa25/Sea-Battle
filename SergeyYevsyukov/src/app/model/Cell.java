@@ -1,14 +1,8 @@
 package app.model;
 
+import app.model.enums.CellState;
+
 import java.io.Serializable;
-
-/**
- * Enum for cell state
- */
-enum CellState {
-    NULL, BUSY, HIT, NO_HIT
-
-}
 
 /**
  * Class Cell represents a model of one cell with coordinates and current state

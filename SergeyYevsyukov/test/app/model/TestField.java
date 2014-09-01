@@ -1,5 +1,10 @@
 package app.model;
 
+import app.model.enums.ShipDirection;
+import app.model.enums.ShipSize;
+import app.model.enums.ShipStatus;
+import app.service.FieldService;
+import app.service.ShipService;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -111,11 +116,11 @@ public class TestField {
      */
     public void testDeployShipToField() {
         Field field = new Field();
-
-        assertTrue(field.deployShipToField(new Ship(ShipSize.FOUR, new Cell(1,1),
+        FieldService service = new FieldService();
+        assertTrue(service.deployShipToField(field, new Ship(ShipSize.FOUR, new Cell(1,1),
                 ShipStatus.AVAILABLE, ShipDirection.VERTICAL)));
 
-        assertFalse(field.deployShipToField(new Ship(ShipSize.FOUR, new Cell(1,1),
+        assertFalse(service.deployShipToField(field, new Ship(ShipSize.FOUR, new Cell(1,1),
                 ShipStatus.AVAILABLE, ShipDirection.VERTICAL)));
 
     }
@@ -130,17 +135,21 @@ public class TestField {
      */
     @Test
     public void testIsShipSpotIsFree() {
+        ShipService shipService = new ShipService();
         // first ship
         Field field = new Field();
         Ship ship1 = new Ship(ShipSize.THREE);
-        ship1.setShipCellsByPointing(new Cell(1,1));
+        ship1.setCells(shipService.setShipCellsByPointing(
+                new Cell(1,1), ship1.getShipDirection(), ship1.getShipSize()));
         List<Ship> list = new ArrayList<>();
         list.add(ship1);
         field.setShipList(list);
+
         // target ship
         Ship ship2 = new Ship(ShipSize.THREE);
-        ship2.setShipCellsByPointing(new Cell(1,2));
         ship2.setShipDirection(ShipDirection.VERTICAL);
-        assertFalse("Second ship cant be placed", field.isShipSpotIsFree(ship2));
+        ship2.setCells(shipService.setShipCellsByPointing(
+                new Cell(1,2), ship2.getShipDirection(), ship2.getShipSize()));
+        assertFalse("Second ship cant be placed", new FieldService().isShipSpotIsFree(field, ship2));
     }
 }
