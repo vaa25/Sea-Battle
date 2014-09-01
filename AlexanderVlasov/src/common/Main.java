@@ -36,7 +36,6 @@ public class Main {
         my.setRandom(ships);
         System.out.println("player map:");
         player.printMy();
-        my.printField();
         Network network = null;
         try {
             network = new Network(this, InetAddress.getLocalHost(), 1000);

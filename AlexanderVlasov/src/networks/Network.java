@@ -3,10 +3,13 @@ package networks;
 import common.Main;
 import common.Message;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
 
 public class Network implements Runnable {
 
@@ -16,12 +19,12 @@ public class Network implements Runnable {
     private ObjectOutputStream out;
     private boolean interrupt;
     private Thread noTimeOut;
-
+    private BlockingQueue<Message> buffer;
     public Network(Main main, InetAddress host, int port) throws IOException {
 
         if (!setClientConnection(host, port)) setServerConnection(port);
-        in = new ObjectInputStream((new BufferedInputStream(conn.getInputStream())));
-        out = new ObjectOutputStream(new BufferedOutputStream(conn.getOutputStream()));
+        in = new ObjectInputStream(conn.getInputStream());
+        out = new ObjectOutputStream(conn.getOutputStream());
         this.main = main;
         noTimeOut = new Thread(new NoTimeOut());
         noTimeOut.start();
@@ -54,7 +57,7 @@ public class Network implements Runnable {
     }
 
     private void setServerConnection(int port) {
-        System.out.println("Устанавливаю серверное соединений");
+        System.out.println("Устанавливаю серверное соединение");
         ServerSocket server = null;
         try {
             server = new ServerSocket(port);
@@ -72,9 +75,10 @@ public class Network implements Runnable {
     @Override
     public void run() {
 
-        while (interrupt) {
+        while (!interrupt) {
             try {
                 Message message = (Message) in.readObject();
+                System.out.println(message);
                 main.setMessage(message);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -99,6 +103,11 @@ public class Network implements Runnable {
             while (!interrupt) {
                 try {
                     sendMessage(new Message(Message.MessageType.NOTIMEOUT));
+                    try {
+                        Thread.sleep(20000);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
