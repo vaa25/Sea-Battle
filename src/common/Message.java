@@ -7,11 +7,6 @@ import java.io.Serializable;
  */
 public class Message implements Serializable {
 
-
-    public static enum MessageType {
-        TEXT, COORD, SHOOTRESULT, NOTIMEOUT, RANDOM
-    }
-
     private MessageType type;
     private String text;
     private Coord coord;

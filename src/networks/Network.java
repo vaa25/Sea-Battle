@@ -2,6 +2,7 @@ package networks;
 
 import common.Main;
 import common.Message;
+import common.MessageType;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -114,7 +115,7 @@ public class Network implements Runnable {
             while (!interrupt) {
                 try {
                     System.out.println(System.nanoTime() + " " + main.getName() + "Пытаюсь послать NoTimeOut " + count);
-                    sendMessage(new Message(Message.MessageType.NOTIMEOUT));
+                    sendMessage(new Message(MessageType.NOTIMEOUT));
                     System.out.println(System.nanoTime() + " " + main.getName() + "NoTimeOut послан " + count++);
                 } catch (IOException e) {
                     e.printStackTrace();

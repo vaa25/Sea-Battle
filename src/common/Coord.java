@@ -9,7 +9,7 @@ package common;
  * @author Alexander Vlasov
  */
 public class Coord {
-    private final int x,y;
+    private final int x, y;
 
     public Coord(int x, int y) {
         this.x = x;
@@ -55,7 +55,7 @@ public class Coord {
     @Override
     public String toString() {
         return "(" +
-                 x +
+                x +
                 "," + y +
                 ")";
     }

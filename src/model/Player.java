@@ -104,10 +104,12 @@ public class Player implements ModelInterface {
     public boolean isGameOver() {
         return isLoose() || isEnemyLoose();
     }
+
     @Override
     public CurrentStatisticInterface getCurrentStatistic() {
         return currentStatistic;
     }
+
     /**
      * помечает вражеское поле в соответствии с сообщением от оппонента о результатах выстрела
      *
