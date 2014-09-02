@@ -47,7 +47,7 @@ public class Main implements Runnable {
         player.printMy();
         Network network = null;
         try {
-            network = new Network(this, InetAddress.getLocalHost(), 1000);
+            network = new Network(this, InetAddress.getLocalHost(), 10000);
         } catch (IOException e) {
             System.out.println(System.nanoTime() + " " + player.getName() + "Проблемы с сетью");
             e.printStackTrace();

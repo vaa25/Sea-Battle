@@ -1,5 +1,7 @@
 package common;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Vlasov Alexander
@@ -8,7 +10,7 @@ package common;
  *
  * @author Alexander Vlasov
  */
-public class Coord {
+public class Coord implements Serializable {
     private final int x, y;
 
     public Coord(int x, int y) {
