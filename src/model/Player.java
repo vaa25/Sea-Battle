@@ -1,8 +1,6 @@
 package model;
 
 import common.Coord;
-import common.CurrentStatisticInterface;
-import common.ModelInterface;
 import common.ShootResult;
 
 import java.util.HashSet;
@@ -17,7 +15,7 @@ import java.util.Set;
  *
  * @author Alexander Vlasov
  */
-public class Player implements ModelInterface {
+public class Player {
     final static boolean WON = true;
     final static boolean DONTWON = false;
     private String name;
@@ -43,62 +41,6 @@ public class Player implements ModelInterface {
         this.myField = myField;
     }
 
-    @Override
-    public int[][] getMyField() {
-        return getField(myField.getField());
-
-    }
-
-    /**
-     * @param field - массив ячеек
-     *
-     * @return массив
-     */
-    private int[][] getField(Cell[][] field) {
-        int[][] res = new int[width][height];
-        for (int i = 0; i < field.length; i++) {
-            Cell[] collumn = field[i];
-            for (int j = 0; j < collumn.length; j++) {
-                Cell cell = collumn[j];
-                if (cell.getShip() != null) {
-                    if (cell.isShoot()) {
-                        if (cell.getShip().isAlive()) res[i][j] = SHOOTEDSHIP;
-                        else res[i][j] = KILLEDSHIP;
-                    } else res[i][j] = SHIP;
-                } else {
-                    if (cell.isShoot()) res[i][j] = SHOOTED;
-                    else res[i][j] = CLEAN;
-                }
-            }
-
-        }
-        return res;
-    }
-
-    /**
-     * Возвращает результат вражеского выстрела по нашему полю
-     *
-     * @param coord координаты выстрела врага
-     *
-     * @return
-     */
-    public ShootResult getShootResult(Coord coord) {
-        Cell cell = myField.getCell(coord);
-        if (cell.getShip() != null) {
-            if (cell.isShoot()) {
-                if (cell.getShip().isAlive()) return ShootResult.HURT;
-                else return ShootResult.KILLED;
-            } else return ShootResult.SHIP;
-        } else {
-            if (cell.isShoot()) return ShootResult.MISSED;
-            else return ShootResult.CLEAN;
-        }
-    }
-
-    @Override
-    public int[][] getEnemyField() {
-        return getField(enemyField.getField());
-    }
 
     public boolean isEnemyLoose() {
         return enemyField.getKilled() == myField.getShipSize();
@@ -110,11 +52,6 @@ public class Player implements ModelInterface {
 
     public boolean isGameOver() {
         return isLoose() || isEnemyLoose();
-    }
-
-    @Override
-    public CurrentStatisticInterface getCurrentStatistic() {
-        return currentStatistic;
     }
 
     /**
@@ -181,7 +118,7 @@ public class Player implements ModelInterface {
     }
 
     /**
-     * определяет и возвращает результат выстрела врага
+     * Jпределяет и возвращает результат выстрела врага
      *
      * @param coord координаты выстрела врага
      *
@@ -218,17 +155,6 @@ public class Player implements ModelInterface {
         return coord;
     }
 
-    public void shootMe(Coord coord) {
-        myField.setShoot(coord);
-    }
-    /**
-     * возвращает поле shootCoord
-     *
-     * @return shootCoord
-     */
-    public Coord getShootCoord() {
-        return shootCoord;
-    }
 
 //    public static boolean turn(Player shooting, Player shooted) {
 //        ShootResult shootResult;
