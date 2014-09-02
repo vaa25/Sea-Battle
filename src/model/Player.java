@@ -75,6 +75,13 @@ public class Player implements ModelInterface {
         return res;
     }
 
+    /**
+     * Возвращает результат вражеского выстрела по нашему полю
+     *
+     * @param coord координаты выстрела врага
+     *
+     * @return
+     */
     public ShootResult getShootResult(Coord coord) {
         Cell cell = myField.getCell(coord);
         if (cell.getShip() != null) {
@@ -181,8 +188,7 @@ public class Player implements ModelInterface {
      * @return результат выстрела
      */
     public ShootResult receiveShoot(Coord coord) {
-        myField.shoot(coord);
-        return getShootResult(coord);
+        return myField.shoot(coord);
     }
 
     public void printEnemy() {
@@ -212,6 +218,9 @@ public class Player implements ModelInterface {
         return coord;
     }
 
+    public void shootMe(Coord coord) {
+        myField.setShoot(coord);
+    }
     /**
      * возвращает поле shootCoord
      *

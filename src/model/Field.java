@@ -167,17 +167,22 @@ public class Field {
         Ship ship = cell.getShip();
         if (ship != null) {
             if (!cell.isShoot()) {
-                setShoot(coord);
+                cell.setShoot(true);
                 ship.shoot();
             }
             if (ship.isAlive()) return ShootResult.HURT;
             else return ShootResult.KILLED;
         } else {
-            setShoot(coord);
+            cell.setShoot(true);
             return ShootResult.MISSED;
         }
     }
 
+    /**
+     * Помечает ячейку как обстрелянная
+     *
+     * @param coord
+     */
     public void setShoot(Coord coord) {
         getCell(coord).setShoot(true);
     }

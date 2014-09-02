@@ -1,4 +1,7 @@
-package common;
+package networks;
+
+import common.Coord;
+import common.ShootResult;
 
 import java.io.Serializable;
 

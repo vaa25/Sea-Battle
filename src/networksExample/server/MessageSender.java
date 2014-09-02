@@ -1,6 +1,6 @@
 package networksExample.server;
 
-import common.Message;
+import networks.Message;
 
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;

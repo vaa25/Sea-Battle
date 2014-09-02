@@ -1,6 +1,6 @@
 package networksExample.client;
 
-import common.Message;
+import networks.Message;
 
 import java.io.*;
 import java.net.InetAddress;

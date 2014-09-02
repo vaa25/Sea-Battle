@@ -1,6 +1,6 @@
 package networksExample.server;
 
-import common.Message;
+import networks.Message;
 
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;

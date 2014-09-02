@@ -1,6 +1,6 @@
 package networksExample.client;
 
-import common.Message;
+import networks.Message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
