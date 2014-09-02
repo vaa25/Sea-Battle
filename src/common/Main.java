@@ -14,7 +14,7 @@ import java.util.Random;
 /**
  * @author Alexander Vlasov
  */
-public class Main implements Runnable {
+public class Main implements Runnable, MessageGetter {
     private Player player;
     private Double enemyRandom;
 
@@ -82,23 +82,30 @@ public class Main implements Runnable {
             if (myTurn) {
                 try {
                     network.sendMessage(new Message(player.shooting()));
+                    synchronized (this) {
+                        wait();
+                    }
                     myTurn = !myTurn;
                 } catch (IOException e) {
                     e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             } else {
-
+                try {
+                    synchronized (this) {
+                        wait();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                myTurn = !myTurn;
             }
         }
-        ShootResult shootResult;
-
-
-        ;
-
-
     }
 
-    public void setMessage(Message message) {
+    @Override
+    public void getMessage(Message message) {
         switch (message.getType()) {
             case TEXT:
 //                todo
@@ -113,6 +120,7 @@ public class Main implements Runnable {
             case RANDOM:
                 enemyRandom = message.getRandom();
         }
+        notify();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
