@@ -3,7 +3,6 @@ package app.service;
 import app.model.Cell;
 import app.model.Field;
 import app.model.Ship;
-import app.model.enums.CellState;
 import app.model.enums.ShipSize;
 import app.model.enums.ShipStatus;
 
@@ -13,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Class
+ * Class represents functionality of Field class
  */
 public class FieldService {
 
@@ -33,10 +32,11 @@ public class FieldService {
         return shipList;
     }
 
-    /**
+    /** TODO: something wrong
      * Deploy ship to field shipList
      *
      * @param ship - target ship to be placed
+     * @return true if success
      */
     public boolean deployShipToField(Field field, Ship ship) {
         if (!ship.getCells().equals(null) && !field.getShipList().equals(null)) {
@@ -55,20 +55,28 @@ public class FieldService {
     }
 
     /**
-     * TODO * test
+     *
      * Deploy ship to field shipList
      *
      * @param ship - target ship to be placed
+     * @return true if success
      */
-    public void deleteShipFromField(Field field, Ship ship) {
-        int count = 0;
-        for (Cell c : ship.getCells()) {
-            if (c.getCellState() == CellState.HIT) { count++; }
-        }
-        if (count == ship.getCells().length) {
-            ship.setShipStatus(ShipStatus.AVAILABLE);
-        }
-    }
+//    public boolean deleteShipFromField(Field field, Ship ship) {
+//        List<Ship> shipList = field.getShipList();
+//        for (Ship targetShip: shipList) {
+//            if (targetShip.equals(ship)) {
+//                int count = 0;
+//                for (Cell c : targetShip.getCells()) {
+//                    if (c.getCellState() == CellState.HIT) { count++; }
+//                }
+//                if (count == targetShip.getCells().length) {
+//                    targetShip.setShipStatus(ShipStatus.AVAILABLE);
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     /**
      * verifying that cells, where ship to be placed, are free
@@ -79,10 +87,14 @@ public class FieldService {
         if (ship.getCells().length > 0) {
             Cell[] shipPlusAura = new ShipService().getCellsAroundShip(ship);
             for (Ship shipFromList : field.getShipList()) {
-                for (Cell shipsCell : shipFromList.getCells()) {
+                for (Cell cellFromField : shipFromList.getCells()) {
                     for (Cell thisShipCell : shipPlusAura) {
-                        System.out.println();
-                        if (shipsCell.equals(thisShipCell)) { return false; }
+                        // TODO: NullPointerException
+                        if (cellFromField != null) {
+                            if (cellFromField.equals(thisShipCell)) {
+                                return false;
+                            }
+                        }
                     }
                 }
             }
@@ -93,7 +105,9 @@ public class FieldService {
     public List<Ship> getAvailableShipList(Field field) {
         List<Ship> list = new ArrayList<>();
         for (Ship ship : field.getShipList()) {
-            if (ship.getShipStatus().equals(ShipStatus.AVAILABLE)) { list.add(ship); }
+            if (ship.getShipStatus().equals(ShipStatus.AVAILABLE)) {
+                list.add(ship);
+            }
         }
         return list;
     }
