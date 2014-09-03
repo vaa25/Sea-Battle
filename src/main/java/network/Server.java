@@ -1,4 +1,4 @@
-package communication;
+package src.main.java.network;
 
 /**
  * Created with IntelliJ IDEA.

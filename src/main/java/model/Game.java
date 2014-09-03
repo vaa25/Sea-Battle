@@ -1,4 +1,4 @@
-package model;
+package src.main.java.model;
 
 /**
  * Created with IntelliJ IDEA.
