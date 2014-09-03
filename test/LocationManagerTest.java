@@ -23,7 +23,7 @@ public class LocationManagerTest
 	public void setUp() throws Exception
 	{
 		player = new Player();
-		manager = new LocationManager(player);
+		manager = player.locationManager;
 	}
 
 	@Test
@@ -259,7 +259,7 @@ public class LocationManagerTest
 		ship = new Ship(2);
 		point = new Point(1, 1);
 		manager.locateShipToField(ship, point);
-		Cell cell = player.field.getCell(point);
+		Cell cell = player.playerField.getCell(point);
 		assertEquals(CellState.SHIP, cell.state);
 
 		manager.clearField();

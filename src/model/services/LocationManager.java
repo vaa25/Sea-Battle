@@ -23,6 +23,11 @@ public class LocationManager
 	private Field field;
 	private ArrayList<Ship> ships;
 
+	public LocationManager(Field field)
+	{
+		this.field = field;
+	}
+
 	public LocationManager(Field field, ArrayList<Ship> ships)
 	{
 		this.field = field;
@@ -270,6 +275,5 @@ public class LocationManager
 			ship.location.clear();
 		}
 	}
-
 
 }

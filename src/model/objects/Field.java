@@ -6,8 +6,6 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static model.enums.CellState.EMPTY;
-
 /**
  * Nick:   sobolevstp
  * Date:   8/28/14
@@ -19,16 +17,6 @@ public class Field
 {
 	public final int SIZE = 10;
 	private Map<Point, Cell> cells;
-
-	public Field()
-	{
-		this.cells = new HashMap<Point, Cell>();
-		for (int i = 1; i <= SIZE; i++) {
-			for (int j = 1; j <= SIZE; j++) {
-				cells.put(new Point(i,j), new Cell());
-			}
-		}
-	}
 
 	public Field(CellState state)
 	{

@@ -6,6 +6,7 @@ import model.services.ShotHandler;
 import java.util.ArrayList;
 
 import static model.enums.CellState.EMPTY;
+import static model.enums.CellState.FOG;
 
 /**
  * Nick:   sobolevstp
@@ -16,18 +17,20 @@ import static model.enums.CellState.EMPTY;
  */
 public class Player
 {
-	public Field field;
+	public Field enemyField;
+	public Field playerField;
 	public ArrayList<Ship> ships;
 
-	ShotHandler shotHandler;
-	LocationManager locationManager;
+	public ShotHandler shotHandler;
+	public LocationManager locationManager;
 
 	public Player()
 	{
-		field = new Field(EMPTY);
+		enemyField = new Field(FOG);
+		playerField = new Field(EMPTY);
 		ships = generateListOfShips();
-		locationManager = new LocationManager(field, ships);
-		shotHandler = new ShotHandler(field);
+		shotHandler = new ShotHandler(playerField, enemyField);
+		locationManager = new LocationManager(playerField, ships);
 	}
 
 	/**

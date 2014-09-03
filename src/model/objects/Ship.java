@@ -33,13 +33,9 @@ public class Ship implements AliveChecker
 		return false;
 	}
 
-	public void changeLayout()
+	public boolean isLocated()
 	{
-		if (layout == HORIZONTAL) {
-			layout = VERTICAL;
-		} else {
-			layout = HORIZONTAL;
-		}
+		return location.size() > 0;
 	}
 
 	public void setLayout(ShipLayout layout)
@@ -47,8 +43,12 @@ public class Ship implements AliveChecker
 		this.layout = layout;
 	}
 
-	public boolean isLocated()
+	public void changeLayout()
 	{
-		return location.size() > 0;
+		if (layout == HORIZONTAL) {
+			layout = VERTICAL;
+		} else {
+			layout = HORIZONTAL;
+		}
 	}
 }
