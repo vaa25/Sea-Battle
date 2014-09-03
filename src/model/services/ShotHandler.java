@@ -49,12 +49,14 @@ public class ShotHandler implements Shotable
 			}
 		}
 		// иначе возвращается убил;
+		shelledCell.state = DESTROYED_SHIP;
 		return DESTROY;
 	}
 
 	public ShotResult shot(Shotable enemy, Point p)
 	{
 		ShotResult result = enemy.getShot(p);
+
 		if (result == MISS) {
 			enemyField.getCell(p).state = SHELLED;
 		}
@@ -65,7 +67,7 @@ public class ShotHandler implements Shotable
 			enemyField.getCell(p).state = DAMAGED_SHIP;
 			handleDestroyedShip(p);
 		}
-		return enemy.getShot(p);
+		return result;
 	}
 
 	private void handleDestroyedShip(Point destroyPoint)
