@@ -1,11 +1,15 @@
-import model.*;
+import model.enums.CellState;
+import model.objects.Cell;
+import model.objects.Player;
+import model.objects.Ship;
+import model.services.LocationManager;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.*;
 
-import static model.ShipLayout.HORIZONTAL;
-import static model.ShipLayout.VERTICAL;
+import static model.enums.ShipLayout.HORIZONTAL;
+import static model.enums.ShipLayout.VERTICAL;
 import static org.junit.Assert.*;
 
 public class LocationManagerTest
@@ -255,11 +259,11 @@ public class LocationManagerTest
 		ship = new Ship(2);
 		point = new Point(1, 1);
 		manager.locateShipToField(ship, point);
-		Cell cell = player.getCellFromField(point);
-		assertEquals(CellState.SHIP, cell.getState());
+		Cell cell = player.field.getCell(point);
+		assertEquals(CellState.SHIP, cell.state);
 
 		manager.clearField();
-		assertEquals(CellState.EMPTY, cell.getState());
+		assertEquals(CellState.EMPTY, cell.state);
 	}
 
 }

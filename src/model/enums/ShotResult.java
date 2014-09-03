@@ -1,4 +1,4 @@
-package model;
+package model.enums;
 
 /**
  * Nick:   sobolevstp
@@ -10,7 +10,7 @@ package model;
  */
 public enum ShotResult
 {
-	MISSES, // мимо
+	MISS,   // мимо
 	HIT,    // ранил
 	DESTROY // убил
 }

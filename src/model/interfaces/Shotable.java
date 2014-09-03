@@ -1,4 +1,6 @@
-package model;
+package model.interfaces;
+
+import model.enums.ShotResult;
 
 import java.awt.*;
 
@@ -10,7 +12,7 @@ import java.awt.*;
  *
  * @author Stepan Sobolev
  */
-interface TakingShots
+public interface Shotable
 {
 	public ShotResult getShot(Point p);
 }

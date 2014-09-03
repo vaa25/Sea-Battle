@@ -1,3 +1,3 @@
-1. checkOutOfBounds
-2. checkOutlineSpace
-3.
+Обмен данными:
+-> Point p;
+<- ShotResult result; (MISS, HIT, DESTROY);

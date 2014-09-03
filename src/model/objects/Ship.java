@@ -1,16 +1,19 @@
-package model;
+package model.objects;
+
+import model.enums.ShipLayout;
+import model.interfaces.AliveChecker;
 
 import java.util.LinkedList;
 
-import static model.CellState.SHIP;
-import static model.ShipLayout.HORIZONTAL;
-import static model.ShipLayout.VERTICAL;
+import static model.enums.CellState.SHIP;
+import static model.enums.ShipLayout.HORIZONTAL;
+import static model.enums.ShipLayout.VERTICAL;
 
 public class Ship implements AliveChecker
 {
 	public final int SIZE;
-	ShipLayout layout;
-	LinkedList<Cell> location;
+	public ShipLayout layout;
+	public LinkedList<Cell> location;
 
 	public Ship(int SIZE)
 	{

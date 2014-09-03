@@ -1,10 +1,11 @@
-package model;
+package model.objects;
 
-import java.awt.*;
+import model.services.LocationManager;
+import model.services.ShotHandler;
+
 import java.util.ArrayList;
 
-import static model.CellState.EMPTY;
-import static model.CellState.FOG;
+import static model.enums.CellState.EMPTY;
 
 /**
  * Nick:   sobolevstp
@@ -15,16 +16,18 @@ import static model.CellState.FOG;
  */
 public class Player
 {
-	TakingShots enemy;
-	Field field;
-	Field enemyField;
-	ArrayList<Ship> ships;
+	public Field field;
+	public ArrayList<Ship> ships;
+
+	ShotHandler shotHandler;
+	LocationManager locationManager;
 
 	public Player()
 	{
-		this.field = new Field(EMPTY);
-		this.enemyField = new Field(FOG);
+		field = new Field(EMPTY);
 		ships = generateListOfShips();
+		locationManager = new LocationManager(field, ships);
+		shotHandler = new ShotHandler(field);
 	}
 
 	/**
@@ -46,8 +49,4 @@ public class Player
 		return ships;
 	}
 
-	public Cell getCellFromField(Point p)
-	{
-		return field.cells.get(p);
-	}
 }
