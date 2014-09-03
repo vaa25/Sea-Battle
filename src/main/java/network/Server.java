@@ -1,4 +1,4 @@
-package src.main.java.network;
+package main.java.network;
 
 /**
  * Created with IntelliJ IDEA.
