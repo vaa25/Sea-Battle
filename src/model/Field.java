@@ -140,23 +140,37 @@ public class Field {
         while (!trySetRandom(ships)) ;
     }
 
+    /**
+     * Делает попытку рандомно поставить корабли на поле
+     *
+     * @param ships список расставляемых кораблей
+     *
+     * @return true, если все корабли в границах поля и не мешают друг другу
+     */
     public boolean trySetRandom(List<Ship> ships) {
 
         for (int i = 0; i < ships.size(); i++) {
             Ship ship = ships.get(i);
             Random random = new Random();
-            int x = random.nextInt(width);
-            int y = random.nextInt(height);
-            ship.setCoords(new Coord(x, y));
-            if (random.nextBoolean()) ship.changeDirection();
-            if (canPlace(ship)) place(ship);
-            else {
-                ship.changeDirection();
-                if (canPlace(ship)) place(ship);
-                else {
-                    unPlace(ships);
-                    return false;
+            boolean placed = false;
+            //делает десять попыток поставить каждый следующий корабль.
+            //можно было бы сделать и через while(!placed), но в таком случае возможно зависание при большой плотности кораблей
+            for (int j = 0; j < 10; j++) {
+                int x = random.nextInt(width);
+                int y = random.nextInt(height);
+                ship.setCoords(new Coord(x, y));
+                if (random.nextBoolean()) ship.changeDirection();
+                if (!canPlace(ship)) {
+                    ship.changeDirection();
+                    if (!canPlace(ship))continue;
                 }
+                place(ship);
+                placed = true;
+                break;
+            }
+            if (!placed) {
+                unPlace(ships);
+                return false;
             }
         }
         return true;

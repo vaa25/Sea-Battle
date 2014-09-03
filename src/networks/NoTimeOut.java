@@ -20,7 +20,6 @@ public class NoTimeOut implements Runnable {
             } catch (InterruptedException e) {
                 break;
             }
-
 //            System.out.println("Пытаюсь послать NoTimeOut ");
             sender.sendMessage(new Message(MessageType.NOTIMEOUT));
 //            System.out.println( "NoTimeOut послан " );
