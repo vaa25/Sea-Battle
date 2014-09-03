@@ -1,5 +1,7 @@
 package main.java.model;
 
+import main.java.console.ConsoleHelper;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -8,38 +10,51 @@ import java.util.Random;
  * User: Alexey Nerodenko
  * Date: 27.08.14
  */
+
 public class Player {
+    private String name;
     private Field field;
     private ArrayList<Cell> madeShots = new ArrayList<>();
     private ArrayList<Ship> ships = new ArrayList<>();
 
-    public Player() {
-        ships.add(new Ship(0, 0, 4, new Random().nextInt(2)));
-
-        ships.add(new Ship(0, 0, 3, new Random().nextInt(2)));
-        ships.add(new Ship(0, 0, 3, new Random().nextInt(2)));
-
-        ships.add(new Ship(0, 0, 2, new Random().nextInt(2)));
-        ships.add(new Ship(0, 0, 2, new Random().nextInt(2)));
-        ships.add(new Ship(0, 0, 2, new Random().nextInt(2)));
-
-        ships.add(new Ship(0, 0, 1, new Random().nextInt(2)));
-        ships.add(new Ship(0, 0, 1, new Random().nextInt(2)));
-        ships.add(new Ship(0, 0, 1, new Random().nextInt(2)));
-        ships.add(new Ship(0, 0, 1, new Random().nextInt(2)));
-
+    public Player(String name) {
+        this.name = name;
+        for(int i = 4; i > 0; i--){
+            for(int j = i; j < 5; j++){
+                ships.add(new Ship(i));
+            }
+        }
     }
 
-    public boolean shoot(Cell cell){
+    public Cell shootCell(){
+        ConsoleHelper.printMessage(name + "\n" +
+                                   "Number of ships: " + this.ships.size() + "\n" +
+                                   "Moves made : " + this.madeShots + "\n" +
+                                   "Input two numbers between 0..." + (this.field.getWidth() - 1) + "\n" +
+                                   "Your move: ");
+        int[] shootCoordinates = ConsoleHelper.readShootCoordinates();
+        Cell shootCell = new Cell(shootCoordinates[0], shootCoordinates[1]);
+        madeShots.add(shootCell);
+        return shootCell;
+    }
+
+    public boolean isShipDamaged(Cell cell){
         for(Ship ship : ships){
-            if(ship.getCoordinates().contains(cell)) {
-                ship.getCoordinates().remove(cell);
-                if(ship.getCoordinates().isEmpty()){
+            ArrayList<Cell> coordinates = ship.getCoordinates();
+            if(coordinates.contains(cell)) {
+                coordinates.remove(cell);
+                if(coordinates.isEmpty()){
                     ships.remove(ship);
                 }
+                ConsoleHelper.printMessage("HIT!");
+                this.field.setCell(cell, true);
+                this.field.printGame();
                 return true;
             }
         }
+        ConsoleHelper.printMessage("MISSED!");
+        this.field.setCell(cell, false);
+        this.field.printGame();
         return false;
     }
 
@@ -51,25 +66,15 @@ public class Player {
         this.field = field;
     }
 
-    public void setShips(ArrayList<Ship> ships) {
-        this.ships = ships;
-    }
-
     public Field getField() {
-
         return field;
     }
 
     public ArrayList<Ship> getShips() {
-
         return ships;
     }
 
     public ArrayList<Cell> getMadeShots() {
         return madeShots;
-    }
-
-    public void setMadeShots(ArrayList<Cell> madeShots) {
-        this.madeShots = madeShots;
     }
 }

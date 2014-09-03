@@ -78,37 +78,31 @@ public class Field {
         int shipLength = ship.getShipLength();
         int x = new Random().nextInt(width - shipLength - 1);
         int y = new Random().nextInt(height - shipLength - 1);
-        switch(ship.getVertical()){
-            case 0 :
-                if(isTherePlaceForShip(x, y, shipLength, 0)){
-                    for(int i = 0; i < shipLength; i++){
-                        matrix[x][y + i] = ALIVE_CELL;
-                        ship.getCoordinates().add(new Cell(x, y + i));
-                    }
-                } else {
-                    randomlyPutShip(ship);
+
+        if(ship.getVertical()){
+            if(isTherePlaceForShip(x, y, shipLength, true)){
+                for(int i = 0; i < shipLength; i++){
+                    matrix[x + i][y] = ALIVE_CELL;
+                    ship.getCoordinates().add(new Cell(x + i, y));
                 }
-                break;
-            case 1 :
-                if(isTherePlaceForShip(x, y, shipLength, 1)){
-                    for(int i = 0; i < shipLength; i++){
-                        matrix[x + i][y] = ALIVE_CELL;
-                        ship.getCoordinates().add(new Cell(x + i, y));
-                    }
-                } else {
-                    randomlyPutShip(ship);
+            } else { randomlyPutShip(ship); }
+        } else {
+            if(isTherePlaceForShip(x, y, shipLength, false)){
+                for(int i = 0; i < shipLength; i++){
+                    matrix[x][y + i] = ALIVE_CELL;
+                    ship.getCoordinates().add(new Cell(x, y + i));
                 }
-                break;
+            } else { randomlyPutShip(ship); }
         }
     }
 
-    public boolean isTherePlaceForShip(int x, int y, int shipLength, int vertical){
+    public boolean isTherePlaceForShip(int x, int y, int shipLength, boolean vertical){
         int startX = (x == 0) ? 0 : x - 1;
         int startY = (y == 0) ? 0 : y - 1;
         int areaX = 0;
         int areaY = 0;
 
-        if (vertical == 0){
+        if (vertical){
             areaX  = (x == 0 || x == height - shipLength) ? startX + 2 : startX + 3;
             areaY  = (y == 0 || y == width  - shipLength) ? startY + shipLength + 1 : startY + shipLength + 2;
         } else {

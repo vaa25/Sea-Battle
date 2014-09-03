@@ -1,58 +1,37 @@
 package main.java.model;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Alexey Nerodenko
  * Date: 27.08.14
  */
+
 public class Ship {
-    private int x, y;
     private int shipLength;
-    private int vertical;
+    private boolean vertical;
     private ArrayList<Cell> coordinates = new ArrayList<>();
 
-    public Ship(int x, int y, int shipLength, int vertical) {
-        this.x = x;
-        this.y = y;
-        this.vertical = vertical;
+    public Ship(int shipLength) {
         this.shipLength = shipLength;
+        this.vertical = new Random().nextInt(2) == 1;
     }
 
     public ArrayList<Cell> getCoordinates() {
         return coordinates;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
     public int getShipLength() {
         return shipLength;
     }
 
-    public int getVertical() {
+    public boolean getVertical() {
         return vertical;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public void setShipLength(int shipLength) {
-        this.shipLength = shipLength;
-    }
-
-    public void setVertical(int vertical) {
+    public void setVertical(boolean vertical) {
         this.vertical = vertical;
     }
 }

@@ -1,26 +1,19 @@
 package main.java.model;
 
-import java.util.Scanner;
+import main.java.console.ConsoleHelper;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Alexey Nerodenko
  * Date: 28.08.14
  */
+
 public class Cell {
     private int x, y;
 
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
-    }
-
-    public static Cell readCell(){
-        Scanner scanner = new Scanner(System.in);
-        String [] cellCoordinates = scanner.nextLine().split(" ");
-        int x = Integer.parseInt(cellCoordinates[0]);
-        int y = Integer.parseInt(cellCoordinates[1]);
-        return new Cell(x, y);
     }
 
     public int getX() {
@@ -31,20 +24,9 @@ public class Cell {
         return y;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
     @Override
     public String toString() {
-        return "Cell{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+        return "Cell{" + "x=" + x + ", y=" + y +'}';
     }
 
     @Override
@@ -54,8 +36,7 @@ public class Cell {
 
         Cell cell = (Cell) o;
 
-        if (x != cell.x) return false;
-        if (y != cell.y) return false;
+        if (x != cell.x || y != cell.y) return false;
 
         return true;
     }
