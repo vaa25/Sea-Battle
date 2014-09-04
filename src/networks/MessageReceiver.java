@@ -37,9 +37,11 @@ public class MessageReceiver implements Runnable {
                 break;
             }
         }
+        System.out.println("MessageReceiver (" + Thread.currentThread().getName() + ") returns");
     }
 
     public void interrupt() {
+        System.out.println("Set MessageReceiver (" + Thread.currentThread().getName() + ") interrupt = true");
         interrupt = true;
         Thread.currentThread().interrupt();
     }

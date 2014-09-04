@@ -34,8 +34,9 @@ public class Network {
         noTimeOut = new NoTimeOut(sender);
         noTimeOutThread = new Thread(noTimeOut);
         noTimeOutThread.start();
+        System.out.println("network (" + Thread.currentThread().getName() + ") starts noTimeOutThread (" + noTimeOutThread.getName() + ")");
         receiverThread.start();
-
+        System.out.println("network (" + Thread.currentThread().getName() + ") starts receiverThread (" + receiverThread.getName() + ")");
     }
 
     public MessageSender getSender() {
@@ -47,12 +48,12 @@ public class Network {
     }
 
     private boolean setClientConnection(InetAddress host, int port) {
-        System.out.println("Устанавливаю клиентское соединение");
+//        System.out.println("Устанавливаю клиентское соединение");
         try {
             conn = new Socket(host, port);
 
         } catch (IOException e) {
-            System.err.println("Клиентское соединение установить невозможно \n" + e);
+//            System.err.println("Клиентское соединение установить невозможно \n" + e);
             return false;
         }
         System.out.println("Клиентское соединение установлено " + conn);
@@ -75,17 +76,29 @@ public class Network {
     }
 
     public void close(){
+        System.out.println("network (" + Thread.currentThread().getName() + ") try to interrupt noTimeOutThread (" + noTimeOutThread.getName() + ")");
         noTimeOut.interrupt();
+        noTimeOutThread.interrupt();
+        System.out.println("network (" + Thread.currentThread().getName() + ") try to interrupt receiverThread (" + receiverThread.getName() + ")");
         receiver.interrupt();
-//        try {
-//            noTimeOutThread.join();
-//            receiverThread.join();
-//        } catch (InterruptedException e) {
-//            System.out.println("join error");
-//            e.printStackTrace();
-//        }
+        receiverThread.interrupt();
         try {
-
+            System.out.println("network (" + Thread.currentThread().getName() + ") try to join noTimeOutThread (" + noTimeOutThread.getName() + ")");
+            noTimeOutThread.join();
+            System.out.println("network (" + Thread.currentThread().getName() + ") noTimeOutThread (" + noTimeOutThread.getName() + ") joined");
+        } catch (InterruptedException e) {
+            System.out.println("network (" + Thread.currentThread().getName() + ") noTimeOutThread (" + noTimeOutThread.getName() + ") join error");
+//            e.printStackTrace();
+        }
+        try {
+            System.out.println("network (" + Thread.currentThread().getName() + ") try to join receiverThread (" + receiverThread.getName() + ")");
+            receiverThread.join();
+            System.out.println("network (" + Thread.currentThread().getName() + ") receiverThread (" + receiverThread.getName() + ") joined");
+        } catch (InterruptedException e) {
+            System.out.println("network (" + Thread.currentThread().getName() + ") receiverThread (" + receiverThread.getName() + ") join error");
+//            e.printStackTrace();
+        }
+        try {
             in.close();
             out.close();
             conn.close();

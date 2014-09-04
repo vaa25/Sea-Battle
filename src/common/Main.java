@@ -33,7 +33,7 @@ public class Main implements Runnable {
 
     @Override
     public void run() {
-
+        System.out.println(player.getName() + " Main thread is (" + Thread.currentThread().getName() + ")");
         Field my = new Field(10, 10);
         player.setMyField(my);
         List<Ship> ships = new ArrayList<>();
@@ -48,9 +48,10 @@ public class Main implements Runnable {
         ships.add(new Ship(1));
         ships.add(new Ship(1));
         my.setRandom(ships);
-        System.out.println(System.nanoTime() + " " + player.getName() + " map:");
-        player.printMy();
+//        System.out.println(System.nanoTime() + " " + player.getName() + " map:");
+//        player.printMy();
         try {
+//            System.out.print(player.getName()+" ");
             network = new Network(InetAddress.getLocalHost(), 10000);
             parser = network.getParser();
             sender = network.getSender();
@@ -84,8 +85,8 @@ public class Main implements Runnable {
                 if (shootResult == ShootResult.MISSED) {
                     myTurn = !myTurn;
                 }
-                System.out.println(player.getName() + " ход " + turn++ + ": Бью " + coord + " " + shootResult);
-                player.printEnemy();
+//                System.out.println(player.getName() + " ход " + turn++ + ": Бью " + coord + " " + shootResult);
+//                player.printEnemy();
             } else {
                 ShootResult shootResult = player.receiveShoot(parser.takeCoord());
                 sender.sendMessage(new Message(shootResult));

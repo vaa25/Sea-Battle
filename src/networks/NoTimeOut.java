@@ -18,17 +18,23 @@ public class NoTimeOut implements Runnable {
             try {
                 Thread.sleep(20000);
             } catch (InterruptedException e) {
+                System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") InterruptedException " + interrupt);
                 return;
             }
 
-//            System.out.println("Пытаюсь послать NoTimeOut ");
-            if (!interrupt) sender.sendMessage(new Message(MessageType.NOTIMEOUT));
-//            System.out.println( "NoTimeOut послан " );
+            System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") interrupt = " + interrupt);
+            if (!interrupt) {
+                sender.sendMessage(new Message(MessageType.NOTIMEOUT));
+            } else {
+                System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") must return = " + interrupt);
+                return;
+            }
 
         }
     }
 
     public void interrupt() {
+        System.out.println("Set NoTimeOut (" + Thread.currentThread().getName() + ") interrupt = true");
         interrupt = true;
         Thread.currentThread().interrupt();
     }

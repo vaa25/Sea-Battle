@@ -185,7 +185,10 @@ public class Field {
                 ship.shoot();
             }
             if (ship.isAlive()) return ShootResult.HURT;
-            else return ShootResult.KILLED;
+            else {
+                addKilled();
+                return ShootResult.KILLED;
+            }
         } else {
             cell.setShoot(true);
             return ShootResult.MISSED;
