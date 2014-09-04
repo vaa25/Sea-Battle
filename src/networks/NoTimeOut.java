@@ -7,35 +7,37 @@ package networks;
  */
 public class NoTimeOut implements Runnable {
     private MessageSender sender;
-    private boolean interrupt;
+
+    //    private boolean interrupt;
     public NoTimeOut(MessageSender sender) {
         this.sender = sender;
     }
 
     @Override
     public void run() {
-        while (!interrupt) {
+        while (true) {
             try {
                 Thread.sleep(20000);
             } catch (InterruptedException e) {
-                System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") InterruptedException " + interrupt);
-                return;
+                System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") InterruptedException: sleep interrupted ");
+                break;
             }
 
-            System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") interrupt = " + interrupt);
-            if (!interrupt) {
+//            System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") interrupt == " + interrupt);
+//            if (!interrupt) {
                 sender.sendMessage(new Message(MessageType.NOTIMEOUT));
-            } else {
-                System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") must return = " + interrupt);
-                return;
-            }
+//            } else {
+//                System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") must return = " + interrupt);
+//                break;
+//            }
 
         }
+        System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") returns");
     }
 
-    public void interrupt() {
-        System.out.println("Set NoTimeOut (" + Thread.currentThread().getName() + ") interrupt = true");
-        interrupt = true;
-        Thread.currentThread().interrupt();
-    }
+//    public void interrupt() {
+//        System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ")set interrupt = true");
+//        interrupt = true;
+//        Thread.currentThread().interrupt();
+//    }
 }

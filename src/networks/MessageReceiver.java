@@ -1,7 +1,9 @@
 package networks;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.SocketException;
 
 /**
  * Отдельный поток для асинхронного получения Message из ObjectInputStream
@@ -11,7 +13,8 @@ import java.io.ObjectInputStream;
 public class MessageReceiver implements Runnable {
     private ObjectInputStream in;
     private MessageParser parser;
-    private boolean interrupt;
+
+    //    private boolean interrupt;
     public MessageReceiver(ObjectInputStream in, MessageParser parser) {
         this.in = in;
         this.parser = parser;
@@ -20,14 +23,22 @@ public class MessageReceiver implements Runnable {
 
     @Override
     public void run() {
-        while (!interrupt) {
+        while (true) {
             try {
 //                System.out.println( "Пытаюсь принять сообщение");
                 Message message = (Message) in.readObject();
 //                System.out.println( "Сообщение " + message + " принято");
                 parser.addMessage(message);
-            } catch (IOException e) {
+            } catch (EOFException e) {
+                System.out.println("MessageReceiver (" + Thread.currentThread().getName() + ") EOFException: ObjectInputStream closed first");
 //                e.printStackTrace();
+                break;
+            } catch (SocketException e) {
+                System.out.println("MessageReceiver (" + Thread.currentThread().getName() + ") SocketException: ObjectInputStream closed first");
+//                e.printStackTrace();
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
                 break;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -40,10 +51,10 @@ public class MessageReceiver implements Runnable {
         System.out.println("MessageReceiver (" + Thread.currentThread().getName() + ") returns");
     }
 
-    public void interrupt() {
-        System.out.println("Set MessageReceiver (" + Thread.currentThread().getName() + ") interrupt = true");
-        interrupt = true;
-        Thread.currentThread().interrupt();
-    }
+//    public void interrupt() {
+//        System.out.println("MessageReceiver (" + Thread.currentThread().getName() + ")set interrupt = true");
+//        interrupt = true;
+//        Thread.currentThread().interrupt();
+//    }
 
 }
