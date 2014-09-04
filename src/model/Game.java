@@ -1,6 +1,4 @@
-package main.java.model;
-
-import main.java.console.ConsoleHelper;
+package model;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,9 +1,8 @@
-package main.java.model;
+package model;
 
-import main.java.console.ConsoleHelper;
+import console.ConsoleHelper;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.

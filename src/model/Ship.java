@@ -1,4 +1,6 @@
-package main.java.model;
+package model;
+
+import model.Cell;
 
 import java.util.ArrayList;
 import java.util.Random;
