@@ -31,7 +31,7 @@ public class Player {
                                    "Moves made : " + this.madeShots + "\n" +
                                    "Input two numbers between 0..." + (this.field.getWidth() - 1) + "\n" +
                                    "Your move: ");
-        int[] shootCoordinates = ConsoleHelper.readShootCoordinates();
+        int[] shootCoordinates = ConsoleHelper.getPlayerInput();
         Cell shootCell = new Cell(shootCoordinates[0], shootCoordinates[1]);
         madeShots.add(shootCell);
         return shootCell;
@@ -47,13 +47,13 @@ public class Player {
                 }
                 ConsoleHelper.printMessage("HIT!");
                 this.field.setCell(cell, true);
-                this.field.printGame();
+                ConsoleHelper.printGame(this.field);
                 return true;
             }
         }
         ConsoleHelper.printMessage("MISSED!");
         this.field.setCell(cell, false);
-        this.field.printGame();
+        ConsoleHelper.printGame(this.field);
         return false;
     }
 
@@ -67,6 +67,10 @@ public class Player {
 
     public Field getField() {
         return field;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public ArrayList<Ship> getShips() {

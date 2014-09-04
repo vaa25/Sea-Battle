@@ -1,21 +1,17 @@
 package model;
 
 import java.util.Random;
+import static model.CellConstants.*;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Alexey Nerodenko
  * Date: 27.08.14
  */
+
 public class Field {
-    int width, height;
-    int [][] matrix;
-    public static int EMPTY_CELL = 0;
-    public static int ALIVE_CELL = 1;
-    public static int HIT_CELL = 3;
-    public static int MISSED_CELL = 4;
-
-
+    private int width, height;
+    private int [][] matrix;
 
     public Field(int height, int width) {
         this.width = width;
@@ -45,35 +41,6 @@ public class Field {
         }
     }
 
-    public void printReal(){
-        for(int i = 0; i < height; i++){
-            for(int j = 0; j < width; j++){
-                if(matrix[i][j] == EMPTY_CELL) System.out.print(" . ");
-                else if (matrix[i][j] == ALIVE_CELL) System.out.print(" S ");
-            }
-            System.out.println();
-        }
-
-        System.out.println("-----------------------------------------------------------");
-        System.out.println();
-        System.out.println();
-    }
-
-    public void printGame(){
-        for(int i = 0; i < height; i++){
-            for(int j = 0; j < width; j++){
-                if(matrix[i][j] == EMPTY_CELL || matrix[i][j] == ALIVE_CELL) System.out.print(" . ");
-                else if (matrix[i][j] == HIT_CELL) System.out.print(" \u2605 ");
-                else if (matrix[i][j] == MISSED_CELL) System.out.print(" \u26aa ");
-            }
-            System.out.println();
-        }
-
-        System.out.println("-----------------------------------------------------------");
-        System.out.println();
-        System.out.println();
-    }
-
     public void randomlyPutShip(Ship ship){
         int shipLength = ship.getShipLength();
         int x = new Random().nextInt(width - shipLength - 1);
@@ -96,7 +63,7 @@ public class Field {
         }
     }
 
-    public boolean isTherePlaceForShip(int x, int y, int shipLength, boolean vertical){
+    private boolean isTherePlaceForShip(int x, int y, int shipLength, boolean vertical){
         int startX = (x == 0) ? 0 : x - 1;
         int startY = (y == 0) ? 0 : y - 1;
         int areaX = 0;

@@ -1,10 +1,13 @@
 package model;
 
+import console.ConsoleHelper;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Alexey Nerodenko
  * Date: 27.08.14
  */
+
 public class Game {
     private Player playerOne = new Player("Alex");
     private Player playerTwo = new Player("Olga");
@@ -30,11 +33,11 @@ public class Game {
                 playerTwo.getField().randomlyPutShip(ship);
         }
 
-        System.out.println("Player 1, Number of ships: " + playerOne.numberOfShip());
-        playerOne.getField().printReal();
+        ConsoleHelper.printMessage(playerOne.getName() + ", Number of ships: " + playerOne.numberOfShip());
+        ConsoleHelper.printReal(playerOne.getField());
 
-        System.out.println("Player 2, Number of ships: " + playerTwo.numberOfShip());
-        playerTwo.getField().printReal();
+        ConsoleHelper.printMessage(playerTwo.getName() + ", Number of ships: " + playerTwo.numberOfShip());
+        ConsoleHelper.printReal(playerTwo.getField());
 
         int order = 1;
         while(!isGameOver()){
@@ -51,11 +54,11 @@ public class Game {
 
     public boolean isGameOver(){
         if(playerOne.numberOfShip() == 0){
-            System.out.println("Player 2 wins");
+            ConsoleHelper.printMessage("Player 2 wins");
             return true;
         } else if (playerTwo.numberOfShip() == 0){
-            System.out.println("Player 1 wins");
+            ConsoleHelper.printMessage("Player 1 wins");
             return true;
-        } else return false;
+        } else { return false; }
     }
 }
