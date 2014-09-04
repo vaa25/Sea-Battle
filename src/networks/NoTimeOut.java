@@ -7,23 +7,29 @@ package networks;
  */
 public class NoTimeOut implements Runnable {
     private MessageSender sender;
-
+    private boolean interrupt;
     public NoTimeOut(MessageSender sender) {
         this.sender = sender;
     }
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
+        while (!interrupt) {
             try {
                 Thread.sleep(20000);
             } catch (InterruptedException e) {
-                break;
+                return;
             }
+
 //            System.out.println("Пытаюсь послать NoTimeOut ");
-            sender.sendMessage(new Message(MessageType.NOTIMEOUT));
+            if (!interrupt) sender.sendMessage(new Message(MessageType.NOTIMEOUT));
 //            System.out.println( "NoTimeOut послан " );
 
         }
+    }
+
+    public void interrupt() {
+        interrupt = true;
+        Thread.currentThread().interrupt();
     }
 }

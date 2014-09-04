@@ -11,7 +11,7 @@ import java.io.ObjectInputStream;
 public class MessageReceiver implements Runnable {
     private ObjectInputStream in;
     private MessageParser parser;
-
+    private boolean interrupt;
     public MessageReceiver(ObjectInputStream in, MessageParser parser) {
         this.in = in;
         this.parser = parser;
@@ -20,18 +20,18 @@ public class MessageReceiver implements Runnable {
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
+        while (!interrupt) {
             try {
 //                System.out.println( "Пытаюсь принять сообщение");
                 Message message = (Message) in.readObject();
 //                System.out.println( "Сообщение " + message + " принято");
                 parser.addMessage(message);
             } catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
                 break;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                return;
+                break;
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 break;
@@ -39,5 +39,9 @@ public class MessageReceiver implements Runnable {
         }
     }
 
+    public void interrupt() {
+        interrupt = true;
+        Thread.currentThread().interrupt();
+    }
 
 }

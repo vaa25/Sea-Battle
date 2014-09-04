@@ -75,14 +75,15 @@ public class Network {
     }
 
     public void close(){
-        noTimeOutThread.interrupt();
-        receiverThread.interrupt();
-        try {
-            noTimeOutThread.join();
-            receiverThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        noTimeOut.interrupt();
+        receiver.interrupt();
+//        try {
+//            noTimeOutThread.join();
+//            receiverThread.join();
+//        } catch (InterruptedException e) {
+//            System.out.println("join error");
+//            e.printStackTrace();
+//        }
         try {
 
             in.close();
