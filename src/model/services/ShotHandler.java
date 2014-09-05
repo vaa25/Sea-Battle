@@ -89,15 +89,17 @@ public class ShotHandler implements Shotable
 
 	private LinkedList<Point> generateShipLocationFromDestroyPoint(Point p)
 	{
-		LinkedList<Point> shipLocation = new LinkedList<>();
+		LinkedList<Point> shipLocation = new LinkedList<Point>();
+		shipLocation.add(p);
 
 		// проверяем клетки по горизонтали
-		int x = p.x;
-		while (enemyField.getCell(new Point(x--, p.y)).state == DAMAGED_SHIP) {
-			shipLocation.addFirst(p);
+		int x = p.x - 1;
+		while (x >= 1 && enemyField.getCell(new Point(x, p.y)).state == DAMAGED_SHIP) {
+			shipLocation.addFirst(new Point(x, p.y));
+			x--;
 		}
 		x = p.x;
-		while (enemyField.getCell(new Point(++x, p.y)).state == DAMAGED_SHIP) {
+		while (enemyField.getCell(new Point(++x, p.y)).state == DAMAGED_SHIP && x <= 10) {
 			shipLocation.addLast(p);
 		}
 
@@ -105,11 +107,11 @@ public class ShotHandler implements Shotable
 		if (shipLocation.size() == 1) {
 			// проверяем клетки по вертикали
 			int y = p.y;
-			while (enemyField.getCell(new Point(p.x, y--)).state == DAMAGED_SHIP) {
+			while (enemyField.getCell(new Point(p.x, y--)).state == DAMAGED_SHIP && y >= 1) {
 				shipLocation.addFirst(p);
 			}
 			y = p.y;
-			while (enemyField.getCell(new Point(p.x, ++y)).state == DAMAGED_SHIP) {
+			while (enemyField.getCell(new Point(p.x, ++y)).state == DAMAGED_SHIP && y <= 10) {
 				shipLocation.addLast(p);
 			}
 		}
@@ -138,7 +140,7 @@ public class ShotHandler implements Shotable
 		// линия направо
 		for (int x = x1; x <= x2; x++) {
 			Point p = new Point(x, y1);
-			if (!checkPointOutOfBounds(p)) {
+			if (!isPointOutOfBounds(p)) {
 				outlineRectangle.add(p);
 			}
 		}
@@ -146,7 +148,7 @@ public class ShotHandler implements Shotable
 		// продолжение линии вниз
 		for (int y = y1 + 1; y <= y2; y++) {
 			Point p = new Point(x2, y);
-			if (!checkPointOutOfBounds(p)) {
+			if (!isPointOutOfBounds(p)) {
 				outlineRectangle.add(p);
 			}
 		}
@@ -154,7 +156,7 @@ public class ShotHandler implements Shotable
 		// продолжение линии налево
 		for (int x = x2 - 1; x >= x1; x--) {
 			Point p = new Point(x, y2);
-			if (!checkPointOutOfBounds(p)) {
+			if (!isPointOutOfBounds(p)) {
 				outlineRectangle.add(p);
 			}
 		}
@@ -162,7 +164,7 @@ public class ShotHandler implements Shotable
 		// продолжение линии вверх
 		for (int y = y2 - 1; y > y1; y--) {
 			Point p = new Point(x1, y);
-			if (!checkPointOutOfBounds(p)) {
+			if (!isPointOutOfBounds(p)) {
 				outlineRectangle.add(p);
 			}
 		}
@@ -173,7 +175,7 @@ public class ShotHandler implements Shotable
 	/**
 	 * Метод проверяет не выходят ли координаты точки за рамки поля
 	 */
-	private boolean checkPointOutOfBounds(Point p)
+	private boolean isPointOutOfBounds(Point p)
 	{
 		if (p.x < 1) { return true;}
 		if (p.y < 1) { return true;}

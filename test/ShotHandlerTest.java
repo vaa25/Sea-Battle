@@ -9,11 +9,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.*;
+import java.util.LinkedList;
 
 import static model.enums.CellState.*;
-import static model.enums.ShotResult.DESTROY;
-import static model.enums.ShotResult.HIT;
-import static model.enums.ShotResult.MISS;
+import static model.enums.ShotResult.*;
 import static org.junit.Assert.assertEquals;
 
 public class ShotHandlerTest
@@ -94,11 +93,47 @@ public class ShotHandlerTest
 	}
 
 	@Test
-	public void shootAtEmptyCell()
+	public void missShot()
 	{
 		Point shotPoint = new Point(1, 1);
 		ShotResult expectedResult = MISS;
 		ShotResult actualResult = player1.shotHandler.shot(player2.shotHandler, shotPoint);
 		assertEquals(expectedResult, actualResult);
+	}
+
+	@Test
+	public void damageShot()
+	{
+		Point shotPoint = new Point(1, 1);
+		Ship ship = new Ship(2);
+		player2.locationManager.locateShipToField(ship, shotPoint);
+		ShotResult expectedResult = HIT;
+		ShotResult actualResult = player1.shotHandler.shot(player2.shotHandler, shotPoint);
+		assertEquals(expectedResult, actualResult);
+	}
+
+	@Test
+	public void destroyShot()
+	{
+//		ShotHandler p2ShotHandler = Mockito.mock(ShotHandler.class);
+//		Mockito.when(p2ShotHandler.getShot(shotPoint)).thenReturn(DESTROY);
+
+		Point locatePoint = new Point(0, 1);
+		Ship ship = new Ship(1);
+		player2.locationManager.locateShipToField(ship, locatePoint);
+
+		Point shotPoint = locatePoint;
+		ShotResult expectedResult = DESTROY;
+		ShotResult actualResult = player1.shotHandler.shot(player2.shotHandler, shotPoint);
+		assertEquals(expectedResult, actualResult);
+
+	}
+
+
+	public static void main(String[] args)
+	{
+		LinkedList<Point> points = new LinkedList<>();
+		points.addFirst(new Point(1, 1));
+		points.getFirst();
 	}
 }
