@@ -157,7 +157,7 @@ public class DesktopView extends Application implements View {
         playingPane.setHgap(10);
 //        playingPane.autosize();
         borderPane.setCenter(playingPane);
-
+        enemyField.setVisible(false);
         root.getChildren().addAll(borderPane);
     }
 
