@@ -10,12 +10,12 @@ import java.net.SocketException;
  *
  * @author Alexander Vlasov
  */
-public class MessageReceiver implements Runnable {
+public class ObjectReceiver implements Runnable {
     private ObjectInputStream in;
-    private MessageParser parser;
+    private ObjectParser parser;
 
     //    private boolean interrupt;
-    public MessageReceiver(ObjectInputStream in, MessageParser parser) {
+    public ObjectReceiver(ObjectInputStream in, ObjectParser parser) {
         this.in = in;
         this.parser = parser;
     }
@@ -25,16 +25,16 @@ public class MessageReceiver implements Runnable {
     public void run() {
         while (true) {
             try {
-//                System.out.println( "Пытаюсь принять сообщение");
-                Message message = (Message) in.readObject();
-//                System.out.println( "Сообщение " + message + " принято");
-                parser.addMessage(message);
+                System.out.println(Thread.currentThread().getName() + " Пытаюсь принять сообщение");
+                Object object = in.readObject();
+                System.out.println(Thread.currentThread().getName() + " Сообщение " + object + " принято");
+                parser.put(object);
             } catch (EOFException e) {
-                System.out.println("MessageReceiver (" + Thread.currentThread().getName() + ") EOFException: ObjectInputStream closed first");
+                System.out.println(Thread.currentThread().getName() + " Classes (" + Thread.currentThread().getName() + ") EOFException: ObjectInputStream closed first");
 //                e.printStackTrace();
                 break;
             } catch (SocketException e) {
-                System.out.println("MessageReceiver (" + Thread.currentThread().getName() + ") SocketException: ObjectInputStream closed first");
+                System.out.println("Classes (" + Thread.currentThread().getName() + ") SocketException: ObjectInputStream closed first");
 //                e.printStackTrace();
                 break;
             } catch (IOException e) {
@@ -48,7 +48,7 @@ public class MessageReceiver implements Runnable {
                 break;
             }
         }
-        System.out.println("MessageReceiver (" + Thread.currentThread().getName() + ") returns");
+        System.out.println(Thread.currentThread().getName() + " Classes (" + Thread.currentThread().getName() + ") returns");
     }
 
 //    public void interrupt() {

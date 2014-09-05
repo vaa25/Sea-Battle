@@ -12,12 +12,12 @@ public class Network {
     private Socket conn;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private NoTimeOut noTimeOut;
+    private NoTimeOutSender noTimeOutSender;
     private Thread noTimeOutThread;
-    private MessageSender sender;
-    private MessageReceiver receiver;
+    private ObjectSender sender;
+    private ObjectReceiver receiver;
     private Thread receiverThread;
-    private MessageParser parser;
+    private ObjectParser parser;
 
     public Network(InetAddress host, int port) throws IOException {
         if (!setClientConnection(host, port)) setServerConnection(port);
@@ -27,23 +27,23 @@ public class Network {
 //        System.out.println( "Пытаюсь создать входящий поток");
         in = new ObjectInputStream(conn.getInputStream());
 //        System.out.println( "Входящий поток успешно создан " + in);
-        sender = new MessageSender(out);
-        parser = new MessageParser();
-        receiver = new MessageReceiver(in, parser);
+        sender = new ObjectSender(out);
+        parser = new ObjectParser();
+        receiver = new ObjectReceiver(in, parser);
         receiverThread = new Thread(receiver);
-        noTimeOut = new NoTimeOut(sender);
-        noTimeOutThread = new Thread(noTimeOut);
+        noTimeOutSender = new NoTimeOutSender(sender);
+        noTimeOutThread = new Thread(noTimeOutSender);
         noTimeOutThread.start();
         System.out.println("network (" + Thread.currentThread().getName() + ") starts noTimeOutThread (" + noTimeOutThread.getName() + ")");
         receiverThread.start();
         System.out.println("network (" + Thread.currentThread().getName() + ") starts receiverThread (" + receiverThread.getName() + ")");
     }
 
-    public MessageSender getSender() {
+    public ObjectSender getSender() {
         return sender;
     }
 
-    public MessageParser getParser() {
+    public ObjectParser getParser() {
         return parser;
     }
 

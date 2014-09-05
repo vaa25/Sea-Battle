@@ -8,21 +8,21 @@ import java.io.ObjectOutputStream;
  *
  * @author Alexander Vlasov
  */
-public class MessageSender {
+public class ObjectSender {
     private ObjectOutputStream objectOutputStream;
 
-    public MessageSender(ObjectOutputStream objectOutputStream) {
+    public ObjectSender(ObjectOutputStream objectOutputStream) {
         this.objectOutputStream = objectOutputStream;
     }
 
-    public synchronized void sendMessage(Message message) {
-//        System.out.println("Пытаюсь послать сообщение " + message);
+    public synchronized void sendMessage(Object object) {
+        System.out.println(Thread.currentThread().getName() + "Пытаюсь послать сообщение " + object);
         try {
-            objectOutputStream.writeObject(message);
+            objectOutputStream.writeObject(object);
             objectOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        System.out.println("Сообщение " + message + " послано");
+        System.out.println(Thread.currentThread().getName() + "Сообщение " + object + " послано");
     }
 }

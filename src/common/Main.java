@@ -3,10 +3,9 @@ package common;
 import model.Field;
 import model.Player;
 import model.Ship;
-import networks.Message;
-import networks.MessageParser;
-import networks.MessageSender;
 import networks.Network;
+import networks.ObjectParser;
+import networks.ObjectSender;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -21,8 +20,8 @@ public class Main implements Runnable {
     private Player player;
     private Double enemyRandom;
     private Network network;
-    private MessageParser parser;
-    private MessageSender sender;
+    private ObjectParser parser;
+    private ObjectSender sender;
     public Main(String name) {
         player = new Player(10, 10, name);
     }
@@ -64,8 +63,8 @@ public class Main implements Runnable {
         Double myRandom;
         do {
             myRandom = random.nextDouble();
-            sender.sendMessage(new Message(myRandom));
-            enemyRandom = parser.takeRandom();
+            sender.sendMessage(myRandom);
+            enemyRandom = (double) takeObject(Double.class);
         } while (myRandom == enemyRandom);
         boolean myTurn;
         if (enemyRandom > myRandom) {
@@ -79,8 +78,8 @@ public class Main implements Runnable {
         while (!player.isGameOver()) {
             if (myTurn) {
                 Coord coord = player.shooting();
-                sender.sendMessage(new Message(coord));
-                ShootResult shootResult = parser.takeShootResult();
+                sender.sendMessage(coord);
+                ShootResult shootResult = (ShootResult) takeObject(ShootResult.class);
                 player.setShootResult(shootResult);
                 if (shootResult == ShootResult.MISSED) {
                     myTurn = !myTurn;
@@ -88,8 +87,8 @@ public class Main implements Runnable {
 //                System.out.println(player.getName() + " ход " + turn++ + ": Бью " + coord + " " + shootResult);
 //                player.printEnemy();
             } else {
-                ShootResult shootResult = player.receiveShoot(parser.takeCoord());
-                sender.sendMessage(new Message(shootResult));
+                ShootResult shootResult = player.receiveShoot((Coord) takeObject(Coord.class));
+                sender.sendMessage(shootResult);
                 if (shootResult == ShootResult.MISSED) {
                     myTurn = !myTurn;
                 }
@@ -100,6 +99,25 @@ public class Main implements Runnable {
         network.close();
     }
 
+    private Object takeObject(Class clazz) {
+        System.out.println(getName() + " пытаюсь принять класс " + clazz);
+        Object object = null;
+//        try {
+//            object = clazz.newInstance();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
+
+        try {
+            object = parser.take(clazz);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(getName() + " принял объект " + object);
+        return object;
+    }
 
     public static void main(String[] args) throws IOException, InterruptedException {
         new Thread(new Main("Player 1: ")).start();
