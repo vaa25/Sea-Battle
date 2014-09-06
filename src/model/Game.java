@@ -64,12 +64,29 @@ public class Game {
                 break;
             case "c" :
                 Client client = new Client();
-                client.run();
+                new Thread(client).start();
+                order = 1;
+                while (!isGameOver()) {
+                    switch (order) {
+                        case 1:
+                            Cell shootCell = client.receiveCell();
+                            playerRemote = client.receivePlayer();
+                            if (player.isShipDamaged(shootCell)) { break; }
+                            else { order = 2; }
+                        case 2:
+                            shootCell = player.shootCell();
+                            client.sendCell(shootCell);
+                            client.sendPlayer(player);
+                            if (playerRemote.isShipDamaged(shootCell)) { break; }
+                            else { order = 1; }
+                    }
+                }
                 break;
         }
     }
 
     private boolean isGameOver(){
+        if(playerRemote == null) return false;
         if(player.numberOfShip() == 0){
             ConsoleHelper.printMessage(playerRemote.getName() + " won");
             return true;

@@ -75,6 +75,7 @@ public class Client implements Runnable {
         try {
             Cell cell = (Cell) input.readObject();
             System.out.println("Client received cell " + cell);
+            return cell;
         } catch (ClassNotFoundException e) {
             System.err.println("Object of an unknown type was received");
         } catch (IOException e) { e.printStackTrace(); }
