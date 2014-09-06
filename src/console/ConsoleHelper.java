@@ -12,7 +12,7 @@ import java.util.Scanner;
  */
 public class ConsoleHelper {
 
-    public static int[] getPlayerInput(){
+    public static int[] getPlayerShot(){
         while (true) {
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
@@ -26,6 +26,12 @@ public class ConsoleHelper {
                 System.out.println("Pls input two numbers, separated by space (e.g. \"3 15\") or \"exit\" to quit the game.");
             }
         }
+    }
+
+    public static String getUserInput(){
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        return input;
     }
 
     public static void printMessage(String message){

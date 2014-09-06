@@ -1,6 +1,8 @@
 package model;
 
 import console.ConsoleHelper;
+import network.Client;
+import network.Server;
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,13 +11,11 @@ import console.ConsoleHelper;
  */
 
 public class Game {
-    private Player playerOne = new Player("Alex");
-    private Player playerTwo = new Player("Olga");
-
+    private Player player = new Player("SERVER");
+    private Player playerRemote;
 
     public Game(int width, int height){
-        playerOne.setField(new Field(height, width));
-        playerTwo.setField(new Field(height, width));
+        player.setField(new Field(height, width));
     }
 
     public static Game seaBattle;
@@ -25,40 +25,65 @@ public class Game {
     }
 
     public void run(){
-        for(Ship ship : playerOne.getShips()){
-                playerOne.getField().randomlyPutShip(ship);
+
+        for(Ship ship : player.getShips()){
+            player.getField().randomlyPutShip(ship);
         }
 
-        for(Ship ship : playerTwo.getShips()){
-                playerTwo.getField().randomlyPutShip(ship);
-        }
+        ConsoleHelper.printMessage(player.getName() + ", Number of ships: " + player.numberOfShip());
+        ConsoleHelper.printReal(player.getField());
 
-        ConsoleHelper.printMessage(playerOne.getName() + ", Number of ships: " + playerOne.numberOfShip());
-        ConsoleHelper.printReal(playerOne.getField());
+        ConsoleHelper.printMessage("Choose Server(s) or Client(c): ");
+        switch(ConsoleHelper.getUserInput()){
+            case "s" :
+                Server server = new Server();
+                new Thread(server).start();
 
-        ConsoleHelper.printMessage(playerTwo.getName() + ", Number of ships: " + playerTwo.numberOfShip());
-        ConsoleHelper.printReal(playerTwo.getField());
+                while(playerRemote == null){
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) { System.out.println(e); }
+                }
 
-        int order = 1;
-        while(!isGameOver()){
-            switch (order){
-                case 1 :
-                    if(playerTwo.isShipDamaged(playerOne.shootCell())){ break; }
-                    else { order = 2; }
-                case 2 :
-                    if(playerOne.isShipDamaged(playerTwo.shootCell())){ break; }
-                    else { order = 1; }
-            }
+                int order = 1;
+                while (!isGameOver()) {
+                    switch (order) {
+                        case 1:
+                            Cell shootCell = player.shootCell();
+                            server.sendCell(shootCell);
+                            server.sendPlayer(player);
+                            if (playerRemote.isShipDamaged(shootCell)) { break; }
+                            else { order = 2; }
+                        case 2:
+                            shootCell = server.receiveCell();
+                            playerRemote = server.receivePlayer();
+                            if (player.isShipDamaged(shootCell)) { break; }
+                            else { order = 1; }
+                    }
+                }
+                break;
+            case "c" :
+                Client client = new Client();
+                client.run();
+                break;
         }
     }
 
-    public boolean isGameOver(){
-        if(playerOne.numberOfShip() == 0){
-            ConsoleHelper.printMessage("Player 2 wins");
+    private boolean isGameOver(){
+        if(player.numberOfShip() == 0){
+            ConsoleHelper.printMessage(playerRemote.getName() + " won");
             return true;
-        } else if (playerTwo.numberOfShip() == 0){
-            ConsoleHelper.printMessage("Player 1 wins");
+        } else if (playerRemote.numberOfShip() == 0){
+            ConsoleHelper.printMessage(player.getName() + " won");
             return true;
         } else { return false; }
+    }
+
+    public void setPlayerRemote(Player playerRemote) {
+        this.playerRemote = playerRemote;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

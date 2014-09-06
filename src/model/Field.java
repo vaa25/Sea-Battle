@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Random;
 import static model.CellConstants.*;
 
@@ -9,7 +10,7 @@ import static model.CellConstants.*;
  * Date: 27.08.14
  */
 
-public class Field {
+public class Field implements Serializable {
     private int width, height;
     private int [][] matrix;
 

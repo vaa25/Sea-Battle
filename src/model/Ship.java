@@ -2,6 +2,7 @@ package model;
 
 import model.Cell;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -11,7 +12,7 @@ import java.util.Random;
  * Date: 27.08.14
  */
 
-public class Ship {
+public class Ship implements Serializable {
     private int shipLength;
     private boolean vertical;
     private ArrayList<Cell> coordinates = new ArrayList<>();

@@ -2,6 +2,7 @@ package model;
 
 import console.ConsoleHelper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -10,7 +11,7 @@ import java.util.ArrayList;
  * Date: 27.08.14
  */
 
-public class Player {
+public class Player implements Serializable{
     private String name;
     private Field field;
     private ArrayList<Cell> madeShots = new ArrayList<>();
@@ -31,7 +32,7 @@ public class Player {
                                    "Moves made : " + this.madeShots + "\n" +
                                    "Input two numbers between 0..." + (this.field.getWidth() - 1) + "\n" +
                                    "Your move: ");
-        int[] shootCoordinates = ConsoleHelper.getPlayerInput();
+        int[] shootCoordinates = ConsoleHelper.getPlayerShot();
         Cell shootCell = new Cell(shootCoordinates[0], shootCoordinates[1]);
         madeShots.add(shootCell);
         return shootCell;

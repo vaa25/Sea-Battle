@@ -1,12 +1,14 @@
 package model;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Alexey Nerodenko
  * Date: 28.08.14
  */
 
-public class Cell {
+public class Cell implements Serializable {
     private int x, y;
 
     public Cell(int x, int y) {
