@@ -16,13 +16,13 @@ public class ObjectSender {
     }
 
     public synchronized void sendMessage(Object object) {
-        System.out.println(Thread.currentThread().getName() + "Пытаюсь послать сообщение " + object);
+        System.out.println(Thread.currentThread().getName() + " ObjectSender пытается послать сообщение " + object);
         try {
             objectOutputStream.writeObject(object);
             objectOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(Thread.currentThread().getName() + "Сообщение " + object + " послано");
+        System.out.println(Thread.currentThread().getName() + " ObjectSender послал сообщение " + object);
     }
 }

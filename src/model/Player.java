@@ -3,9 +3,7 @@ package model;
 import common.Coord;
 import common.ShootResult;
 
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,8 +17,8 @@ public class Player {
     final static boolean WON = true;
     final static boolean DONTWON = false;
     private String name;
-    private Field myField;
-    private Field enemyField;
+    private MyField myField;
+    private EnemyField enemyField;
     private int width, height;
     private CurrentStatistic currentStatistic;
     private Coord shootCoord;
@@ -28,30 +26,36 @@ public class Player {
     public Player(int width, int height, String name) {
         this.width = width;
         this.height = height;
-        enemyField = new Field(width, height);
         currentStatistic = new CurrentStatistic();
         this.name = name;
     }
 
+    public int getMyKilled() {
+        return myField.getKilled();
+    }
     public String getName() {
         return name;
     }
 
-    public void setMyField(Field myField) {
+    public void setMyField(MyField myField) {
         this.myField = myField;
+    }
+
+    public void setEnemyField(EnemyField enemyField) {
+        this.enemyField = enemyField;
     }
 
 
     public boolean isEnemyLoose() {
-        return enemyField.getKilled() == myField.getShipSize();
+        return enemyField.isLoose();
     }
 
-    public boolean isLoose() {
-        return myField.getKilled() == myField.getShipSize();
+    public boolean isMyLoose() {
+        return myField.isLoose();
     }
 
     public boolean isGameOver() {
-        return isLoose() || isEnemyLoose();
+        return myField.isLoose() || enemyField.isLoose();
     }
 
     /**
@@ -62,59 +66,15 @@ public class Player {
     public void setShootResult(ShootResult shootResult) {
         switch (shootResult) {
             case HURT:
-                setHurt();
+                enemyField.setHurt(shootCoord);
                 break;
             case KILLED:
-                setHurt();
-                enemyField.addKilled();
-                enemyField.place(constructKilledShip());
+                enemyField.setKilled(shootCoord);
                 break;
             case MISSED:
                 enemyField.setShoot(shootCoord);
         }
 
-    }
-
-    private void setHurt() {
-        Ship ship = new Ship(1);
-        ship.setCoords(shootCoord);
-        enemyField.place(ship);  // устанавливает временный корабль-маркер
-        enemyField.setShoot(shootCoord);
-    }
-
-    /**
-     * восстанавливает убитый корабль по временным кораблям-маркерам
-     *
-     * @return
-     */
-    private Ship constructKilledShip() {
-        Set<Coord> wrecks = new HashSet<>();
-        searchWrecks(wrecks, shootCoord);
-        Ship ship = new Ship(wrecks.size());
-        Coord[] coords = ship.getShipCoords();
-        int i = 0;
-        for (Coord wreck : wrecks) {
-            coords[i++] = wreck;
-        }
-        return ship;
-    }
-
-    /**
-     * находит цепочку рядом стоящих частей корабля
-     *
-     * @param coords начальная точка поиска
-     * @param coord  set найденных координат
-     */
-    private void searchWrecks(Set<Coord> coords, Coord coord) {
-        if (coords.add(coord)) {
-            int x = coord.getX();
-            int y = coord.getY();
-            Cell[][] field = enemyField.getField();
-            if (x > 0 && field[x - 1][y].getShip() != null) searchWrecks(coords, new Coord(x - 1, y));
-            if (y > 0 && field[x][y - 1].getShip() != null) searchWrecks(coords, new Coord(x, y - 1));
-            if (x < width - 1 && field[x + 1][y].getShip() != null) searchWrecks(coords, new Coord(x + 1, y));
-            if (y < height - 1 && field[x][y + 1].getShip() != null) searchWrecks(coords, new Coord(x, y + 1));
-        }
     }
 
     /**
@@ -145,7 +105,7 @@ public class Player {
      *
      * @return
      */
-    public Coord shooting() {
+    public Coord getRandomShootCoord() {
         Random random = new Random();
         Coord coord;
         do {

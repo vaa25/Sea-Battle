@@ -12,7 +12,7 @@ public class Network {
     private Socket conn;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private NoTimeOutSender noTimeOutSender;
+    private HeartBeatSender heartBeatSender;
     private Thread noTimeOutThread;
     private ObjectSender sender;
     private ObjectReceiver receiver;
@@ -31,8 +31,8 @@ public class Network {
         parser = new ObjectParser();
         receiver = new ObjectReceiver(in, parser);
         receiverThread = new Thread(receiver);
-        noTimeOutSender = new NoTimeOutSender(sender);
-        noTimeOutThread = new Thread(noTimeOutSender);
+        heartBeatSender = new HeartBeatSender(sender);
+        noTimeOutThread = new Thread(heartBeatSender);
         noTimeOutThread.start();
         System.out.println("network (" + Thread.currentThread().getName() + ") starts noTimeOutThread (" + noTimeOutThread.getName() + ")");
         receiverThread.start();
@@ -75,7 +75,7 @@ public class Network {
         }
     }
 
-    public void close(){
+    public void close() {
         System.out.println("Network (" + Thread.currentThread().getName() + ") try to interrupt noTimeOutThread (" + noTimeOutThread.getName() + ")");
 //        noTimeOut.interrupt();
         noTimeOutThread.interrupt();
@@ -94,7 +94,7 @@ public class Network {
             noTimeOutThread.join();
 //            System.out.println("network (" + Thread.currentThread().getName() + ") noTimeOutThread (" + noTimeOutThread.getName() + ") joined");
         } catch (InterruptedException e) {
-            System.out.println("network (" + Thread.currentThread().getName() + ") noTimeOutThread (" + noTimeOutThread.getName() + ") join InterruptedException");
+            System.out.println("Network (" + Thread.currentThread().getName() + ") noTimeOutThread (" + noTimeOutThread.getName() + ") join InterruptedException");
             e.printStackTrace();
         }
         try {
@@ -102,7 +102,7 @@ public class Network {
             receiverThread.join();
 //            System.out.println("network (" + Thread.currentThread().getName() + ") receiverThread (" + receiverThread.getName() + ") joined");
         } catch (InterruptedException e) {
-            System.out.println("network (" + Thread.currentThread().getName() + ") receiverThread (" + receiverThread.getName() + ") join InterruptedException");
+            System.out.println("Network (" + Thread.currentThread().getName() + ") receiverThread (" + receiverThread.getName() + ") join InterruptedException");
             e.printStackTrace();
         }
     }

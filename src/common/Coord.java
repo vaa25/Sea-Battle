@@ -22,17 +22,45 @@ public class Coord implements Serializable {
         return x;
     }
 
-//    public void setX(int x) {
-//        this.x = x;
-//    }
-
     public int getY() {
         return y;
     }
 
-//    public void setY(int y) {
-//        this.y = y;
-//    }
+    public Coord getLeftUp() {
+        return new Coord(x - 1, y - 1);
+    }
+
+    public Coord getRightUp() {
+        return new Coord(x + 1, y - 1);
+    }
+
+    public Coord getLeftDown() {
+        return new Coord(x - 1, y + 1);
+    }
+
+    public Coord getRightDown() {
+        return new Coord(x + 1, y + 1);
+    }
+
+    public Coord getLeft() {
+        return new Coord(x - 1, y);
+    }
+
+    public Coord getUp() {
+        return new Coord(x, y - 1);
+    }
+
+    public Coord getRight() {
+        return new Coord(x + 1, y);
+    }
+
+    public Coord getDown() {
+        return new Coord(x, y + 1);
+    }
+
+    public Coord getCenter() {
+        return new Coord(x, y);
+    }
 
     @Override
     public boolean equals(Object o) {

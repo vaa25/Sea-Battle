@@ -2,6 +2,8 @@ package model;
 
 import common.Coord;
 
+import java.util.Arrays;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Vlasov Alexander
@@ -22,12 +24,21 @@ public class Ship implements Comparable<Ship> {
     private Coord[] coords;
     private Coord coordLeftUp;
     private int health;
+    private boolean placed;
 
     public Ship(int size) {
         this.size = size;
         direction = Direction.Horizontal;
         coords = new Coord[size];
         health = size;
+    }
+
+    public void setPlaced(boolean placed) {
+        this.placed = placed;
+    }
+
+    public boolean isPlaced() {
+        return placed;
     }
 
     /**
@@ -47,7 +58,7 @@ public class Ship implements Comparable<Ship> {
     }
 
     /**
-     * Вызывается, когда по корабля попадают
+     * Вызывается, когда по кораблю попадают
      */
     public void shoot() {
         health--;
@@ -67,12 +78,10 @@ public class Ship implements Comparable<Ship> {
      */
     public void setCoords(Coord coordLeftUp) {
         this.coordLeftUp = coordLeftUp;
-        int x0 = coordLeftUp.getX();
-        int y0 = coordLeftUp.getY();
         coords[0] = coordLeftUp;
         for (int i = 1; i < coords.length; i++) {
-            if (direction == Direction.Horizontal) coords[i] = new Coord(x0 + i, y0);
-            else if (direction == Direction.Vertical) coords[i] = new Coord(x0, y0 + i);
+            if (direction == Direction.Horizontal) coords[i] = coords[i - 1].getRight();
+            else if (direction == Direction.Vertical) coords[i] = coords[i - 1].getDown();
         }
     }
 
@@ -99,28 +108,34 @@ public class Ship implements Comparable<Ship> {
     public Coord[] getAroundCoords() {
         Coord[] res = new Coord[size * 3 + 6];
         if (direction == Direction.Horizontal) {
-            res[0] = new Coord(coords[0].getX() - 1, coords[0].getY() - 1);
-            res[1] = new Coord(coords[0].getX() - 1, coords[0].getY());
-            res[2] = new Coord(coords[0].getX() - 1, coords[0].getY() + 1);
-            res[3] = new Coord(coords[size - 1].getX() + 1, coords[size - 1].getY() - 1);
-            res[4] = new Coord(coords[size - 1].getX() + 1, coords[size - 1].getY());
-            res[5] = new Coord(coords[size - 1].getX() + 1, coords[size - 1].getY() + 1);
+            Coord coordLeft = coords[0];
+            res[0] = coordLeft.getLeftUp();
+            res[1] = coordLeft.getLeft();
+            ;
+            res[2] = coordLeft.getLeftDown();
+            Coord coordRight = coords[size - 1];
+            res[3] = coordRight.getRightUp();
+            res[4] = coordRight.getRight();
+            ;
+            res[5] = coordRight.getRightDown();
             for (int i = 0; i < size; i++) {
-                res[6 + i] = new Coord(coords[i].getX(), coords[i].getY() - 1);
-                res[6 + i + size] = new Coord(coords[i].getX(), coords[i].getY());
-                res[6 + i + size + size] = new Coord(coords[i].getX(), coords[i].getY() + 1);
+                res[6 + i] = coords[i].getUp();
+                res[6 + i + size] = coords[i].getCenter();
+                res[6 + i + size + size] = coords[i].getDown();
             }
         } else {
-            res[0] = new Coord(coords[0].getX() - 1, coords[0].getY() - 1);
-            res[1] = new Coord(coords[0].getX(), coords[0].getY() - 1);
-            res[2] = new Coord(coords[0].getX() + 1, coords[0].getY() - 1);
-            res[3] = new Coord(coords[size - 1].getX() - 1, coords[size - 1].getY() + 1);
-            res[4] = new Coord(coords[size - 1].getX(), coords[size - 1].getY() + 1);
-            res[5] = new Coord(coords[size - 1].getX() + 1, coords[size - 1].getY() + 1);
+            Coord coordUp = coords[0];
+            res[0] = coordUp.getLeftUp();
+            res[1] = coordUp.getUp();
+            res[2] = coordUp.getRightUp();
+            Coord coordDown = coords[size - 1];
+            res[3] = coordDown.getLeftDown();
+            res[4] = coordDown.getDown();
+            res[5] = coordDown.getRightDown();
             for (int i = 0; i < size; i++) {
-                res[6 + i] = new Coord(coords[i].getX() - 1, coords[i].getY());
-                res[6 + i + size] = new Coord(coords[i].getX(), coords[i].getY());
-                res[6 + i + size + size] = new Coord(coords[i].getX() + 1, coords[i].getY());
+                res[6 + i] = coords[i].getLeft();
+                res[6 + i + size] = coords[i].getCenter();
+                res[6 + i + size + size] = coords[i].getRight();
             }
         }
 
@@ -147,10 +162,29 @@ public class Ship implements Comparable<Ship> {
     @Override
     public String toString() {
         String res = "size=" + size + " ";
-        for (int i = 0; i < coords.length; i++) {
-            Coord coord = coords[i];
-            res += coord.toString() + " ";
+        if (coordLeftUp != null) {
+            for (int i = 0; i < coords.length; i++) {
+                Coord coord = coords[i];
+                res += coord.toString() + " ";
+            }
         }
         return res;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Ship ship = (Ship) o;
+
+        if (!Arrays.equals(coords, ship.coords)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(coords);
     }
 }

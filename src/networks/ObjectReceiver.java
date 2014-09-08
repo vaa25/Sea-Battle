@@ -25,16 +25,16 @@ public class ObjectReceiver implements Runnable {
     public void run() {
         while (true) {
             try {
-                System.out.println(Thread.currentThread().getName() + " Пытаюсь принять сообщение");
+                System.out.println(Thread.currentThread().getName() + " ObjectReceiver пытается принять произвольный объект");
                 Object object = in.readObject();
-                System.out.println(Thread.currentThread().getName() + " Сообщение " + object + " принято");
-                parser.put(object);
+                System.out.println(Thread.currentThread().getName() + " ObjectReceiver принял объект " + object);
+                if (object != Special.HeartBeat) parser.put(object);
             } catch (EOFException e) {
-                System.out.println(Thread.currentThread().getName() + " Classes (" + Thread.currentThread().getName() + ") EOFException: ObjectInputStream closed first");
+                System.out.println(Thread.currentThread().getName() + " ObjectReceiver (" + Thread.currentThread().getName() + ") EOFException: ObjectInputStream closed first");
 //                e.printStackTrace();
                 break;
             } catch (SocketException e) {
-                System.out.println("Classes (" + Thread.currentThread().getName() + ") SocketException: ObjectInputStream closed first");
+                System.out.println("ObjectReceiver (" + Thread.currentThread().getName() + ") SocketException: ObjectInputStream closed first");
 //                e.printStackTrace();
                 break;
             } catch (IOException e) {
@@ -48,7 +48,7 @@ public class ObjectReceiver implements Runnable {
                 break;
             }
         }
-        System.out.println(Thread.currentThread().getName() + " Classes (" + Thread.currentThread().getName() + ") returns");
+        System.out.println(Thread.currentThread().getName() + " ObjectReceiver (" + Thread.currentThread().getName() + ") returns");
     }
 
 //    public void interrupt() {

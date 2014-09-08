@@ -9,7 +9,7 @@ public class Cell {
     private Ship ship;
     private Coord coord;
     private boolean shoot;
-
+    private boolean hurt;
     public Cell(Coord coord) {
         this.coord = coord;
     }
@@ -28,5 +28,13 @@ public class Cell {
 
     public void setShoot(boolean shoot) {
         this.shoot = shoot;
+    }
+
+    public boolean isHurt() {
+        return hurt;
+    }
+
+    public void setHurt(boolean hurt) {
+        this.hurt = hurt;
     }
 }

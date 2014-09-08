@@ -5,11 +5,11 @@ package networks;
  *
  * @author Alexander Vlasov
  */
-public class NoTimeOutSender implements Runnable {
+public class HeartBeatSender implements Runnable {
     private ObjectSender sender;
 
     //    private boolean interrupt;
-    public NoTimeOutSender(ObjectSender sender) {
+    public HeartBeatSender(ObjectSender sender) {
         this.sender = sender;
     }
 
@@ -25,7 +25,7 @@ public class NoTimeOutSender implements Runnable {
 
 //            System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") interrupt == " + interrupt);
 //            if (!interrupt) {
-            sender.sendMessage(MessageType.NOTIMEOUT);
+            sender.sendMessage(Special.HeartBeat);
 //            } else {
 //                System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") must return = " + interrupt);
 //                break;

@@ -1,6 +1,7 @@
 package common;
 
-import model.Field;
+import model.EnemyField;
+import model.MyField;
 import model.Player;
 import model.Ship;
 import networks.Network;
@@ -33,8 +34,8 @@ public class Main implements Runnable {
     @Override
     public void run() {
         System.out.println(player.getName() + " Main thread is (" + Thread.currentThread().getName() + ")");
-        Field my = new Field(10, 10);
-        player.setMyField(my);
+
+        MyField myField = new MyField(10, 10);
         List<Ship> ships = new ArrayList<>();
         ships.add(new Ship(4));
         ships.add(new Ship(3));
@@ -46,9 +47,26 @@ public class Main implements Runnable {
         ships.add(new Ship(1));
         ships.add(new Ship(1));
         ships.add(new Ship(1));
-        my.setRandom(ships);
-//        System.out.println(System.nanoTime() + " " + player.getName() + " map:");
-//        player.printMy();
+        myField.setShips(ships);
+        myField.placeRandom();
+        player.setMyField(myField);
+
+        EnemyField enemyField = new EnemyField(10, 10);
+        List<Ship> enemyShips = new ArrayList<>();
+        enemyShips.add(new Ship(4));
+        enemyShips.add(new Ship(3));
+        enemyShips.add(new Ship(3));
+        enemyShips.add(new Ship(2));
+        enemyShips.add(new Ship(2));
+        enemyShips.add(new Ship(2));
+        enemyShips.add(new Ship(1));
+        enemyShips.add(new Ship(1));
+        enemyShips.add(new Ship(1));
+        enemyShips.add(new Ship(1));
+        enemyField.setShips(enemyShips);
+        player.setEnemyField(enemyField);
+        System.out.println(player.getName() + " map:");
+        player.printMy();
         try {
 //            System.out.print(player.getName()+" ");
             network = new Network(InetAddress.getLocalHost(), 10000);
@@ -77,17 +95,19 @@ public class Main implements Runnable {
         int turn = 1;
         while (!player.isGameOver()) {
             if (myTurn) {
-                Coord coord = player.shooting();
+                Coord coord = player.getRandomShootCoord();
                 sender.sendMessage(coord);
                 ShootResult shootResult = (ShootResult) takeObject(ShootResult.class);
                 player.setShootResult(shootResult);
                 if (shootResult == ShootResult.MISSED) {
                     myTurn = !myTurn;
                 }
-//                System.out.println(player.getName() + " ход " + turn++ + ": Бью " + coord + " " + shootResult);
-//                player.printEnemy();
+                System.out.println(player.getName() + " ход " + turn++ + ": Бью " + coord + " " + shootResult);
+                player.printEnemy();
             } else {
                 ShootResult shootResult = player.receiveShoot((Coord) takeObject(Coord.class));
+                if (shootResult == ShootResult.KILLED)
+                    System.out.println(player.getName() + " всего убито " + myField.getKilled() + " ships.size()=" + myField.getShipSize());
                 sender.sendMessage(shootResult);
                 if (shootResult == ShootResult.MISSED) {
                     myTurn = !myTurn;
@@ -95,7 +115,7 @@ public class Main implements Runnable {
             }
         }
         if (player.isEnemyLoose()) System.out.println(player.getName() + " Я выиграл");
-        else System.out.println(player.getName() + " Я проиграл");
+        if (player.isMyLoose()) System.out.println(player.getName() + " Я проиграл");
         network.close();
     }
 
