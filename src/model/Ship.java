@@ -111,12 +111,10 @@ public class Ship implements Comparable<Ship> {
             Coord coordLeft = coords[0];
             res[0] = coordLeft.getLeftUp();
             res[1] = coordLeft.getLeft();
-            ;
             res[2] = coordLeft.getLeftDown();
             Coord coordRight = coords[size - 1];
             res[3] = coordRight.getRightUp();
             res[4] = coordRight.getRight();
-            ;
             res[5] = coordRight.getRightDown();
             for (int i = 0; i < size; i++) {
                 res[6 + i] = coords[i].getUp();
@@ -185,6 +183,9 @@ public class Ship implements Comparable<Ship> {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(coords);
+        int result = size;
+        result = 31 * result + Arrays.hashCode(coords);
+        result = 31 * result + coordLeftUp.hashCode();
+        return result;
     }
 }
