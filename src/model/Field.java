@@ -35,6 +35,7 @@ public class Field implements Serializable {
     public void setCell(Cell cell, boolean isShipHit){
         int x = cell.getX();
         int y = cell.getY();
+        if((x < 0 || x >= height) || (y < 0 || y >= width)) return;
         if (isShipHit){
             matrix[x][y] = HIT_CELL;
         } else {

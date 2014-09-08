@@ -10,7 +10,7 @@ import network.Server;
  * Date: 27.08.14
  */
 
-public class Game {
+public class Game implements Runnable {
     private Player player = new Player("SERVER");
     private Player playerRemote;
 
@@ -18,9 +18,8 @@ public class Game {
         player.setField(new Field(height, width));
     }
 
-    public static Game seaBattle;
+    public static final Game seaBattle = new Game(20, 20);
     public static void main(String[] args) {
-        seaBattle = new Game(20, 20);
         seaBattle.run();
     }
 
@@ -38,13 +37,12 @@ public class Game {
             case "s" :
                 Server server = new Server();
                 new Thread(server).start();
-
-                while(playerRemote == null){
+                synchronized (seaBattle){
                     try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) { System.out.println(e); }
+                        seaBattle.wait();
+                    } catch (InterruptedException e) { e.printStackTrace(); }
                 }
-
+                playerRemote = server.receivePlayer();
                 int order = 1;
                 while (!isGameOver()) {
                     switch (order) {
@@ -65,6 +63,12 @@ public class Game {
             case "c" :
                 Client client = new Client();
                 new Thread(client).start();
+                synchronized (seaBattle){
+                    try {
+                        seaBattle.wait();
+                    } catch (InterruptedException e) { e.printStackTrace(); }
+                }
+                client.sendPlayer(player);
                 order = 1;
                 while (!isGameOver()) {
                     switch (order) {
@@ -96,11 +100,4 @@ public class Game {
         } else { return false; }
     }
 
-    public void setPlayerRemote(Player playerRemote) {
-        this.playerRemote = playerRemote;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
 }

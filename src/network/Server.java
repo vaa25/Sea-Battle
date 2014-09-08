@@ -33,7 +33,6 @@ public class Server implements Runnable{
             try {
                 waitForConnection();
                 getIOStreams();
-                Game.seaBattle.setPlayerRemote(receivePlayer());
                 keepConnectionAlive();
             } finally {
                 closeConnection();
@@ -63,15 +62,18 @@ public class Server implements Runnable{
     }
 
     public void getIOStreams() {
-        try {
-            output = new ObjectOutputStream(connection.getOutputStream());
-            output.flush(); // send header information to the client, which
-            // contains info required to create the input stream
-            // object
-            input = new ObjectInputStream(connection.getInputStream());
-            System.out.println("Server established I/O streams");
-        } catch (IOException e) {
-            e.printStackTrace();
+        synchronized (Game.seaBattle){
+            try {
+                output = new ObjectOutputStream(connection.getOutputStream());
+                output.flush(); // send header information to the client, which
+                // contains info required to create the input stream
+                // object
+                input = new ObjectInputStream(connection.getInputStream());
+                System.out.println("Server established I/O streams");
+                Game.seaBattle.notify();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

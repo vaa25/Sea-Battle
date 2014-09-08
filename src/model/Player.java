@@ -31,7 +31,7 @@ public class Player implements Serializable{
                                    "Number of ships: " + this.ships.size() + "\n" +
                                    "Moves made : " + this.madeShots + "\n" +
                                    "Input two numbers between 0..." + (this.field.getWidth() - 1) + "\n" +
-                                   "Your move: ");
+                                   name + " Your move: ");
         int[] shootCoordinates = ConsoleHelper.getPlayerShot();
         Cell shootCell = new Cell(shootCoordinates[0], shootCoordinates[1]);
         madeShots.add(shootCell);

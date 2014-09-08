@@ -18,16 +18,15 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Client implements Runnable {
-    ServerSocket serverSocket;
     Socket clientSocket;
     ObjectOutputStream output;
     ObjectInputStream input;
     String serverAddress = "127.0.0.1";
+    boolean isServerDisconnected;
 
     public void run() {
         connect2Server();
         getIOStreams();
-        sendPlayer(Game.seaBattle.getPlayer());
         keepConnectionAlive();
         closeConnection();
     }
@@ -51,27 +50,24 @@ public class Client implements Runnable {
     }
 
     public void getIOStreams() {
-        try {
-            output = new ObjectOutputStream(clientSocket.getOutputStream());
-            output.flush();
-            input = new ObjectInputStream(clientSocket.getInputStream());
-            System.out.println("Client established I/O Stream");
-        } catch (IOException e) { e.printStackTrace(); }
+        synchronized (Game.seaBattle){
+            try {
+                output = new ObjectOutputStream(clientSocket.getOutputStream());
+                output.flush();
+                input = new ObjectInputStream(clientSocket.getInputStream());
+                System.out.println("Client established I/O Stream");
+                Game.seaBattle.notify();
+            } catch (IOException e) { e.printStackTrace(); }
+        }
     }
 
     public void keepConnectionAlive() {
-        while(true){
+        while(!isServerDisconnected){
 
         }
     }
 
     public Cell receiveCell() {
-        while (input == null){
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) { e.printStackTrace(); }
-        }
-
         try {
             Cell cell = (Cell) input.readObject();
             System.out.println("Client received cell " + cell);

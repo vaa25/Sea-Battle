@@ -22,7 +22,7 @@ public class ConsoleHelper {
                 int x = Integer.parseInt(shootCoordinates[0]);
                 int y = Integer.parseInt(shootCoordinates[1]);
                 return new int[]{x,y};
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e){
+            } catch (NumberFormatException e){
                 System.out.println("Pls input two numbers, separated by space (e.g. \"3 15\") or \"exit\" to quit the game.");
             }
         }
