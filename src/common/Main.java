@@ -23,6 +23,7 @@ public class Main implements Runnable {
     private Network network;
     private ObjectParser parser;
     private ObjectSender sender;
+
     public Main(String name) {
         player = new Player(10, 10, name);
     }
@@ -83,7 +84,7 @@ public class Main implements Runnable {
             myRandom = random.nextDouble();
             sender.sendMessage(myRandom);
             enemyRandom = (double) takeObject(Double.class);
-        } while (myRandom == enemyRandom);
+        } while (myRandom.equals(enemyRandom));
         boolean myTurn;
         if (enemyRandom > myRandom) {
             System.out.println(player.getName() + " Враг ходит первый");
@@ -100,7 +101,7 @@ public class Main implements Runnable {
                 ShootResult shootResult = (ShootResult) takeObject(ShootResult.class);
                 player.setShootResult(shootResult);
                 if (shootResult == ShootResult.MISSED) {
-                    myTurn = !myTurn;
+                    myTurn = false;
                 }
                 System.out.println(player.getName() + " ход " + turn++ + ": Бью " + coord + " " + shootResult);
                 player.printEnemy();
@@ -110,7 +111,7 @@ public class Main implements Runnable {
                     System.out.println(player.getName() + " всего убито " + myField.getKilled() + " ships.size()=" + myField.getShipSize());
                 sender.sendMessage(shootResult);
                 if (shootResult == ShootResult.MISSED) {
-                    myTurn = !myTurn;
+                    myTurn = true;
                 }
             }
         }

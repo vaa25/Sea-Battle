@@ -26,7 +26,7 @@ public class ObjectParser {
         return oldQueue == null ? queue : oldQueue;
     }
 
-    public void put(Object object) throws InterruptedException {
+    public void put(Object object) {
         Class clazz = object.getClass();
         getQueue(clazz).add(object);
         System.out.println(Thread.currentThread().getName() + " ObjectParser успешно put " + object);

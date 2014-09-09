@@ -33,6 +33,10 @@ public class Ship implements Comparable<Ship> {
         health = size;
     }
 
+    public int getSize() {
+        return size;
+    }
+
     public void setPlaced(boolean placed) {
         this.placed = placed;
     }
@@ -161,8 +165,7 @@ public class Ship implements Comparable<Ship> {
     public String toString() {
         String res = "size=" + size + " ";
         if (coordLeftUp != null) {
-            for (int i = 0; i < coords.length; i++) {
-                Coord coord = coords[i];
+            for (Coord coord : coords) {
                 res += coord.toString() + " ";
             }
         }

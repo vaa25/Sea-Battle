@@ -159,18 +159,20 @@ public class ShipTest extends TestCase {
         assertFalse(ship2.isCrossing(ship));
     }
 
-    @Test
-    public void testToString() throws Exception {
-
-    }
 
     @Test
     public void testEquals() throws Exception {
         Ship ship1 = new Ship(1);
-        assertTrue(ship1.equals(ship));
+        Ship ship4 = null;
+        assertTrue(ship1.equals(ship)); //symmetric
         assertTrue(ship.equals(ship1));
-        assertTrue(ship.equals(ship));
+        ship1.setCoords(leftUp);
+        ship.setCoords(leftUp);
+        ship1.changeDirection();
+        assertTrue(ship1.equals(ship)); //consistent
+        assertTrue(ship.equals(ship));  //reflexive
         assertFalse(ship.equals(ship2));
+        assertFalse(ship.equals(ship4));
     }
 
     @Test

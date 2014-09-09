@@ -34,8 +34,7 @@ public class MyField extends Field {
      */
     public boolean canPlace(Ship ship) {
         if (!inBorders(ship)) return false;
-        for (int i = 0; i < ships.size(); i++) {
-            Ship alreadyPlaced = ships.get(i);
+        for (Ship alreadyPlaced : ships) {
             if (ship.isCrossing(alreadyPlaced)) return false;
         }
         return true;
