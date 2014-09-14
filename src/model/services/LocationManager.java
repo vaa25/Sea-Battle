@@ -4,12 +4,13 @@ import model.objects.field.Cell;
 import model.objects.field.Field;
 import model.objects.flotilla.Flotilla;
 import model.objects.flotilla.Ship;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.util.LinkedList;
 
 import static model.enums.CellState.EMPTY;
-
 import static model.enums.CellState.SHIP;
 /**
  * Nick:   sobolevstp
@@ -20,7 +21,7 @@ import static model.enums.CellState.SHIP;
  */
 public class LocationManager
 {
-	// TODO Logger instead System.out.println
+	private final Logger logger = LoggerFactory.getLogger(LocationManager.class);
 
 	private Field playerField;
 	private Flotilla playerFlotilla;
@@ -53,13 +54,13 @@ public class LocationManager
 
 		// проверяем, вмещается ли корабль на поле
 		if (checkLocationOutOfBounds(shipLocation)) {
-			System.out.println("false shipLocation outOfBounds");
+			logger.info("Ship location is out of bounds");
 			return false;
 		}
 
 		// проверяем, свободны ли ячейки под кораблем
 		if (!checkLocationAvailability(shipLocation)) {
-			System.out.println("false shipLocation availability");
+			logger.info("Ship location is not available");
 			return false;
 		}
 
@@ -67,7 +68,7 @@ public class LocationManager
 
 		// проверяем, свободны ли ячейки по контуру корабля
 		if (!checkLocationAvailability(shipOutline)) {
-			System.out.println("false shipOutline availability");
+			logger.info("Ship outline is not available");
 			return false;
 		}
 

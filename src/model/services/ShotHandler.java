@@ -13,7 +13,6 @@ import static model.enums.ShotResult.*;
 import static model.enums.ShotResult.UNDEFINED;
 
 /**
- * TODO DRY for methods
  * Nick:   sobolevstp
  * Date:   9/2/14
  * Time:   23:50
@@ -48,6 +47,11 @@ public class ShotHandler implements Shotable
 				if (targetCell.locatedShip.isAlive()) {
 					return HIT;
 				} else {
+					LinkedList<Point> destroyedShipLocation = generateShipLocationFromDestroyPoint(p, playerField);
+					// для всех ячеек под убитым кораблем меняем статус
+					for (Point locationPoint : destroyedShipLocation) {
+						playerField.getCell(locationPoint).state = DESTROYED_SHIP;
+					}
 					return DESTROY;
 				}
 			case SHELLED:
@@ -90,7 +94,7 @@ public class ShotHandler implements Shotable
 	private void handleDestroyedShip(Point destroyPoint)
 	{
 		// определяем местоположение корабля по координатам последнего выстрела
-		LinkedList<Point> destroyedShipLocation = generateShipLocationFromDestroyPoint(destroyPoint);
+		LinkedList<Point> destroyedShipLocation = generateShipLocationFromDestroyPoint(destroyPoint, enemyField);
 
 		// для всех ячеек под убитым кораблем меняем статус
 		for (Point locationPoint : destroyedShipLocation) {
@@ -112,7 +116,7 @@ public class ShotHandler implements Shotable
 	 * @param p координаты последнего выстрела
 	 * @return локацию подбитого корабля
 	 */
-	private LinkedList<Point> generateShipLocationFromDestroyPoint(Point p)
+	private LinkedList<Point> generateShipLocationFromDestroyPoint(Point p, Field targetField)
 	{
 		// создаем новый массив и добавляем туда координаты уничтожения корабля
 		LinkedList<Point> shipLocation = new LinkedList<Point>();
@@ -122,14 +126,14 @@ public class ShotHandler implements Shotable
 
 		// проверяем клетки по горизонтали влево
 		int x = p.x - 1;
-		while (x >= 1 && enemyField.getCell(new Point(x, p.y)).state == DAMAGED_SHIP) {
+		while (x >= 1 && targetField.getCell(new Point(x, p.y)).state == DAMAGED_SHIP) {
 			shipLocation.addFirst(new Point(x, p.y));
 			x--;
 		}
 
 		// проверяем клетки по горизонтали вправо
 		x = p.x + 1;
-		while (enemyField.getCell(new Point(x, p.y)).state == DAMAGED_SHIP && x <= 10) {
+		while (targetField.getCell(new Point(x, p.y)).state == DAMAGED_SHIP && x <= 10) {
 			shipLocation.addLast(p);
 			x++;
 		}
@@ -140,14 +144,14 @@ public class ShotHandler implements Shotable
 
 			// проверяем клетки по вертикали вверх
 			int y = p.y - 1;
-			while (enemyField.getCell(new Point(p.x, y)).state == DAMAGED_SHIP && y >= 1) {
+			while (targetField.getCell(new Point(p.x, y)).state == DAMAGED_SHIP && y >= 1) {
 				shipLocation.addFirst(p);
 				y--;
 			}
 
 			// проверяем клетки по вертикали вниз
 			y = p.y + 1;
-			while (enemyField.getCell(new Point(p.x, y)).state == DAMAGED_SHIP && y <= 10) {
+			while (targetField.getCell(new Point(p.x, y)).state == DAMAGED_SHIP && y <= 10) {
 				shipLocation.addLast(p);
 				y++;
 			}
