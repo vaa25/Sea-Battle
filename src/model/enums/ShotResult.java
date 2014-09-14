@@ -10,7 +10,9 @@ package model.enums;
  */
 public enum ShotResult
 {
-	MISS,   // мимо
-	HIT,    // ранил
-	DESTROY // убил
+	MISS,        // мимо
+	HIT,         // ранил
+	DESTROY,     // убил
+	UNDEFINED,   // незивестно
+	NOT_ALLOWED, // непозволено
 }

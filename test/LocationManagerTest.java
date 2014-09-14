@@ -1,13 +1,13 @@
-import model.enums.CellState;
-import model.objects.Cell;
-import model.objects.Player;
-import model.objects.Ship;
+import model.objects.field.Field;
+import model.objects.flotilla.Flotilla;
+import model.objects.flotilla.Ship;
 import model.services.LocationManager;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.*;
 
+import static model.enums.CellState.EMPTY;
 import static model.enums.ShipLayout.HORIZONTAL;
 import static model.enums.ShipLayout.VERTICAL;
 import static org.junit.Assert.*;
@@ -15,15 +15,15 @@ import static org.junit.Assert.*;
 public class LocationManagerTest
 {
 	LocationManager manager;
-	Player player;
 	Ship ship;
 	Point point;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		player = new Player();
-		manager = player.locationManager;
+		Flotilla flotilla = new Flotilla();
+		Field field = new Field(EMPTY);
+		manager = new LocationManager(field, flotilla);
 	}
 
 	@Test
@@ -36,7 +36,7 @@ public class LocationManagerTest
 
 		assertEquals(expected, actual);
 
-		manager.clearField();
+		manager.resetField();
 		ship = new Ship(4);
 		ship.setLayout(HORIZONTAL);
 		point = new Point(7, 8);
@@ -45,7 +45,7 @@ public class LocationManagerTest
 
 		assertEquals(expected, actual);
 
-		manager.clearField();
+		manager.resetField();
 		ship = new Ship(2);
 		ship.setLayout(HORIZONTAL);
 		point = new Point(9, 1);
@@ -54,7 +54,7 @@ public class LocationManagerTest
 
 		assertEquals(expected, actual);
 
-		manager.clearField();
+		manager.resetField();
 		ship = new Ship(1);
 		point = new Point(1, 1);
 		actual = manager.locateShipToField(ship, point);
@@ -79,7 +79,7 @@ public class LocationManagerTest
 
 		assertEquals(expected, actual);
 
-		manager.clearField();
+		manager.resetField();
 		ship = new Ship(1);
 		point = new Point(1, 1);
 		manager.locateShipToField(ship, point);
@@ -156,7 +156,7 @@ public class LocationManagerTest
 
 		assertEquals(expected, actual);
 
-		manager.clearField();
+		manager.resetField();
 		ship = new Ship(3);
 		point = new Point(11, 1);
 		actual = manager.locateShipToField(ship, point);
@@ -164,7 +164,7 @@ public class LocationManagerTest
 
 		assertEquals(expected, actual);
 
-		manager.clearField();
+		manager.resetField();
 		ship = new Ship(3);
 		point = new Point(1, 9);
 		actual = manager.locateShipToField(ship, point);
@@ -172,7 +172,7 @@ public class LocationManagerTest
 
 		assertEquals(expected, actual);
 
-		manager.clearField();
+		manager.resetField();
 		ship = new Ship(4);
 		point = new Point(1, 8);
 		actual = manager.locateShipToField(ship, point);
@@ -197,7 +197,7 @@ public class LocationManagerTest
 
 		assertEquals(expected, actual);
 
-		manager.clearField();
+		manager.resetField();
 		ship = new Ship(1);
 		point = new Point(10, 10);
 		manager.locateShipToField(ship, point);
@@ -234,36 +234,23 @@ public class LocationManagerTest
 	{
 		ship = manager.getShipForLocation(1);
 		int expected = 1;
-		int actual = ship.SIZE;
+		int actual = ship.SHIP_SIZE;
 		assertEquals(expected, actual);
 
 		ship = manager.getShipForLocation(2);
 		expected = 2;
-		actual = ship.SIZE;
+		actual = ship.SHIP_SIZE;
 		assertEquals(expected, actual);
 
 		ship = manager.getShipForLocation(3);
 		expected = 3;
-		actual = ship.SIZE;
+		actual = ship.SHIP_SIZE;
 		assertEquals(expected, actual);
 
 		ship = manager.getShipForLocation(4);
 		expected = 4;
-		actual = ship.SIZE;
+		actual = ship.SHIP_SIZE;
 		assertEquals(expected, actual);
-	}
-
-	@Test
-	public void clearField()
-	{
-		ship = new Ship(2);
-		point = new Point(1, 1);
-		manager.locateShipToField(ship, point);
-		Cell cell = player.playerField.getCell(point);
-		assertEquals(CellState.SHIP, cell.state);
-
-		manager.clearField();
-		assertEquals(CellState.EMPTY, cell.state);
 	}
 
 }

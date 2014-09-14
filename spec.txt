@@ -1,3 +1,0 @@
-Обмен данными:
--> Point p;
-<- ShotResult result; (MISS, HIT, DESTROY);

@@ -2,14 +2,15 @@ package model.services;
 
 import model.enums.ShotResult;
 import model.interfaces.Shotable;
-import model.objects.Cell;
-import model.objects.Field;
+import model.objects.field.Cell;
+import model.objects.field.Field;
 
 import java.awt.*;
 import java.util.LinkedList;
 
 import static model.enums.CellState.*;
 import static model.enums.ShotResult.*;
+import static model.enums.ShotResult.UNDEFINED;
 
 /**
  * TODO DRY for methods
@@ -33,47 +34,64 @@ public class ShotHandler implements Shotable
 	@Override
 	public ShotResult getShot(Point p)
 	{
-		Cell shelledCell = playerField.getCell(p);
+		Cell targetCell = playerField.getCell(p);
 
-		// если ячейка пустая, то возвращается простреленно
-		if (shelledCell.state == EMPTY || shelledCell.state == OUTLINE) {
-			shelledCell.state = SHELLED;
-			return MISS;
+		switch (targetCell.state) {
+			case EMPTY:
+				targetCell.state = SHELLED;
+				return MISS;
+			case OUTLINE:
+				targetCell.state = SHELLED;
+				return MISS;
+			case SHIP:
+				targetCell.state = DAMAGED_SHIP;
+				if (targetCell.locatedShip.isAlive()) {
+					return HIT;
+				} else {
+					return DESTROY;
+				}
+			case SHELLED:
+				return NOT_ALLOWED;
+			case DAMAGED_SHIP:
+				return NOT_ALLOWED;
+			case DESTROYED_SHIP:
+				return NOT_ALLOWED;
+			case UNDEFINED:
+				return UNDEFINED;
+			default:
+				return UNDEFINED;
 		}
-		// если в ячейке есть корабль, то состояние ячейки -> поврежденный корабль
-		if (shelledCell.state == SHIP) {
-			shelledCell.state = DAMAGED_SHIP;
-			// если поврежденный корабль жив, то возвращается ПОПАЛ
-			if (shelledCell.locatedShip.isAlive()) {
-				return HIT;
-			}
-		}
-		// иначе возвращается убил;
-		shelledCell.state = DESTROYED_SHIP;
-		return DESTROY;
 	}
 
-	public ShotResult shot(Shotable enemy, Point p)
+	public void shot(Shotable enemy, Point p)
 	{
 		ShotResult result = enemy.getShot(p);
 
-		if (result == MISS) {
-			enemyField.getCell(p).state = SHELLED;
+		switch (result) {
+			case MISS:
+				enemyField.getCell(p).state = SHELLED;
+				break;
+			case HIT:
+				enemyField.getCell(p).state = DAMAGED_SHIP;
+				break;
+			case DESTROY:
+				enemyField.getCell(p).state = DAMAGED_SHIP;
+				handleDestroyedShip(p);
 		}
-		if (result == HIT) {
-			enemyField.getCell(p).state = DAMAGED_SHIP;
-		}
-		if (result == DESTROY) {
-			enemyField.getCell(p).state = DAMAGED_SHIP;
-			handleDestroyedShip(p);
-		}
-		return result;
+
+		// TODO if (result == HIT || DESTROY) then (shot again)
 	}
 
+	/**
+	 * Обработка подбитого корабля
+	 *
+	 * @param destroyPoint координата последнего выстрела в корабль
+	 */
 	private void handleDestroyedShip(Point destroyPoint)
 	{
 		// определяем местоположение корабля по координатам последнего выстрела
 		LinkedList<Point> destroyedShipLocation = generateShipLocationFromDestroyPoint(destroyPoint);
+
 		// для всех ячеек под убитым кораблем меняем статус
 		for (Point locationPoint : destroyedShipLocation) {
 			enemyField.getCell(locationPoint).state = DESTROYED_SHIP;
@@ -81,40 +99,61 @@ public class ShotHandler implements Shotable
 
 		// определяем контуры убитого корабля по его координатам
 		LinkedList<Point> destroyedShipOutline = generateShipOutline(destroyedShipLocation);
+
 		// для всех ячеек, являющихся контуром меняем статус
 		for (Point outlinePoint : destroyedShipOutline) {
 			enemyField.getCell(outlinePoint).state = OUTLINE;
 		}
 	}
 
+	/**
+	 * Воссоздаем размещение уничтоженного корабля по последней подбитой точке
+	 *
+	 * @param p координаты последнего выстрела
+	 * @return локацию подбитого корабля
+	 */
 	private LinkedList<Point> generateShipLocationFromDestroyPoint(Point p)
 	{
+		// создаем новый массив и добавляем туда координаты уничтожения корабля
 		LinkedList<Point> shipLocation = new LinkedList<Point>();
 		shipLocation.add(p);
 
-		// проверяем клетки по горизонтали
+		// далее составляем позицию корабля по состоянию окружающих клеток
+
+		// проверяем клетки по горизонтали влево
 		int x = p.x - 1;
 		while (x >= 1 && enemyField.getCell(new Point(x, p.y)).state == DAMAGED_SHIP) {
 			shipLocation.addFirst(new Point(x, p.y));
 			x--;
 		}
-		x = p.x;
-		while (enemyField.getCell(new Point(++x, p.y)).state == DAMAGED_SHIP && x <= 10) {
+
+		// проверяем клетки по горизонтали вправо
+		x = p.x + 1;
+		while (enemyField.getCell(new Point(x, p.y)).state == DAMAGED_SHIP && x <= 10) {
 			shipLocation.addLast(p);
+			x++;
+		}
+		// если по горизонтали нет окружающих клеток с состоянием подбитого корабля,
+
+		// тогда ищем по вертикали
+		if (shipLocation.size() == 1) {
+
+			// проверяем клетки по вертикали вверх
+			int y = p.y - 1;
+			while (enemyField.getCell(new Point(p.x, y)).state == DAMAGED_SHIP && y >= 1) {
+				shipLocation.addFirst(p);
+				y--;
+			}
+
+			// проверяем клетки по вертикали вниз
+			y = p.y + 1;
+			while (enemyField.getCell(new Point(p.x, y)).state == DAMAGED_SHIP && y <= 10) {
+				shipLocation.addLast(p);
+				y++;
+			}
 		}
 
-		// если размер массива = 1, это значит, что корабль размещен вертикально
-		if (shipLocation.size() == 1) {
-			// проверяем клетки по вертикали
-			int y = p.y;
-			while (enemyField.getCell(new Point(p.x, y--)).state == DAMAGED_SHIP && y >= 1) {
-				shipLocation.addFirst(p);
-			}
-			y = p.y;
-			while (enemyField.getCell(new Point(p.x, ++y)).state == DAMAGED_SHIP && y <= 10) {
-				shipLocation.addLast(p);
-			}
-		}
+		// если и по вертикали нет, тогда размер корабля = 1
 
 		return shipLocation;
 	}
@@ -122,54 +161,56 @@ public class ShotHandler implements Shotable
 	/**
 	 * Метод, определяющий и возвращающий контур корабля;
 	 *
-	 * @param shipLocation - локация корабля, вокруг которого надо собрать контур№
+	 * @param shipLocation - локация корабля, вокруг которого надо собрать контур
 	 * @return - контур вокруг shipLocation;
 	 */
 	private LinkedList<Point> generateShipOutline(LinkedList<Point> shipLocation)
 	{
-		LinkedList<Point> outlineRectangle = new LinkedList<>();
+		LinkedList<Point> shipOutline = new LinkedList<>();
 
 		// определяем координаты левого верхнего и правого нижнего угла контура
-		int x1 = shipLocation.getFirst().x - 1; //0
-		int y1 = shipLocation.getFirst().y - 1; //0
-		int x2 = shipLocation.getLast().x + 1;  //2
-		int y2 = shipLocation.getLast().y + 1;  //4
+		int x1 = shipLocation.getFirst().x - 1;
+		int y1 = shipLocation.getFirst().y - 1;
+		int x2 = shipLocation.getLast().x + 1;
+		int y2 = shipLocation.getLast().y + 1;
 
-		// далее формируем массив координат данного квадрата
+		// далее формируем массив координат данного квадрата и проверяем,
+		// не выходит ли координата за пределы поля.
+		// если координата не выходит за пределы - тогда добавляем ее в массив
 
-		// линия направо
+		// рисуем линию направо
 		for (int x = x1; x <= x2; x++) {
 			Point p = new Point(x, y1);
 			if (!isPointOutOfBounds(p)) {
-				outlineRectangle.add(p);
+				shipOutline.add(p);
 			}
 		}
 
-		// продолжение линии вниз
+		// продолжаем рисовать линию вниз
 		for (int y = y1 + 1; y <= y2; y++) {
 			Point p = new Point(x2, y);
 			if (!isPointOutOfBounds(p)) {
-				outlineRectangle.add(p);
+				shipOutline.add(p);
 			}
 		}
 
-		// продолжение линии налево
+		// продолжаем рисовать линию налево
 		for (int x = x2 - 1; x >= x1; x--) {
 			Point p = new Point(x, y2);
 			if (!isPointOutOfBounds(p)) {
-				outlineRectangle.add(p);
+				shipOutline.add(p);
 			}
 		}
 
-		// продолжение линии вверх
+		// продолжаем рисовать линию вверх
 		for (int y = y2 - 1; y > y1; y--) {
 			Point p = new Point(x1, y);
 			if (!isPointOutOfBounds(p)) {
-				outlineRectangle.add(p);
+				shipOutline.add(p);
 			}
 		}
 
-		return outlineRectangle;
+		return shipOutline;
 	}
 
 	/**
@@ -177,10 +218,18 @@ public class ShotHandler implements Shotable
 	 */
 	private boolean isPointOutOfBounds(Point p)
 	{
-		if (p.x < 1) { return true;}
-		if (p.y < 1) { return true;}
-		if (p.x > enemyField.SIZE) { return true;}
-		if (p.y > enemyField.SIZE) { return true;}
+		if (p.x < 1) {
+			return true;
+		}
+		if (p.y < 1) {
+			return true;
+		}
+		if (p.x > enemyField.FIELD_SIZE) {
+			return true;
+		}
+		if (p.y > enemyField.FIELD_SIZE) {
+			return true;
+		}
 
 		return false;
 	}

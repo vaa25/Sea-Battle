@@ -1,12 +1,12 @@
 package model.objects;
 
+import model.objects.field.Field;
+import model.objects.flotilla.Flotilla;
 import model.services.LocationManager;
 import model.services.ShotHandler;
 
-import java.util.ArrayList;
-
 import static model.enums.CellState.EMPTY;
-import static model.enums.CellState.FOG;
+import static model.enums.CellState.UNDEFINED;
 
 /**
  * Nick:   sobolevstp
@@ -17,39 +17,20 @@ import static model.enums.CellState.FOG;
  */
 public class Player
 {
-	public Field enemyField;
+	private Flotilla flotilla;
 	public Field playerField;
-	public ArrayList<Ship> ships;
+	public Field enemyField;
 
 	public ShotHandler shotHandler;
 	public LocationManager locationManager;
 
 	public Player()
 	{
-		enemyField = new Field(FOG);
+		flotilla = new Flotilla();
 		playerField = new Field(EMPTY);
-		ships = generateListOfShips();
+		enemyField = new Field(UNDEFINED);
 		shotHandler = new ShotHandler(playerField, enemyField);
-		locationManager = new LocationManager(playerField, ships);
-	}
-
-	/**
-	 * Метод создает массив с кораблями для игрока
-	 */
-	private ArrayList<Ship> generateListOfShips()
-	{
-		ArrayList<Ship> ships = new ArrayList<>();
-		int qt = 4;
-		int size = 1;
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < qt; j++) {
-				ships.add(new Ship(size));
-			}
-			qt--;
-			size++;
-		}
-
-		return ships;
+		locationManager = new LocationManager(playerField, flotilla);
 	}
 
 }

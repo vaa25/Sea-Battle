@@ -1,7 +1,6 @@
 package model.net;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -33,9 +32,9 @@ class Server
 			outputStream = new PrintWriter(client.getOutputStream(), true);
 
 			while ((inputMsgFromClient = inputStream.readLine()) != null) {
-				System.out.println(inputMsgFromClient);
-				outputMsgToClient = "Server: " + inputMsgFromClient;
+				outputMsgToClient = handle(inputMsgFromClient);
 				outputStream.println(outputMsgToClient);
+				outputStream.flush();
 			}
 
 			outputStream.close();
@@ -50,8 +49,25 @@ class Server
 		}
 	}
 
-	public static void main(String[] args) throws IOException
+	private String handle(String inputMsgFromClient)
 	{
-		new Server(2222).start();
+		switch (inputMsgFromClient) {
+			case "command1":
+				outputMsgToClient = "method1";
+				break;
+			case "command2":
+				outputMsgToClient = "method2";
+				break;
+			default:
+				outputMsgToClient = "no " + inputMsgFromClient + " handler";
+		}
+
+		return outputMsgToClient;
 	}
+
+	public static void main(String[] args)
+	{
+		new Server(7777).start();
+	}
+
 }

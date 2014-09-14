@@ -1,16 +1,16 @@
 package model.services;
 
-import model.objects.Cell;
-import model.objects.Field;
-import model.objects.Ship;
+import model.objects.field.Cell;
+import model.objects.field.Field;
+import model.objects.flotilla.Flotilla;
+import model.objects.flotilla.Ship;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import static model.enums.CellState.EMPTY;
-import static model.enums.CellState.SHIP;
 
+import static model.enums.CellState.SHIP;
 /**
  * Nick:   sobolevstp
  * Date:   9/1/14
@@ -20,22 +20,32 @@ import static model.enums.CellState.SHIP;
  */
 public class LocationManager
 {
-	private Field field;
-	private ArrayList<Ship> ships;
+	// TODO Logger instead System.out.println
 
-	public LocationManager(Field field)
+	private Field playerField;
+	private Flotilla playerFlotilla;
+
+	public LocationManager(Field playerField, Flotilla playerFlotilla)
 	{
-		this.field = field;
+		this.playerField = playerField;
+		this.playerFlotilla = playerFlotilla;
 	}
 
-	public LocationManager(Field field, ArrayList<Ship> ships)
+	/**
+	 * Обнуляем состояние поля и убираем оттуда все корабли.
+	 */
+	public void resetField()
 	{
-		this.field = field;
-		this.ships = ships;
+		playerField.reset();
+		playerFlotilla.reset();
 	}
 
 	/**
 	 * Метод размещает корабль на поле
+	 *
+	 * @param ship корабль, который надо разместить на поле
+	 * @param p точка начала размещения корабля на поле
+	 * @return разместился ли корабль или нет
 	 */
 	public boolean locateShipToField(Ship ship, Point p)
 	{
@@ -63,18 +73,14 @@ public class LocationManager
 
 		// изменяем состояние ячеек под кораблем и присваиваем им ссылку на корабль
 		for (Point locationPoint : shipLocation) {
-			Cell locationCell = field.getCell(locationPoint);
+			Cell locationCell = playerField.getCell(locationPoint);
 			locationCell.state = SHIP;
 			locationCell.locatedShip = ship;
 		}
 
-		// обнуляем локацию корабля
-		ship.location.clear();
-
-
 		// присваиваем кораблю ссылки на ячейки для проверки своего состояния
 		for (Point locationPoint : shipLocation) {
-			ship.location.add(field.getCell(locationPoint));
+			ship.addCellToLocation(playerField.getCell(locationPoint));
 		}
 
 		return true;
@@ -91,12 +97,12 @@ public class LocationManager
 
 		switch (ship.layout) {
 			case VERTICAL:
-				for (int y = p.y; y < (p.y + ship.SIZE); y++) {
+				for (int y = p.y; y < (p.y + ship.SHIP_SIZE); y++) {
 					location.add(new Point(p.x, y));
 				}
 				break;
 			case HORIZONTAL:
-				for (int x = p.x; x < (p.x + ship.SIZE); x++) {
+				for (int x = p.x; x < (p.x + ship.SHIP_SIZE); x++) {
 					location.add(new Point(x, p.y));
 				}
 				break;
@@ -111,7 +117,9 @@ public class LocationManager
 	private boolean checkLocationOutOfBounds(LinkedList<Point> location)
 	{
 		for (Point p : location) {
-			if (checkPointOutOfBounds(p)) {return true;}
+			if (isPointOutOfBounds(p)) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -119,12 +127,20 @@ public class LocationManager
 	/**
 	 * Метод проверяет не выходят ли координаты точки за рамки поля
 	 */
-	private boolean checkPointOutOfBounds(Point p)
+	private boolean isPointOutOfBounds(Point p)
 	{
-		if (p.x < 1) { return true;}
-		if (p.y < 1) { return true;}
-		if (p.x > field.SIZE) { return true;}
-		if (p.y > field.SIZE) { return true;}
+		if (p.x < 1) {
+			return true;
+		}
+		if (p.y < 1) {
+			return true;
+		}
+		if (p.x > playerField.FIELD_SIZE) {
+			return true;
+		}
+		if (p.y > playerField.FIELD_SIZE) {
+			return true;
+		}
 
 		return false;
 	}
@@ -138,7 +154,7 @@ public class LocationManager
 	private boolean checkLocationAvailability(LinkedList<Point> location)
 	{
 		for (Point p : location) {
-			if (field.getCell(p).state != EMPTY) {
+			if (playerField.getCell(p).state != EMPTY) {
 				return false;
 			}
 		}
@@ -166,7 +182,7 @@ public class LocationManager
 		// линия направо
 		for (int x = x1; x <= x2; x++) {
 			Point p = new Point(x, y1);
-			if (!checkPointOutOfBounds(p)) {
+			if (!isPointOutOfBounds(p)) {
 				outlineRectangle.add(p);
 			}
 		}
@@ -174,7 +190,7 @@ public class LocationManager
 		// продолжение линии вниз
 		for (int y = y1 + 1; y <= y2; y++) {
 			Point p = new Point(x2, y);
-			if (!checkPointOutOfBounds(p)) {
+			if (!isPointOutOfBounds(p)) {
 				outlineRectangle.add(p);
 			}
 		}
@@ -182,7 +198,7 @@ public class LocationManager
 		// продолжение линии налево
 		for (int x = x2 - 1; x >= x1; x--) {
 			Point p = new Point(x, y2);
-			if (!checkPointOutOfBounds(p)) {
+			if (!isPointOutOfBounds(p)) {
 				outlineRectangle.add(p);
 			}
 		}
@@ -190,7 +206,7 @@ public class LocationManager
 		// продолжение линии вверх
 		for (int y = y2 - 1; y > y1; y--) {
 			Point p = new Point(x1, y);
-			if (!checkPointOutOfBounds(p)) {
+			if (!isPointOutOfBounds(p)) {
 				outlineRectangle.add(p);
 			}
 		}
@@ -210,12 +226,23 @@ public class LocationManager
 			return false;
 		}
 
-		for (Cell cell : ship.location) {
-			cell.state = EMPTY;
-			cell.locatedShip = null;
-		}
-		ship.location.clear();
+		ship.clearLocation();
 
+		return true;
+	}
+
+	/**
+	 * Метод проверяет, расставил ли игрок все свои корабли на поле;
+	 *
+	 * @return - true, если все корабли размещены на поле, и false, если хоть один корабль не размещен на поле;
+	 */
+	public boolean isAllShipsLocated()
+	{
+		for (Ship ship : playerFlotilla.ships) {
+			if (!ship.isLocated()) {
+				return false;
+			}
+		}
 		return true;
 	}
 
@@ -227,53 +254,14 @@ public class LocationManager
 	 */
 	public Ship getShipForLocation(int shipSize)
 	{
-		for (Ship ship : ships) {
-			if (ship.SIZE == shipSize) {
+		for (Ship ship : playerFlotilla.ships) {
+			if (ship.SHIP_SIZE == shipSize) {
 				if (!ship.isLocated()) {
 					return ship;
 				}
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Метод проверяет, готов ли игрок к игре,
-	 * т.е. расставил ли он все корабли на поле
-	 *
-	 * @return - true, если все корабли размещены на поле, и false, если хоть один корабль не размещен на поле;
-	 */
-	public boolean isPlayerReadyForGame()
-	{
-		for (Ship ship : ships) {
-			if (ship.location.isEmpty()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Метод очищает поле от кораблей и присваивает всем ячейкам статус пустой
-	 */
-	public void clearField()
-	{
-		ArrayList<Point> allPossiblePoints = new ArrayList<Point>();
-		for (int i = 1; i <= field.SIZE; i++) {
-			for (int j = 1; j <= field.SIZE; j++) {
-				allPossiblePoints.add(new Point(i, j));
-			}
-		}
-
-		for (Point p : allPossiblePoints) {
-			Cell cell = field.getCell(p);
-			cell.state = EMPTY;
-			cell.locatedShip = null;
-		}
-
-		for (Ship ship : ships) {
-			ship.location.clear();
-		}
 	}
 
 }

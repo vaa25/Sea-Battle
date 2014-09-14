@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-
 class Client
 {
 	private Socket clientSocket;
@@ -34,7 +33,7 @@ class Client
 
 			while ((outputMsgToServer = userInput.readLine()) != null) {
 				outputStream.println(outputMsgToServer);
-
+				outputStream.flush();
 				inputMsgFromServer = inputStream.readLine();
 				System.out.println(inputMsgFromServer);
 			}
@@ -51,6 +50,6 @@ class Client
 
 	public static void main(String[] args)
 	{
-		new Client("localhost", 2222).start();
+		new Client("localhost", 7777).start();
 	}
 }

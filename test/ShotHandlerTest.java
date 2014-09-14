@@ -1,15 +1,14 @@
 import model.enums.CellState;
 import model.enums.ShotResult;
-import model.objects.Field;
 import model.objects.Player;
-import model.objects.Ship;
+import model.objects.field.Field;
+import model.objects.flotilla.Ship;
 import model.services.LocationManager;
 import model.services.ShotHandler;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.*;
-import java.util.LinkedList;
 
 import static model.enums.CellState.*;
 import static model.enums.ShotResult.*;
@@ -97,7 +96,7 @@ public class ShotHandlerTest
 	{
 		Point shotPoint = new Point(1, 1);
 		ShotResult expectedResult = MISS;
-		ShotResult actualResult = player1.shotHandler.shot(player2.shotHandler, shotPoint);
+		ShotResult actualResult = player2.shotHandler.getShot(shotPoint);
 		assertEquals(expectedResult, actualResult);
 	}
 
@@ -108,7 +107,7 @@ public class ShotHandlerTest
 		Ship ship = new Ship(2);
 		player2.locationManager.locateShipToField(ship, shotPoint);
 		ShotResult expectedResult = HIT;
-		ShotResult actualResult = player1.shotHandler.shot(player2.shotHandler, shotPoint);
+		ShotResult actualResult = player2.shotHandler.getShot(shotPoint);
 		assertEquals(expectedResult, actualResult);
 	}
 
@@ -124,16 +123,8 @@ public class ShotHandlerTest
 
 		Point shotPoint = locatePoint;
 		ShotResult expectedResult = DESTROY;
-		ShotResult actualResult = player1.shotHandler.shot(player2.shotHandler, shotPoint);
+		ShotResult actualResult = player2.shotHandler.getShot(shotPoint);
 		assertEquals(expectedResult, actualResult);
 
-	}
-
-
-	public static void main(String[] args)
-	{
-		LinkedList<Point> points = new LinkedList<>();
-		points.addFirst(new Point(1, 1));
-		points.getFirst();
 	}
 }

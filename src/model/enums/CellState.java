@@ -10,11 +10,11 @@ package model.enums;
 
 public enum CellState
 {
-	FOG,          // туман, будет использоваться для отображения вражеского поля
-	EMPTY,        // пустая
-	SHELLED,      // обстрелянная
-	SHIP,         // корабль
-	DAMAGED_SHIP, // раненный корабль
-	DESTROYED_SHIP,  // убитый корабль
-	OUTLINE       // контур корабля
+	EMPTY,         // пустая
+	SHELLED,       // обстрелянная
+	OUTLINE,       // контур корабля
+	SHIP,          // корабль
+	DAMAGED_SHIP,  // раненный корабль
+	DESTROYED_SHIP,// убитый корабль
+	UNDEFINED,     // неизвестно
 }
