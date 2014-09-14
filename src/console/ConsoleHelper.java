@@ -58,8 +58,8 @@ public class ConsoleHelper {
         for(int i = 0; i < field.getHeight(); i++){
             for(int j = 0; j < field.getWidth(); j++){
                 if(matrix[i][j] == EMPTY_CELL || matrix[i][j] == ALIVE_CELL) System.out.print(" . ");
-                else if (matrix[i][j] == HIT_CELL) System.out.print(" \u2605 ");
-                else if (matrix[i][j] == MISSED_CELL) System.out.print(" \u26aa ");
+                else if (matrix[i][j] == HIT_CELL) System.out.print(" X ");
+                else if (matrix[i][j] == MISSED_CELL) System.out.print(" o ");
             }
             System.out.println();
         }

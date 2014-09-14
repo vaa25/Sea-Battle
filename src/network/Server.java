@@ -5,6 +5,7 @@ package network;
  * User: Alexey Nerodenko
  * Date: 02.09.14
  */
+import console.ConsoleHelper;
 import model.Cell;
 import model.Game;
 import model.Player;
@@ -15,6 +16,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Server implements Runnable{
     ServerSocket serverSocket;
@@ -25,7 +27,7 @@ public class Server implements Runnable{
 
     public void run() {
         try {
-            serverSocket = new ServerSocket(6000, 100);
+            serverSocket = new ServerSocket(746, 100);
         } catch (IOException e) {
             System.err.println("Invalid port number");
         }
@@ -78,8 +80,16 @@ public class Server implements Runnable{
     }
 
     public void keepConnectionAlive() {
-        while(!isClientDisconnected){
+        while(!isClientDisconnected){}
 
+    }
+
+    public void sendData(String s) {
+        try {
+            output.writeObject(s);
+            output.flush();
+        } catch (IOException e) {
+            System.err.println("Error writing the message");
         }
     }
 

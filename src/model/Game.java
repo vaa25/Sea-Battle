@@ -1,6 +1,8 @@
 package model;
 
 import console.ConsoleHelper;
+import network.ChatClient;
+import network.ChatServer;
 import network.Client;
 import network.Server;
 
@@ -43,20 +45,27 @@ public class Game implements Runnable {
                     } catch (InterruptedException e) { e.printStackTrace(); }
                 }
                 playerRemote = server.receivePlayer();
+
                 int order = 1;
                 while (!isGameOver()) {
+                    new Thread(new ChatServer(server)).start();
+                    synchronized (seaBattle){
+                        try {
+                            seaBattle.wait();
+                        } catch (InterruptedException e) { e.printStackTrace(); }
+                    }
                     switch (order) {
                         case 1:
                             Cell shootCell = player.shootCell();
                             server.sendCell(shootCell);
                             server.sendPlayer(player);
                             if (playerRemote.isShipDamaged(shootCell)) { break; }
-                            else { order = 2; }
+                            else { order = 2; break; }
                         case 2:
                             shootCell = server.receiveCell();
                             playerRemote = server.receivePlayer();
                             if (player.isShipDamaged(shootCell)) { break; }
-                            else { order = 1; }
+                            else { order = 1; break; }
                     }
                 }
                 break;
@@ -69,20 +78,27 @@ public class Game implements Runnable {
                     } catch (InterruptedException e) { e.printStackTrace(); }
                 }
                 client.sendPlayer(player);
+
                 order = 1;
                 while (!isGameOver()) {
+                    new Thread(new ChatClient(client)).start();
+                    synchronized (seaBattle){
+                        try {
+                            seaBattle.wait();
+                        } catch (InterruptedException e) { e.printStackTrace(); }
+                    }
                     switch (order) {
                         case 1:
                             Cell shootCell = client.receiveCell();
                             playerRemote = client.receivePlayer();
                             if (player.isShipDamaged(shootCell)) { break; }
-                            else { order = 2; }
+                            else { order = 2; break; }
                         case 2:
                             shootCell = player.shootCell();
                             client.sendCell(shootCell);
                             client.sendPlayer(player);
                             if (playerRemote.isShipDamaged(shootCell)) { break; }
-                            else { order = 1; }
+                            else { order = 1; break; }
                     }
                 }
                 break;
