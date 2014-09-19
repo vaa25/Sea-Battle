@@ -13,7 +13,7 @@ import network.Server;
  */
 
 public class Game implements Runnable {
-    private Player player = new Player("SERVER");
+    private Player player = new Player();
     private Player playerRemote;
 
     public Game(int width, int height){
@@ -26,6 +26,9 @@ public class Game implements Runnable {
     }
 
     public void run(){
+
+        ConsoleHelper.printMessage("Please input player's name: ");
+        player.setName(ConsoleHelper.getUserInput());
 
         for(Ship ship : player.getShips()){
             player.getField().randomlyPutShip(ship);
@@ -48,12 +51,7 @@ public class Game implements Runnable {
 
                 int order = 1;
                 while (!isGameOver()) {
-                    new Thread(new ChatServer(server)).start();
-                    synchronized (seaBattle){
-                        try {
-                            seaBattle.wait();
-                        } catch (InterruptedException e) { e.printStackTrace(); }
-                    }
+                    new ChatServer(server).run();
                     switch (order) {
                         case 1:
                             Cell shootCell = player.shootCell();
@@ -81,12 +79,7 @@ public class Game implements Runnable {
 
                 order = 1;
                 while (!isGameOver()) {
-                    new Thread(new ChatClient(client)).start();
-                    synchronized (seaBattle){
-                        try {
-                            seaBattle.wait();
-                        } catch (InterruptedException e) { e.printStackTrace(); }
-                    }
+                    new ChatClient(client).run();
                     switch (order) {
                         case 1:
                             Cell shootCell = client.receiveCell();

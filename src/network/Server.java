@@ -27,7 +27,7 @@ public class Server implements Runnable{
 
     public void run() {
         try {
-            serverSocket = new ServerSocket(746, 100);
+            serverSocket = new ServerSocket(6000, 100);
         } catch (IOException e) {
             System.err.println("Invalid port number");
         }

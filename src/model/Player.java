@@ -17,8 +17,7 @@ public class Player implements Serializable{
     private ArrayList<Cell> madeShots = new ArrayList<>();
     private ArrayList<Ship> ships = new ArrayList<>();
 
-    public Player(String name) {
-        this.name = name;
+    public Player() {
         for(int i = 4; i > 0; i--){
             for(int j = i; j < 5; j++){
                 ships.add(new Ship(i));
@@ -61,6 +60,8 @@ public class Player implements Serializable{
     public int numberOfShip(){
         return ships.size();
     }
+
+    public void setName(String name) { this.name = name; }
 
     public void setField(Field field) {
         this.field = field;

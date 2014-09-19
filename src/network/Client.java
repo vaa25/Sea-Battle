@@ -21,7 +21,7 @@ public class Client implements Runnable {
     Socket clientSocket;
     ObjectOutputStream output;
     ObjectInputStream input;
-    String serverAddress = "192.168.1.35";
+    String serverAddress = "127.0.0.1";
     boolean isServerDisconnected;
 
     public void run() {
@@ -34,7 +34,7 @@ public class Client implements Runnable {
     public void connect2Server() {
         System.out.println("Trying to connect to the server");
         try {
-            clientSocket = new Socket(serverAddress, 746);
+            clientSocket = new Socket(serverAddress, 6000);
         } catch (UnknownHostException e) {
             System.err.println("Server unavailable");
             System.exit(1);

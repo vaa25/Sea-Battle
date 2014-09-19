@@ -19,7 +19,6 @@ public class ChatServer implements Runnable {
 
     @Override
     public void run() {
-        synchronized (Game.seaBattle) {
             Thread sendThread = new Thread(new Runnable() {
                 InputStreamReader inputStream = new InputStreamReader(System.in);
                 BufferedReader bufferedReader = new BufferedReader(inputStream);
@@ -53,7 +52,6 @@ public class ChatServer implements Runnable {
                             server.sendData(inputMessage);
                             sendThread.interrupt();
                         }
-                        Game.seaBattle.notify();
                         break;
                     }
                     System.out.println(inputMessage);
@@ -63,7 +61,6 @@ public class ChatServer implements Runnable {
                     e.printStackTrace();
                 }
             }
-        }
 
     }
 }

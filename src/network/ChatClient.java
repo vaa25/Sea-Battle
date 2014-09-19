@@ -16,7 +16,6 @@ public class ChatClient implements Runnable {
     }
 
     public void run() {
-        synchronized (Game.seaBattle) {
             String inputMessage = "";
             Thread sendThread = new Thread(new Runnable() {
                 InputStreamReader inputStream = new InputStreamReader(System.in);
@@ -51,17 +50,15 @@ public class ChatClient implements Runnable {
                             client.sendData(inputMessage);
                             sendThread.interrupt();
                         }
-                        Game.seaBattle.notify();
                         break;
                     }
                     System.out.println(inputMessage);
                 } catch (ClassNotFoundException e) {
-                    System.err.println("Object of an unknown type was recieved");
+                    System.err.println("Object of an unknown type was received");
                 } catch (IOException e) {
                     e.printStackTrace();
                     System.exit(1);
                 }
             }
-        }
     }
 }
