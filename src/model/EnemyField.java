@@ -32,7 +32,7 @@ public class EnemyField extends Field {
         addKilled();
         Ship killedShip = reconstructKilledShip(coord);
         place(killedShip);
-        reconstructedShips.add(killedShip);
+//        reconstructedShips.add(killedShip);
         return killedShip;
     }
 
@@ -49,6 +49,8 @@ public class EnemyField extends Field {
      *
      * @return
      */
+
+
     public Ship reconstructKilledShip(Coord shootCoord) {
         Set<Coord> wrecks = new HashSet<>();
         searchWrecks(wrecks, shootCoord);

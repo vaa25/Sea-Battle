@@ -7,6 +7,8 @@ package view;/**
  * @author Alexander Vlasov
  */
 
+import common.Coord;
+import controller.Controller;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,32 +16,43 @@ import javafx.geometry.Orientation;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class DesktopView extends Application implements View {
+    private Controller controller;
     private int width, height;
-    private Pane[][] myPanes;
-    private Pane[][] enemyPanes;
+    private Cell[][] myPanes;
+    private Cell[][] enemyPanes;
     private Image empty;
     private Rectangle ship;
     private Rectangle missed;
     private Rectangle hurt;
     private Rectangle canPlace;
     private Rectangle notCanPlace;
+    private int gap = 10;
+    private int[] shipSizes;
+    private int[] shipCounts;
+    private int shipAmount;
+    private GridPane myField;
+    private GridPane enemyField;
+    private FlowPane editPane;
+    private FlowPane playingPane;
+    private Rectangle[] editShips;
+    private boolean editModeOn;
+    private ToggleGroup toggleGroup;
+    private boolean ctrlPressed;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -49,8 +62,11 @@ public class DesktopView extends Application implements View {
 //        empty=new Image("resources/emptyCell.bmp");
         width = 20;
         height = 20;
-        myPanes = new Pane[width][height];
-        enemyPanes = new Pane[width][height];
+        shipAmount = 10;
+        shipSizes = new int[]{4, 3, 2, 1};
+        shipCounts = new int[]{1, 2, 3, 4,};
+        myPanes = new Cell[width][height];
+        enemyPanes = new Cell[width][height];
         createEmpty();
         createHurt();
         createMissed();
@@ -66,6 +82,46 @@ public class DesktopView extends Application implements View {
         primaryStage.setScene(scene);
         primaryStage.show();
 
+
+        BorderPane borderPane = new BorderPane();
+        borderPane.setTop(createMenu());
+
+        playingPane = new FlowPane(Orientation.HORIZONTAL, gap, gap);
+        myField = createField();
+        enemyField = createField();
+        paintField(myField, myPanes);
+        paintField(enemyField, enemyPanes);
+
+        editPane = createEditShips();
+        playingPane.getChildren().addAll(myField, enemyField, editPane);
+//        playingPane.autosize();
+        borderPane.setCenter(playingPane);
+
+        playingPane.getChildren().remove(enemyField);
+        root.getChildren().addAll(borderPane);
+        root.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                ctrlPressed = keyEvent.isControlDown();
+            }
+        });
+        root.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                ctrlPressed = keyEvent.isControlDown();
+            }
+        });
+    }
+
+    private GridPane createField() {
+        GridPane field = new GridPane();
+        field.setMinSize(200, 200);
+        field.setPrefSize(200, 200);
+        field.setMaxSize(200, 200);
+        return field;
+    }
+
+    private MenuBar createMenu() {
         MenuBar menuBar = new MenuBar();
         menuBar.setLayoutX(10);
         menuBar.setLayoutY(10);
@@ -137,50 +193,87 @@ public class DesktopView extends Application implements View {
         menuPlayer.getItems().addAll(menuItemPlayerInfo);
 
         menuBar.getMenus().addAll(menuFile, menuNet, menuPlayer);
-
-        BorderPane borderPane = new BorderPane();
-        borderPane.setTop(menuBar);
-
-        FlowPane playingPane = new FlowPane(Orientation.HORIZONTAL);
-        GridPane myField = new GridPane();
-        GridPane enemyField = new GridPane();
-
-        myField.setMinSize(200, 200);
-        myField.setPrefSize(200, 200);
-        myField.setMaxSize(200, 200);
-        enemyField.setMinSize(200, 200);
-        enemyField.setPrefSize(200, 200);
-        enemyField.setMaxSize(200, 200);
-        createField(myField, myPanes);
-        createField(enemyField, enemyPanes);
-        playingPane.getChildren().addAll(myField, enemyField);
-        playingPane.setHgap(10);
-//        playingPane.autosize();
-        borderPane.setCenter(playingPane);
-        enemyField.setVisible(false);
-        root.getChildren().addAll(borderPane);
+        return menuBar;
     }
 
-    private void createField(GridPane field, Pane[][] panes) {
+    private void setPlayingMode(boolean mode) {
+
+        if (mode) playingPane.getChildren().addAll(enemyField);
+        else playingPane.getChildren().remove(enemyField);
+
+    }
+
+    private void setEditMode(boolean mode) {
+        editModeOn = mode;
+        if (mode) playingPane.getChildren().addAll(editPane);
+        else playingPane.getChildren().remove(editPane);
+    }
+
+    private FlowPane createEditShips() {
+        editShips = new Rectangle[shipCounts.length];
+        toggleGroup = new ToggleGroup();
+        RadioButton button;
+        FlowPane core = new FlowPane(Orientation.VERTICAL, gap, gap);
+        core.setMinSize(200, 200);
+        core.setPrefSize(200, 200);
+        core.setMaxSize(200, 200);
+        for (int i = 0; i < shipCounts.length; i++) {
+            RadioButton editShip = createEditShip(shipSizes[i], shipCounts[i]);
+            editShip.setToggleGroup(toggleGroup);
+            core.getChildren().addAll(editShip);
+        }
+        toggleGroup.selectToggle(toggleGroup.getToggles().get(0));
+        return core;
+    }
+
+    private RadioButton createEditShip(int size, int amount) {
+        RadioButton button = new RadioButton(String.valueOf(amount));
+        Ship ship = new Ship(size);
+        button.setGraphic(ship);
+        return button;
+    }
+
+    private void sendEditShip(Ship ship, Coord coord) {
+
+    }
+
+    private void paintField(GridPane field, Cell[][] cells) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                Pane pane = new Pane();
-                pane.setMinSize(10, 10);
-                pane.setPrefSize(10, 10);
-                pane.setMaxSize(10, 10);
-                pane.getChildren().addAll(createEmpty());
-
-                pane.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                Cell cell = new Cell();
+                cell.setMinSize(10, 10);
+                cell.setPrefSize(10, 10);
+                cell.setMaxSize(10, 10);
+                cell.getChildren().addAll(createEmpty());
+                cell.setOnKeyPressed(new EventHandler<KeyEvent>() {
                     @Override
-                    public void handle(MouseEvent event) {
-                        Pane source = (Pane) event.getSource();
-
-//                        source.getChildren().set(0,canSet);
-                        System.out.println(source.getChildren().toString());
+                    public void handle(KeyEvent keyEvent) {
+                        ctrlPressed = keyEvent.isControlDown();
                     }
                 });
-                panes[i][j] = pane;
-                field.add(pane, i, j);
+                cell.setOnKeyReleased(new EventHandler<KeyEvent>() {
+                    @Override
+                    public void handle(KeyEvent keyEvent) {
+                        ctrlPressed = keyEvent.isControlDown();
+                    }
+                });
+                cell.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        Cell source = (Cell) event.getSource();
+                        if (editModeOn) {
+                            Ship ship1 = (Ship) ((RadioButton) toggleGroup.getSelectedToggle()).getGraphic();
+                            if (ctrlPressed) ship1.setDirection(Ship.Direction.Vertical);
+                            else ship1.setDirection(Ship.Direction.Horizontal);
+//                            controller.canPlaceShip(source.getCoord(),
+//                                    System.out.println(source.getCoord());
+                        }
+
+                    }
+                });
+                cell.setCoord(new Coord(i, j));
+                cells[i][j] = cell;
+                field.add(cell, i, j);
             }
         }
         System.out.println();
@@ -222,7 +315,14 @@ public class DesktopView extends Application implements View {
         return rectangle;
     }
 
-    private void getNetwork() {
 
+    @Override
+    public void show(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void setController(Controller controller) {
+        this.controller = controller;
     }
 }

@@ -43,9 +43,6 @@ public class ObjectReceiver implements Runnable {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
                 break;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                break;
             }
         }
         System.out.println(Thread.currentThread().getName() + " ObjectReceiver (" + Thread.currentThread().getName() + ") returns");

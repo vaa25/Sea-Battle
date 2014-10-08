@@ -79,6 +79,7 @@ public class ShipTest extends TestCase {
                 new Coord(4, 5),
                 new Coord(5, 5),
         };
+//        assertNull(ship3.getShipCoords()[0]);
         ship3.setCoords(leftUp);
         assertEquals(coordsH, ship3.getShipCoords());
         coordsH[0] = coordsH[0].getLeft();

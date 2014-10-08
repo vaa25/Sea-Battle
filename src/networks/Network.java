@@ -18,8 +18,15 @@ public class Network {
     private ObjectReceiver receiver;
     private Thread receiverThread;
     private ObjectParser parser;
+    private InetAddress host;
+    private int port;
 
-    public Network(InetAddress host, int port) throws IOException {
+    public Network(InetAddress host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
+    public void connect() throws IOException {
         if (!setClientConnection(host, port)) setServerConnection(port);
 //        System.out.println( "Пытаюсь создать исходящий поток");
         out = new ObjectOutputStream(conn.getOutputStream());
