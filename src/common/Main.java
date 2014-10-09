@@ -7,6 +7,8 @@ import model.Ship;
 import networks.Network;
 import networks.ObjectParser;
 import networks.ObjectSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -23,6 +25,7 @@ public class Main implements Runnable {
     private Network network;
     private ObjectParser parser;
     private ObjectSender sender;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Main(String name) {
         player = new Player(10, 10, name);
@@ -121,22 +124,22 @@ public class Main implements Runnable {
     }
 
     private Object takeObject(Class clazz) {
-        System.out.println(getName() + " пытаюсь принять класс " + clazz);
+        logger.info(getName() + " пытаюсь принять класс ", clazz);
         Object object = null;
 //        try {
 //            object = clazz.newInstance();
 //        } catch (InstantiationException e) {
-//            e.printStackTrace();
+//            logger.error("InstantiationException: ",e);
 //        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
+//            logger.error("IllegalAccessException: ",e);
 //        }
 
         try {
             object = parser.take(clazz);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("InterruptedException: ", e);
         }
-        System.out.println(getName() + " принял объект " + object);
+        logger.info(getName() + " принял объект ", object);
         return object;
     }
 

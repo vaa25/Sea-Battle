@@ -1,5 +1,8 @@
 package networks;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -9,6 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class ObjectParser {
     private ConcurrentHashMap<Class, BlockingQueue> map;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public ObjectParser() {
         this.map = new ConcurrentHashMap<>();
@@ -16,7 +20,7 @@ public class ObjectParser {
 
     public Object take(Class clazz) throws InterruptedException {
         Object object = getQueue(clazz).take();
-        System.out.println(Thread.currentThread().getName() + " ObjectParser успешно take " + object);
+        logger.info(Thread.currentThread().getName() + " ObjectParser успешно take " + object);
         return object;
     }
 
@@ -29,7 +33,7 @@ public class ObjectParser {
     public void put(Object object) {
         Class clazz = object.getClass();
         getQueue(clazz).add(object);
-        System.out.println(Thread.currentThread().getName() + " ObjectParser успешно put " + object);
+        logger.info(Thread.currentThread().getName() + " ObjectParser успешно put " + object);
     }
 
 //    public static void main(String[] args) throws InterruptedException {

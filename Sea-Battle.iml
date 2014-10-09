@@ -10,6 +10,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="junit4" level="project" />
     <orderEntry type="library" name="mockito-1.9" level="project" />
+    <orderEntry type="library" name="logback-1.1" level="project" />
+    <orderEntry type="library" name="slf4j-1.7" level="project" />
   </component>
 </module>
 

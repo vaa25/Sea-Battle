@@ -1,5 +1,8 @@
 package networks;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Посылает раз в 20 секунд пустой Message чтобы соединение не отвалилось
  *
@@ -7,7 +10,7 @@ package networks;
  */
 public class HeartBeatSender implements Runnable {
     private ObjectSender sender;
-
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     //    private boolean interrupt;
     public HeartBeatSender(ObjectSender sender) {
         this.sender = sender;
@@ -19,24 +22,24 @@ public class HeartBeatSender implements Runnable {
             try {
                 Thread.sleep(20000);
             } catch (InterruptedException e) {
-                System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") InterruptedException: sleep interrupted ");
+                logger.error("HeartBeatSender (" + Thread.currentThread().getName() + ") InterruptedException: sleep interrupted ");
                 break;
             }
 
-//            System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") interrupt == " + interrupt);
+//            logger.info("HeartBeatSender (" + Thread.currentThread().getName() + ") interrupt == " + interrupt);
 //            if (!interrupt) {
             sender.sendMessage(Special.HeartBeat);
 //            } else {
-//                System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") must return = " + interrupt);
+//                logger.info("HeartBeatSender (" + Thread.currentThread().getName() + ") must return = " + interrupt);
 //                break;
 //            }
 
         }
-//        System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ") returns");
+//        logger.info("HeartBeatSender (" + Thread.currentThread().getName() + ") returns");
     }
 
 //    public void interrupt() {
-//        System.out.println("NoTimeOut (" + Thread.currentThread().getName() + ")set interrupt = true");
+//        logger.info("HeartBeatSender (" + Thread.currentThread().getName() + ")set interrupt = true");
 //        interrupt = true;
 //        Thread.currentThread().interrupt();
 //    }
