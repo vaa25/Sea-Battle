@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/2.2">
+    <children>
+        <TabPane layoutX="14.0" layoutY="14.0" prefHeight="217.0" prefWidth="572.0" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab fx:id="gameTab" text="Игра">
+                    <content>
+                        <AnchorPane id="Content" fx:id="playingArea" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+                                    prefWidth="200.0">
+                            <children>
+                                <GridPane id="" fx:id="myField" focusTraversable="true" gridLinesVisible="true"
+                                          layoutX="14.0" layoutY="15.0" prefHeight="157.0" prefWidth="187.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints maxHeight="15.0" minHeight="10.0" prefHeight="15.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="15.0" minHeight="10.0" prefHeight="15.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="15.0" minHeight="10.0" prefHeight="15.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                </GridPane>
+                                <GridPane id="" focusTraversable="true" gridLinesVisible="true" layoutX="219.0"
+                                          layoutY="15.0" prefHeight="157.0" prefWidth="187.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints maxHeight="15.0" minHeight="10.0" prefHeight="15.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="15.0" minHeight="10.0" prefHeight="15.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="15.0" minHeight="10.0" prefHeight="15.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                </GridPane>
+                                <Button fx:id="startButton" cancelButton="false" defaultButton="false" layoutX="419.0"
+                                        layoutY="15.0" mnemonicParsing="false" prefWidth="139.0" text="Начать"
+                                        textAlignment="LEFT" textOverrun="CLIP" underline="false"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="editTab" text="Редактирование">
+                    <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <RadioButton id="fourDeckRB" fx:id="radioDeck4" layoutX="220.0" layoutY="15.0"
+                                             mnemonicParsing="false" selected="true" text="1" textAlignment="RIGHT"
+                                             wrapText="true">
+                                    <toggleGroup>
+                                        <ToggleGroup fx:id="toggleDeck"/>
+                                    </toggleGroup>
+                                </RadioButton>
+                                <RadioButton fx:id="radioDeck3" layoutX="220.0" layoutY="31.0" mnemonicParsing="false"
+                                             selected="false" text="2" toggleGroup="$toggleDeck"/>
+                                <RadioButton fx:id="radioDeck1" layoutX="220.0" layoutY="63.0" mnemonicParsing="false"
+                                             selected="false" text="4" toggleGroup="$toggleDeck"/>
+                                <RadioButton fx:id="radioDeck2" layoutX="220.0" layoutY="47.0" mnemonicParsing="false"
+                                             selected="false" text="3" toggleGroup="$toggleDeck"/>
+                                <GridPane id="" focusTraversable="true" gridLinesVisible="true" layoutX="14.0"
+                                          layoutY="14.0" prefHeight="157.0" prefWidth="186.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints maxHeight="15.0" minHeight="10.0" prefHeight="15.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="15.0" minHeight="10.0" prefHeight="15.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="15.0" minHeight="10.0" prefHeight="15.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="16.0" minHeight="10.0" prefHeight="16.0"
+                                                        vgrow="SOMETIMES"/>
+                                    </rowConstraints>
+                                </GridPane>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="networkTab" text="Сеть">
+                    <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <RadioButton layoutX="14.0" layoutY="14.0" mnemonicParsing="false" selected="true"
+                                             text="Без сервера">
+                                    <toggleGroup>
+                                        <ToggleGroup fx:id="toggleServer"/>
+                                    </toggleGroup>
+                                </RadioButton>
+                                <RadioButton layoutX="286.0" layoutY="14.0" mnemonicParsing="false" selected="false"
+                                             text="С сервером" toggleGroup="$toggleServer"/>
+                                <RadioButton layoutX="14.0" layoutY="54.0" mnemonicParsing="false" selected="true"
+                                             text="Ожидать подключение">
+                                    <toggleGroup>
+                                        <ToggleGroup fx:id="toggleConnection"/>
+                                    </toggleGroup>
+                                </RadioButton>
+                                <RadioButton layoutX="14.0" layoutY="70.0" mnemonicParsing="false" text="Подключиться"
+                                             toggleGroup="$toggleConnection"/>
+                                <TextField layoutX="14.0" layoutY="86.0" prefWidth="200.0"
+                                           promptText="Введите IP адрес"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="miscTab" text="Разное">
+                    <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <TextField fx:id="nameTextField" layoutX="14.0" layoutY="14.0" prefWidth="200.0"
+                                           promptText="Имя"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+        <SplitPane id="SplitPane" fx:id="chatSplitPane" dividerPositions="0.7272727272727273" layoutX="14.0"
+                   layoutY="260.0" orientation="VERTICAL">
+            <items>
+                <TextArea id="" fx:id="chatArea" editable="false" focusTraversable="false" prefHeight="88.0"
+                          prefWidth="572.0" promptText="Чат" wrapText="true"/>
+                <TextArea fx:id="editChatArea" prefHeight="38.0" prefWidth="572.0" wrapText="true"/>
+            </items>
+        </SplitPane>
+    </children>
+</AnchorPane>
