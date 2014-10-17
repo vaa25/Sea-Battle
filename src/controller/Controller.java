@@ -1,6 +1,7 @@
 package controller;
 
 import model.Player;
+import model.Ship;
 import networks.Network;
 import view.DesktopView;
 import view.View;
@@ -33,5 +34,9 @@ public class Controller {
                 new Player(20, 20, "Player 1"),
                 new Network(InetAddress.getLocalHost(), 10000));
         controller.startGame();
+    }
+
+    public boolean canPlaceShip(Ship ship) {
+        return player.canPlaceShip(ship);
     }
 }

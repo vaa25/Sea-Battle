@@ -12,7 +12,6 @@ import controller.Controller;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Orientation;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -21,7 +20,6 @@ import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -32,8 +30,8 @@ import javafx.stage.Stage;
 public class DesktopView extends Application implements View {
     private Controller controller;
     private int width, height;
-    private Cell[][] myPanes;
-    private Cell[][] enemyPanes;
+    private CellImage[][] myPanes;
+    private CellImage[][] enemyPanes;
     private Image empty;
     private Rectangle ship;
     private Rectangle missed;
@@ -65,14 +63,9 @@ public class DesktopView extends Application implements View {
         shipAmount = 10;
         shipSizes = new int[]{4, 3, 2, 1};
         shipCounts = new int[]{1, 2, 3, 4,};
-        myPanes = new Cell[width][height];
-        enemyPanes = new Cell[width][height];
-        createEmpty();
-        createHurt();
-        createMissed();
-        createShip();
-        createCanPlace();
-        createNotCanPlace();
+        myPanes = new CellImage[width][height];
+        enemyPanes = new CellImage[width][height];
+
         Button edit = new Button("Редактирование поля");
         Button net = new Button("Сеть");
         Button ready = new Button("Готов");
@@ -86,18 +79,17 @@ public class DesktopView extends Application implements View {
         BorderPane borderPane = new BorderPane();
         borderPane.setTop(createMenu());
 
-        playingPane = new FlowPane(Orientation.HORIZONTAL, gap, gap);
-        myField = createField();
-        enemyField = createField();
-        paintField(myField, myPanes);
-        paintField(enemyField, enemyPanes);
+        playingPane = new FlowPane(javafx.geometry.Orientation.HORIZONTAL, gap, gap);
+        myField = new MyFieldImage();
+//        System.out.println(myField.getWidth());
+//        paintField(myField, myPanes);
 
         editPane = createEditShips();
-        playingPane.getChildren().addAll(myField, enemyField, editPane);
+        playingPane.getChildren().addAll(myField, editPane);
 //        playingPane.autosize();
         borderPane.setCenter(playingPane);
 
-        playingPane.getChildren().remove(enemyField);
+//        playingPane.getChildren().remove(enemyField);
         root.getChildren().addAll(borderPane);
         root.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -213,7 +205,7 @@ public class DesktopView extends Application implements View {
         editShips = new Rectangle[shipCounts.length];
         toggleGroup = new ToggleGroup();
         RadioButton button;
-        FlowPane core = new FlowPane(Orientation.VERTICAL, gap, gap);
+        FlowPane core = new FlowPane(javafx.geometry.Orientation.VERTICAL, gap, gap);
         core.setMinSize(200, 200);
         core.setPrefSize(200, 200);
         core.setMaxSize(200, 200);
@@ -228,92 +220,64 @@ public class DesktopView extends Application implements View {
 
     private RadioButton createEditShip(int size, int amount) {
         RadioButton button = new RadioButton(String.valueOf(amount));
-        Ship ship = new Ship(size);
-        button.setGraphic(ship);
+        ShipImage shipImage = new ShipImage(size);
+        button.setGraphic(shipImage);
         return button;
     }
 
-    private void sendEditShip(Ship ship, Coord coord) {
+    private void sendEditShip(ShipImage shipImage, Coord coord) {
 
     }
 
-    private void paintField(GridPane field, Cell[][] cells) {
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                Cell cell = new Cell();
-                cell.setMinSize(10, 10);
-                cell.setPrefSize(10, 10);
-                cell.setMaxSize(10, 10);
-                cell.getChildren().addAll(createEmpty());
-                cell.setOnKeyPressed(new EventHandler<KeyEvent>() {
-                    @Override
-                    public void handle(KeyEvent keyEvent) {
-                        ctrlPressed = keyEvent.isControlDown();
-                    }
-                });
-                cell.setOnKeyReleased(new EventHandler<KeyEvent>() {
-                    @Override
-                    public void handle(KeyEvent keyEvent) {
-                        ctrlPressed = keyEvent.isControlDown();
-                    }
-                });
-                cell.setOnMouseEntered(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        Cell source = (Cell) event.getSource();
-                        if (editModeOn) {
-                            Ship ship1 = (Ship) ((RadioButton) toggleGroup.getSelectedToggle()).getGraphic();
-                            if (ctrlPressed) ship1.setDirection(Ship.Direction.Vertical);
-                            else ship1.setDirection(Ship.Direction.Horizontal);
-//                            controller.canPlaceShip(source.getCoord(),
-//                                    System.out.println(source.getCoord());
-                        }
+//    private void paintField(GridPane field, CellImage[][] cellImages) {
+//        for (int i = 0; i < width; i++) {
+//            for (int j = 0; j < height; j++) {
+//                CellImage cellImage = new CellImage();
+//                cellImage.setMinSize(10, 10);
+//                cellImage.setPrefSize(10, 10);
+//                cellImage.setMaxSize(10, 10);
+//                cellImage.getChildren().addAll(createEmpty());
+//                cellImage.setOnKeyPressed(new EventHandler<KeyEvent>() {
+//                    @Override
+//                    public void handle(KeyEvent keyEvent) {
+//                        ctrlPressed = keyEvent.isControlDown();
+//                    }
+//                });
+//                cellImage.setOnKeyReleased(new EventHandler<KeyEvent>() {
+//                    @Override
+//                    public void handle(KeyEvent keyEvent) {
+//                        ctrlPressed = keyEvent.isControlDown();
+//                    }
+//                });
+//                cellImage.setOnMouseEntered(new EventHandler<MouseEvent>() {
+//                    @Override
+//                    public void handle(MouseEvent event) {
+//                        CellImage source = (CellImage) event.getSource();
+//                        if (editModeOn) {
+//                            ShipImage shipImage = (ShipImage) ((RadioButton) toggleGroup.getSelectedToggle()).getGraphic();
+//                            if (ctrlPressed) shipImage.setOrientation(Orientation.Vertical);
+//                            else shipImage.setOrientation(Orientation.Horizontal);
+//                            Ship ship= shipImage.getShip();
+//                            ship.setCoords(source.getCoord());
+//                            if (controller.canPlaceShip(shipImage.getShip())){
+//                                shipImage.setFill(Color.GREEN);
+//                            }
+//                            else {
+//                                shipImage.setFill(Color.RED);
+//                            }
+//
+//                        }
+//
+//                    }
+//                });
+//                cellImage.setCoord(new Coord(i, j));
+//                cellImages[i][j] = cellImage;
+//                field.add(cellImage, i, j);
+//            }
+//        }
+//        System.out.println();
+//    }
 
-                    }
-                });
-                cell.setCoord(new Coord(i, j));
-                cells[i][j] = cell;
-                field.add(cell, i, j);
-            }
-        }
-        System.out.println();
-    }
-
-    private Rectangle createEmpty() {
-        Rectangle rectangle = new Rectangle(10, 10, Color.BLUE);
-//        rectangle.setFill(new ImagePattern(empty));
-        return rectangle;
-    }
-
-    private Rectangle createShip() {
-        Rectangle rectangle = new Rectangle(10, 10, Color.BLACK);
-//        rectangle.setFill(new ImagePattern(empty));
-        return rectangle;
-    }
-
-    private Rectangle createMissed() {
-        Rectangle rectangle = new Rectangle(10, 10, Color.WHEAT);
-//        rectangle.setFill(new ImagePattern(empty));
-        return rectangle;
-    }
-
-    private Rectangle createHurt() {
-        Rectangle rectangle = new Rectangle(10, 10, Color.RED);
-//        rectangle.setFill(new ImagePattern(empty));
-        return rectangle;
-    }
-
-    private Rectangle createCanPlace() {
-        Rectangle rectangle = new Rectangle(10, 10, Color.GREEN);
-//        rectangle.setFill(new ImagePattern(empty));
-        return rectangle;
-    }
-
-    private Rectangle createNotCanPlace() {
-        Rectangle rectangle = new Rectangle(10, 10, Color.BROWN);
-//        rectangle.setFill(new ImagePattern(empty));
-        return rectangle;
-    }
 
 
     @Override

@@ -115,7 +115,7 @@ public class ShipTest extends TestCase {
         ship3.setCoords(leftUp);
         assertTrue(Arrays.equals(coordsH, ship3.getShipCoords()));
         assertFalse(Arrays.equals(coordsV, ship3.getShipCoords()));
-        ship3.changeDirection();
+        ship3.changeOrientation();
         assertFalse(Arrays.equals(coordsH, ship3.getShipCoords()));
         assertTrue(Arrays.equals(coordsV, ship3.getShipCoords()));
     }
@@ -143,7 +143,7 @@ public class ShipTest extends TestCase {
 
         ship2.setCoords(leftUp);
         assertTrue(Arrays.equals(coordsHA, ship2.getAroundCoords()));
-        ship2.changeDirection();
+        ship2.changeOrientation();
         assertFalse(Arrays.equals(coordsH, ship2.getAroundCoords()));
         assertFalse(Arrays.equals(coordsHA, ship2.getAroundCoords()));
     }
@@ -169,7 +169,7 @@ public class ShipTest extends TestCase {
         assertTrue(ship.equals(ship1));
         ship1.setCoords(leftUp);
         ship.setCoords(leftUp);
-        ship1.changeDirection();
+        ship1.changeOrientation();
         assertTrue(ship1.equals(ship)); //consistent
         assertTrue(ship.equals(ship));  //reflexive
         assertFalse(ship.equals(ship2));

@@ -84,10 +84,10 @@ public class RandomSetter {
         do {
             int r = random.nextInt(placeable.size());
             ship.setCoords(placeable.get(r));
-            if (random.nextBoolean()) ship.changeDirection();
+            if (random.nextBoolean()) ship.changeOrientation();
             List<Coord> coords = Arrays.asList(ship.getShipCoords());
             if (!(checked = checkCoords(coords))) {
-                ship.changeDirection();
+                ship.changeOrientation();
                 checked = checkCoords(coords);
             }
             placeable.remove(r);

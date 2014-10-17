@@ -9,7 +9,7 @@ import java.io.ObjectInputStream;
 import java.net.SocketException;
 
 /**
- * Отдельный поток для асинхронного получения Message из ObjectInputStream
+ * Отдельный поток для асинхронного получения объектов из ObjectInputStream
  *
  * @author Alexander Vlasov
  */

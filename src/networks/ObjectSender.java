@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 /**
- * Через этот класс можно посылать Message разными потоками через заданный ObjectOutputStream
+ * Через этот класс можно посылать объекты через заданный ObjectOutputStream
  *
  * @author Alexander Vlasov
  */

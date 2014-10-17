@@ -115,6 +115,11 @@ public class Player {
         return coord;
     }
 
+    public boolean canPlaceShip(Ship ship) {
+
+        return myField.canPlace(ship);
+    }
+
 
 //    public static boolean turn(Player shooting, Player shooted) {
 //        ShootResult shootResult;

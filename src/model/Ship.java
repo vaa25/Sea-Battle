@@ -20,7 +20,7 @@ public class Ship implements Comparable<Ship> {
 //            {0,0,0,0}
 //    };
     private final int size;
-    private Direction direction;
+    private Orientation orientation;
     private Coord[] coords;
     private Coord coordLeftUp;
     private int health;
@@ -28,7 +28,7 @@ public class Ship implements Comparable<Ship> {
 
     public Ship(int size) {
         this.size = size;
-        direction = Direction.Horizontal;
+        orientation = Orientation.Horizontal;
         coords = new Coord[size];
         health = size;
     }
@@ -57,10 +57,6 @@ public class Ship implements Comparable<Ship> {
         return size - o.size;
     }
 
-    public static enum Direction {
-        Vertical, Horizontal
-    }
-
     /**
      * Вызывается, когда по кораблю попадают
      */
@@ -84,8 +80,8 @@ public class Ship implements Comparable<Ship> {
         this.coordLeftUp = coordLeftUp;
         coords[0] = coordLeftUp;
         for (int i = 1; i < coords.length; i++) {
-            if (direction == Direction.Horizontal) coords[i] = coords[i - 1].getRight();
-            else if (direction == Direction.Vertical) coords[i] = coords[i - 1].getDown();
+            if (orientation == Orientation.Horizontal) coords[i] = coords[i - 1].getRight();
+            else if (orientation == Orientation.Vertical) coords[i] = coords[i - 1].getDown();
         }
     }
 
@@ -98,10 +94,14 @@ public class Ship implements Comparable<Ship> {
         return coords;
     }
 
-    public void changeDirection() {
-        if (direction == Direction.Horizontal) direction = Direction.Vertical;
-        else direction = Direction.Horizontal;
+    public void changeOrientation() {
+        if (orientation == Orientation.Horizontal) orientation = Orientation.Vertical;
+        else orientation = Orientation.Horizontal;
         setCoords(coordLeftUp);
+    }
+
+    public void setOrientation(Orientation orientation) {
+        this.orientation = orientation;
     }
 
     /**
@@ -111,7 +111,7 @@ public class Ship implements Comparable<Ship> {
      */
     public Coord[] getAroundCoords() {
         Coord[] res = new Coord[size * 3 + 6];
-        if (direction == Direction.Horizontal) {
+        if (orientation == Orientation.Horizontal) {
             Coord coordLeft = coords[0];
             res[0] = coordLeft.getLeftUp();
             res[1] = coordLeft.getLeft();

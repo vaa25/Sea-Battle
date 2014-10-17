@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
+ * Класс принимает объекты и выдает их по запросу
  * @author Alexander Vlasov
  */
 public class ObjectParser {
@@ -18,6 +19,15 @@ public class ObjectParser {
         this.map = new ConcurrentHashMap<>();
     }
 
+    /**
+     * Извлекает объект нужного класса
+     *
+     * @param clazz
+     *
+     * @return
+     *
+     * @throws InterruptedException
+     */
     public Object take(Class clazz) throws InterruptedException {
         Object object = getQueue(clazz).take();
         logger.info(Thread.currentThread().getName() + " ObjectParser успешно take " + object);
@@ -30,6 +40,10 @@ public class ObjectParser {
         return oldQueue == null ? queue : oldQueue;
     }
 
+    /**
+     * Ложит объект на хранение
+     * @param object
+     */
     public void put(Object object) {
         Class clazz = object.getClass();
         getQueue(clazz).add(object);
