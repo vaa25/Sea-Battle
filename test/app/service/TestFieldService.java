@@ -5,6 +5,7 @@ import app.model.Field;
 import app.model.Ship;
 import app.model.enums.ShipDirection;
 import app.model.enums.ShipSize;
+import app.model.enums.ShipStatus;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -37,20 +38,16 @@ public class TestFieldService {
 
     }
 
-    /** TODO: something wrong
+    /**
      * Test deployShipToField
      */
     @Test
     public void testDeployShipToField() {
-//        Field field = new Field();
-//        FieldService service = new FieldService();
-//        service.deployShipToField(field, new Ship(ShipSize.FOUR, new Cell(1, 1),
-//                        ShipStatus.AVAILABLE, ShipDirection.VERTICAL));
+        Field field = new Field();
+        FieldService service = new FieldService();
 
-
-
-//        assertFalse(service.deployShipToField(field, new Ship(ShipSize.FOUR, new Cell(1, 1),
-//                ShipStatus.AVAILABLE, ShipDirection.VERTICAL)));
+        assertTrue(service.deployShipToField(field, new Ship(ShipSize.FOUR, new Cell(1, 1),
+                ShipStatus.AVAILABLE, ShipDirection.VERTICAL)));
     }
 
     /**

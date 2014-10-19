@@ -32,7 +32,7 @@ public class FieldService {
         return shipList;
     }
 
-    /** TODO: something wrong
+    /**
      * Deploy ship to field shipList
      *
      * @param ship - target ship to be placed
@@ -40,12 +40,15 @@ public class FieldService {
      */
     public boolean deployShipToField(Field field, Ship ship) {
         if (!ship.getCells().equals(null) && !field.getShipList().equals(null)) {
-            for (Ship scannedShip : field.getShipList()) {
+            for (int i = 0; i < field.getShipList().size(); i++) {
+                Ship scannedShip = field.getShipList().get(i);
                 if (scannedShip.getShipSize() == ship.getShipSize() &&
                         scannedShip.getShipStatus().equals(ShipStatus.AVAILABLE)) {
                     if (isShipSpotIsFree(field, ship)) {
-                        scannedShip = ship;
-                        scannedShip.setShipStatus(ShipStatus.BUSY);
+                        field.getShipList().set(i, new Ship(
+                                ship.getCells(),
+                                null,
+                                ship.getShipDirection())).setShipStatus(ShipStatus.BUSY);
                         return true;
                     }
                 }
@@ -89,7 +92,6 @@ public class FieldService {
             for (Ship shipFromList : field.getShipList()) {
                 for (Cell cellFromField : shipFromList.getCells()) {
                     for (Cell thisShipCell : shipPlusAura) {
-                        // TODO: NullPointerException
                         if (cellFromField != null) {
                             if (cellFromField.equals(thisShipCell)) {
                                 return false;
