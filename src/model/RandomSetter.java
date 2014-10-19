@@ -56,6 +56,7 @@ public class RandomSetter {
      */
     public boolean setAll() {
         shipsToPlace = ships;
+        shipsPlaced.clear();
         return set();
     }
 
@@ -65,6 +66,7 @@ public class RandomSetter {
      * @return
      */
     public boolean setRest() {
+        shipsPlaced.clear();
         divideShipsList();
         return set();
 
@@ -124,7 +126,7 @@ public class RandomSetter {
      *
      * @return true, если успешно
      */
-    private boolean set(List<Ship> shipsToPlace) {
+    public boolean set(List<Ship> shipsToPlace) {
         this.shipsToPlace = shipsToPlace;
         return set();
     }

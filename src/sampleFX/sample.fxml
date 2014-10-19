@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.*?>
+<GridPane fx:id="root" alignment="CENTER" hgap="10.0" prefHeight="132.0" prefWidth="357.0" vgap="10.0"
+          xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="sampleFX.Controller">
+    <children>
+        <Label fx:id="label" onDragDetected="#labelDragDetected" onKeyPressed="#keyPressed" text="Label"
+               GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="textFied" onDragEntered="#textFieldDragEntered" onDragOver="#textFieldDragOver"
+                   prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+    </children>
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+    </rowConstraints>
+</GridPane>

@@ -99,7 +99,7 @@ public class MyField extends Field {
     }
 
 
-    private void place(List<Ship> ships) {
+    public void place(List<Ship> ships) {
         for (Ship ship : ships) {
             place(ship);
         }
@@ -134,4 +134,7 @@ public class MyField extends Field {
         return ships.size();
     }
 
+    public void unPlaceAll() {
+        unPlace(ships);
+    }
 }

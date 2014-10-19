@@ -102,6 +102,7 @@ public class Ship implements Comparable<Ship> {
 
     public void setOrientation(Orientation orientation) {
         this.orientation = orientation;
+        setCoords(coordLeftUp);
     }
 
     /**
