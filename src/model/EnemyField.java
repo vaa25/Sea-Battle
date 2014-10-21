@@ -27,6 +27,14 @@ public class EnemyField extends Field {
 
     }
 
+    public List<Ship> getReconstructedShips() {
+        return reconstructedShips;
+    }
+
+    public List<Coord> getWrecks() {
+        return wrecks;
+    }
+
     public Ship setKilled(Coord coord) {
         setHurt(coord);
         addKilled();

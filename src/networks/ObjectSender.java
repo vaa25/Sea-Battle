@@ -19,7 +19,7 @@ public class ObjectSender {
         this.objectOutputStream = objectOutputStream;
     }
 
-    public synchronized void sendMessage(Object object) {
+    public synchronized void sendObject(Object object) {
         logger.info(Thread.currentThread().getName() + " ObjectSender пытается послать сообщение ", object);
         try {
             objectOutputStream.writeObject(object);

@@ -1,10 +1,11 @@
 package sampleFX;
 
+import common.Coord;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Rectangle;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,49 +23,111 @@ public class Controller {
     private Label label;
 
     @FXML
-    private GridPane root;
+    private Rectangle ship1;
     @FXML
-    private TextField textField;
+    private Rectangle ship2;
+    @FXML
+    private GridPane gridPane;
 
     @FXML
     void keyPressed(KeyEvent event) {
     }
 
     @FXML
-    void labelDragDetected(MouseEvent event) {
-        System.out.println("label DragDetected");
-        Dragboard db = label.startDragAndDrop(TransferMode.ANY);
+    void shipDragDone(DragEvent event) {
+        System.out.println("label DragDone");
+        /* the drag and drop gesture ended */
+        /* if the data was successfully moved, clear it */
+        if (event.getTransferMode() == TransferMode.MOVE) {
+            label.setText("");
+        }
+        event.consume();
+
+    }
+
+    @FXML
+    void shipDragDetected(MouseEvent event) {
+        System.out.println("shipDragDetected");
+        Dragboard db = ((Rectangle) event.getSource()).startDragAndDrop(TransferMode.ANY);
 
         /* Put a string on a dragboard */
         ClipboardContent content = new ClipboardContent();
-        content.putString(label.getText());
+        content.put(shipFormat, event.getSource());
         db.setContent(content);
+        event.consume();
+    }
+
+    @FXML
+    void gridPaneMouseMoved(MouseEvent event) {
+        Coord coord = getGridCellCoord(event);
+        int x = coord.getX();
+        int y = coord.getY();
+        label.setText(x + " " + y);
+
+    }
+
+    @FXML
+    void gridPaneMouseClicked(MouseEvent event) {
+
+    }
+
+    @FXML
+    void gridPaneDragDropped(DragEvent event) {
+        /* data dropped */
+        /* if there is a string data on dragboard, read it and use it */
+        Dragboard db = event.getDragboard();
+        boolean success = false;
+        if (event.getGestureSource().getClass() == Rectangle.class) {
+//            gridPane.setText(db.getString());
+//            Coord coord=getGridCellCoord(event);
+//            int x=coord.getX();
+//            int y=coord.getY();
+//            gridPane.add((Node)event.getGestureSource(),x,y);
+//            success = true;
+//            System.out.println("gridPaneDragDropped at "+x+","+y);
+        }
+        /* let the source know whether the string was successfully
+         * transferred and used */
+        event.setDropCompleted(success);
 
         event.consume();
     }
 
     @FXML
-    void textFieldDragEntered(DragEvent event) {
-        System.out.println("textField DragEnter");
+    void gridPaneDragExited(DragEvent event) {
+        System.out.println("gridPaneDragExited");
+//        textField.setText("textField DragExited");
+        event.consume();
+    }
+
+    @FXML
+    void gridPaneDragEntered(DragEvent event) {
+
 
         /* the drag-and-drop gesture entered the target */
 //    /* show to the user that it is an actual gesture target */
-        if (event.getGestureSource() != textField &&
-                event.getDragboard().hasString()) {
-            textField.setText("textField DragEnter");
+        if (event.getGestureSource().getClass() == Rectangle.class) {
+            System.out.println("gridPaneDragEntered");
         }
 
         event.consume();
     }
 
+    private Coord getGridCellCoord(MouseEvent event) {
+        double cellWidth = gridPane.getWidth() / gridPane.getColumnConstraints().size();
+        double cellHeight = gridPane.getHeight() / gridPane.getRowConstraints().size();
+        int x = (int) (event.getX() / cellWidth);
+        int y = (int) (event.getY() / cellHeight);
+        return new Coord(x, y);
+    }
+
     @FXML
-    void textFieldDragOver(DragEvent event) {
-        System.out.println("textField DragOver");
+    void gridPaneDragOver(DragEvent event) {
+        System.out.println("gridPaneDragOver");
         /* data is dragged over the target */
         /* accept it only if it is not dragged from the same node
          * and if it has a string data */
-        if (event.getGestureSource() != textField &&
-                event.getDragboard().hasString()) {
+        if (event.getGestureSource().getClass() == Rectangle.class) {
             /* allow for both copying and moving, whatever user chooses */
             event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
         }
@@ -75,9 +138,11 @@ public class Controller {
     @FXML
     void initialize() {
         assert label != null : "fx:id=\"label\" was not injected: check your FXML file 'sample.fxml'.";
-        assert root != null : "fx:id=\"root\" was not injected: check your FXML file 'sample.fxml'.";
 
 
     }
 
+    /** The custom format */
+    private static final DataFormat shipFormat =
+            new DataFormat("ship");
 }

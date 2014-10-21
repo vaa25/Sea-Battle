@@ -2,6 +2,7 @@ package model;
 
 import common.Coord;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Arrays;
  *
  * @author Alexander Vlasov
  */
-public class Ship implements Comparable<Ship> {
+public class Ship implements Comparable<Ship>, Serializable {
     //    int[][]profile={
 //            {1,1,1,1},
 //            {0,0,0,0},
@@ -26,11 +27,17 @@ public class Ship implements Comparable<Ship> {
     private int health;
     private boolean placed;
 
+    public Ship(int size, Coord[] coords) {
+        this(size);
+        this.coords = coords;
+    }
+
     public Ship(int size) {
         this.size = size;
         orientation = Orientation.Horizontal;
         coords = new Coord[size];
         health = size;
+
     }
 
     public int getSize() {

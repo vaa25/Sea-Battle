@@ -19,19 +19,31 @@ public class Network {
     private Thread noTimeOutThread;
     private ObjectSender sender;
     private ObjectReceiver receiver;
-    private Thread receiverThread;
     private ObjectParser parser;
+    private Thread receiverThread;
     private InetAddress host;
     private int port;
+
+    public Network() {
+    }
+
+    ;
 
     public Network(InetAddress host, int port) {
         this.host = host;
         this.port = port;
     }
 
-    public void connect() throws IOException {
-        if (!setClientConnection(host, port)) setServerConnection(port);
-//        logger.info( "Пытаюсь создать исходящий поток");
+    public ObjectInputStream getIn() {
+        return in;
+    }
+
+    public ObjectOutputStream getOut() {
+        return out;
+    }
+
+    private void go() throws IOException {
+        //        logger.info( "Пытаюсь создать исходящий поток");
         out = new ObjectOutputStream(conn.getOutputStream());
 //        logger.info( "Иcходящий поток успешно создан " + out);
 //        logger.info( "Пытаюсь создать входящий поток");
@@ -47,6 +59,12 @@ public class Network {
 //        logger.info("network (" + Thread.currentThread().getName() + ") starts noTimeOutThread (" + noTimeOutThread.getName() + ")");
         receiverThread.start();
 //        logger.info("network (" + Thread.currentThread().getName() + ") starts receiverThread (" + receiverThread.getName() + ")");
+
+    }
+
+    public void setAnyConnection() throws IOException {
+        if (!setClientConnection(host, port)) setServerConnection(port);
+
     }
 
     public ObjectSender getSender() {
@@ -57,11 +75,11 @@ public class Network {
         return parser;
     }
 
-    private boolean setClientConnection(InetAddress host, int port) {
-//        logger.info("Устанавливаю клиентское соединение");
+    public boolean setClientConnection(InetAddress host, int port) {
+        logger.info("Устанавливаю клиентское соединение " + host + ":" + port);
         try {
             conn = new Socket(host, port);
-
+            go();
         } catch (IOException e) {
             logger.error("Клиентское соединение установить невозможно \n", e);
             return false;
@@ -70,19 +88,13 @@ public class Network {
         return true;
     }
 
-    private void setServerConnection(int port) {
+    public void setServerConnection(int port) throws IOException {
         logger.info("Устанавливаю серверное соединение");
-        ServerSocket server = null;
-        try {
-            server = new ServerSocket(port);
-        } catch (IOException e) {
-            logger.error("Unable start server on port " + port + "\n", e);
-        }
-        try {
-            conn = server.accept();
-            logger.info("Серверное соединение установлено ", conn);
-        } catch (IOException e) {
-        }
+        ServerSocket server = new ServerSocket(port);
+        conn = server.accept();
+        go();
+        logger.info("Серверное соединение установлено ", conn);
+
     }
 
     public void close() {

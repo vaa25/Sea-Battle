@@ -12,13 +12,18 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @author Alexander Vlasov
  */
 public class ObjectParser {
+    private ConcurrentHashMap<Class, ObjectListener> listeners;
     private ConcurrentHashMap<Class, BlockingQueue> map;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public ObjectParser() {
         this.map = new ConcurrentHashMap<>();
+        listeners = new ConcurrentHashMap<>();
     }
 
+    public void registerListener(Class clazz, ObjectListener listener) {
+        listeners.putIfAbsent(clazz, listener);
+    }
     /**
      * Извлекает объект нужного класса
      *
@@ -40,6 +45,7 @@ public class ObjectParser {
         return oldQueue == null ? queue : oldQueue;
     }
 
+
     /**
      * Ложит объект на хранение
      * @param object
@@ -48,6 +54,9 @@ public class ObjectParser {
         Class clazz = object.getClass();
         getQueue(clazz).add(object);
         logger.info(Thread.currentThread().getName() + " ObjectParser успешно put " + object);
+        if (listeners.keySet().contains(clazz)) {
+            listeners.get(clazz).takeFromParser(object);
+        }
     }
 
 //    public static void main(String[] args) throws InterruptedException {

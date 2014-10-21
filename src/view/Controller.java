@@ -1,24 +1,49 @@
 package view;
 
 import common.Coord;
+import common.ShootResult;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import model.Orientation;
+import model.Player;
 import model.Ship;
+import networks.Network;
+import networks.ObjectListener;
+import networks.Special;
 
+import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 
-public class Controller implements Initializable {
-
+public class Controller implements Initializable, ObjectListener {
+    private Editor editor;
+    private Player player;
+    private List<Ship> myShips;
+    private Network network;
+    private boolean hostSelected;
+    private boolean serverSelected;
+    private InetAddress ip;
+    private boolean connected;
+    private boolean myTurn;
+    private int turn;
+    private int port = 20000;
+    private boolean ready;
+    private boolean enemyReady;
     @FXML
     private ResourceBundle resources;
 
@@ -122,11 +147,9 @@ public class Controller implements Initializable {
     private Button setRestButton;
 
     @FXML
-    private Button startButton;
-
-    @FXML
     private TabPane tabPane;
-
+    @FXML
+    private ToggleButton readyToggleButton;
     @FXML
     private ToggleGroup toggleConnection;
 
@@ -139,14 +162,62 @@ public class Controller implements Initializable {
 
     @FXML
     void clientSelected(ActionEvent event) {
+        ipTextField.setEditable(true);
+        hostSelected = false;
     }
 
     @FXML
+    void myFieldClicked(MouseEvent event) {
+
+
+    }
+
+    private void connectionEstablished() {
+        connected = true;
+        networkTab.setDisable(true);
+        miscTab.setDisable(true);
+        gameTab.setDisable(false);
+        editChatTextArea.setDisable(false);
+        readyToggleButton.setDisable(false);
+    }
+    @FXML
     void connect(ActionEvent event) {
+        network = new Network();
+        if (hostSelected) {
+            try {
+                network.setServerConnection(port);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+        } else {
+            try {
+                ip = InetAddress.getByName(ipTextField.getText());
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+                return;
+            }
+            if (!network.setClientConnection(ip, port)) return;
+        }
+        network.getParser().registerListener(String.class, this);
+        network.getParser().registerListener(Coord.class, this);
+        network.getParser().registerListener(Special.class, this);
+        connectionEstablished();
     }
 
     @FXML
     void editChatKeyTyped(KeyEvent event) {
+
+    }
+
+    @FXML
+    void editChatKeyReleased(KeyEvent event) {
+        if (event.getCode().equals(KeyCode.ENTER)) {
+            chatTextArea.appendText(" Я: " + editChatTextArea.getText());
+            network.getSender().sendObject(editChatTextArea.getText());
+            editChatTextArea.setText("");
+        }
     }
 
     @FXML
@@ -198,19 +269,29 @@ public class Controller implements Initializable {
     }
 
     private void drawShip(GridPane pane, Coord coord, Ship ship, Color color) {
-
         for (int i = 0; i < ship.getSize(); i++) {
-
         }
     }
 
 
     @FXML
     void enemyFieldClicked(MouseEvent event) {
+        if (!myTurn) return;
+        int x = (int) (event.getX() / 20);
+        int y = (int) (event.getY() / 20);
+        Coord coord = new Coord(x, y);
+        ShootResult shootResult = player.turn(coord);
+        if (shootResult == ShootResult.MISSED) {
+            myTurn = false;
+        }
+        chatTextArea.appendText(" Ход " + turn++ + ": Бью " + coord + " " + shootResult + "\n");
+
     }
 
     @FXML
     void hostSelected(ActionEvent event) {
+        ipTextField.setEditable(false);
+        hostSelected = true;
     }
 
     @FXML
@@ -228,6 +309,7 @@ public class Controller implements Initializable {
     @FXML
     void radioDeckOnAction1(ActionEvent event) {
         editor.setSelected(1);
+
     }
 
     @FXML
@@ -251,8 +333,12 @@ public class Controller implements Initializable {
 
     @FXML
     void setAll(ActionEvent event) {
+//        clearMyFields();
         editor.placeAll();
         updateAmountAvailable();
+        clearMyFields();
+        paintMyShips(editGridPane, editor.getPlaced());
+        paintMyShips(myFieldGridPane, editor.getPlaced());
 //        editGridPane.getColumnConstraints().get(0).setFillWidth(true);
     }
 
@@ -260,26 +346,98 @@ public class Controller implements Initializable {
     void clearField(ActionEvent event) {
         editor.clearAll();
         updateAmountAvailable();
+        clearMyFields();
     }
 
+    private void clearMyFields() {
+        clearGridPane(editGridPane);
+        clearGridPane(myFieldGridPane);
+    }
 
+    private void clearGridPane(GridPane gridPane) {
+        ObservableList<Node> list = gridPane.getChildren();
+        Node group = list.get(0);
+        list.clear();
+        list.add(group);
+    }
     @FXML
     void setRest(ActionEvent event) {
-        editor.placeRest();
-        updateAmountAvailable();
+        if (editor.placeRest()) {
+            updateAmountAvailable();
+            paintMyShips(editGridPane, editor.getPlaced());
+            paintMyShips(myFieldGridPane, editor.getPlaced());
+
+        }
     }
 
+    private void paintMyShips(GridPane pane, List<Ship> ships) {
+        for (Ship ship : ships)
+            for (Coord coord : ship.getShipCoords()) {
+
+                pane.add(new Text("  X"), coord.getX(), coord.getY());
+            }
+    }
+
+    private void gameStarts() {
+        readyToggleButton.setDisable(true);
+    }
     private void updateAmountAvailable() {
         amountLabel1.setText(String.valueOf(editor.getAmountAvailable(1)));
         amountLabel2.setText(String.valueOf(editor.getAmountAvailable(2)));
         amountLabel3.setText(String.valueOf(editor.getAmountAvailable(3)));
         amountLabel4.setText(String.valueOf(editor.getAmountAvailable(4)));
     }
-
     @FXML
-    void startPlay(ActionEvent event) {
+    void ready(ActionEvent event) {
+        if (readyToggleButton.isSelected()) {
+            if (checkReady()) {
+                ready = true;
+                network.getSender().sendObject(Special.Ready);
+                chatTextArea.appendText(" Я готов!" + "\n");
+                if (enemyReady) {
 
+                    startPlay();
+                }
+            } else {
+                readyToggleButton.setSelected(false);
+            }
+        } else {
+            ready = false;
+            network.getSender().sendObject(Special.NotReady);
+            chatTextArea.appendText(" Я не готов!" + "\n");
+        }
+    }
 
+    private boolean checkReady() {
+        if (editor == null || editor.getPlaced().size() != 10) {
+            chatTextArea.appendText(" Сначала расставь все корабли" + "\n");
+            return false;
+        }
+        if (!connected) {
+            chatTextArea.appendText(" Сначала установи соединение с кем-либо!" + "\n");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean startPlay() {
+        gameStarts();
+        chatTextArea.appendText("Игра началась" + "\n");
+        player = new Player(10, 10, "Z");
+        player.setParser(network.getParser());
+        player.setSender(network.getSender());
+        player.setMyField(editor.getMyField());
+        if (player.isIFirst()) {
+            chatTextArea.appendText(" Мой ход" + "\n");
+            myTurn = true;
+        } else {
+            chatTextArea.appendText(" Враг ходит первый" + "\n");
+            myTurn = false;
+        }
+        readyToggleButton.setDisable(true);
+        turn = 1;
+        editTab.setDisable(true);
+        return true;
     }
 
     @FXML
@@ -323,7 +481,6 @@ public class Controller implements Initializable {
         assert saveFieldButton != null : "fx:id=\"saveFieldButton\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert setAllButton != null : "fx:id=\"setAllButton\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert setRestButton != null : "fx:id=\"setRestButton\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
-        assert startButton != null : "fx:id=\"startButton\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert tabPane != null : "fx:id=\"tabPane\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert toggleConnection != null : "fx:id=\"toggleConnection\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert toggleDeck != null : "fx:id=\"toggleDeck\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
@@ -332,15 +489,86 @@ public class Controller implements Initializable {
 
     }
 
-    private Editor editor;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         editor = new Editor();
         editor.setSelected(4);
-
-
+        myShips = new ArrayList<>();
+        hostSelected = true;
+        serverSelected = false;
+        editChatTextArea.setDisable(true);
+        readyToggleButton.setDisable(true);
+        ready = false;
+        enemyReady = false;
+        setAll(null);
     }
 
     private static final DataFormat shipImageDataFormat = new DataFormat("shipImage");
+
+    @Override
+    public void takeFromParser(Object object) {
+        if (object.getClass().equals(String.class)) {
+            chatTextArea.appendText(" Враг: " + (String) object);
+        }
+        if (object.equals(Special.Ready)) {
+            enemyReady = true;
+            chatTextArea.appendText(" Враг готов!" + "\n");
+            if (ready) startPlay();
+        }
+        if (object.equals(Special.NotReady)) {
+            chatTextArea.appendText(" Враг не готов!" + "\n");
+            enemyReady = false;
+        }
+        if (object.getClass().equals(Coord.class)) {
+            chatTextArea.appendText(" Ход " + turn++);
+            Coord coord = (Coord) object;
+            ShootResult shootResult = player.receiveShoot(coord);
+            displayShootResult(coord, shootResult);
+            if (shootResult.equals(ShootResult.MISSED)) {
+                myTurn = true;
+            }
+            if (shootResult.equals(ShootResult.KILLED)) {
+                if (player.isGameOver()) {
+                    gameOver();
+                    if (player.isEnemyLoose()) {
+                        chatTextArea.appendText(" Я победил" + "\n");
+                    } else {
+                        chatTextArea.appendText(" Я проиграл" + "\n");
+
+                    }
+
+                }
+            }
+        }
+    }
+
+    private void gameOver() {
+        chatTextArea.appendText(" Игра окончена" + "\n");
+        readyToggleButton.setDisable(false);
+        editTab.setDisable(false);
+        miscTab.setDisable(false);
+        networkTab.setDisable(false);
+    }
+
+    private void displayShootResult(Coord coord, ShootResult shootResult) {
+        int x = coord.getX();
+        int y = coord.getY();
+        if (shootResult.equals(ShootResult.MISSED)) enemyFieldGridPane.add(new Text("  ."), x, y);
+        else if (shootResult.equals(ShootResult.HURT)) enemyFieldGridPane.add(new Text("  *"), x, y);
+        else if (shootResult.equals(ShootResult.KILLED)) {
+            clearGridPane(enemyFieldGridPane);
+            List<Ship> ships = player.getReconstructedShips();
+            for (Ship ship : ships) {
+                for (Coord coord2 : ship.getShipCoords()) {
+                    enemyFieldGridPane.add(new Text("  Ж"), coord2.getX(), coord2.getY());
+                }
+            }
+            List<Coord> wrecks = player.getWrecks();
+            for (Coord coord2 : wrecks) {
+                enemyFieldGridPane.add(new Text("  *"), coord2.getX(), coord2.getY());
+
+            }
+        }
+    }
 }

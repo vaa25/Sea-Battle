@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 public class HeartBeatSender implements Runnable {
     private ObjectSender sender;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     //    private boolean interrupt;
     public HeartBeatSender(ObjectSender sender) {
         this.sender = sender;
@@ -28,7 +29,7 @@ public class HeartBeatSender implements Runnable {
 
 //            logger.info("HeartBeatSender (" + Thread.currentThread().getName() + ") interrupt == " + interrupt);
 //            if (!interrupt) {
-            sender.sendMessage(Special.HeartBeat);
+            sender.sendObject(Special.HeartBeat);
 //            } else {
 //                logger.info("HeartBeatSender (" + Thread.currentThread().getName() + ") must return = " + interrupt);
 //                break;

@@ -3,7 +3,6 @@ package controller;
 import model.Player;
 import model.Ship;
 import networks.Network;
-import view.DesktopView;
 import view.View;
 
 import java.io.IOException;
@@ -30,7 +29,7 @@ public class Controller {
 
     public static void main(String[] args) throws IOException {
         Controller controller = new Controller(
-                new DesktopView(),
+                null,    // this is mock
                 new Player(20, 20, "Player 1"),
                 new Network(InetAddress.getLocalHost(), 10000));
         controller.startGame();

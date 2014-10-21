@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.Rectangle?>
 <AnchorPane id="AnchorPane" fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity" prefHeight="475.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/2.2" fx:controller="view.Controller">
@@ -17,8 +16,8 @@
                             <children>
                                 <GridPane id="" fx:id="myFieldGridPane" focusTraversable="true" gridLinesVisible="true"
                                           layoutX="14.0" layoutY="32.0" maxHeight="-Infinity" maxWidth="-Infinity"
-                                          minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0"
-                                          prefWidth="200.0">
+                                          minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#myFieldClicked"
+                                          prefHeight="200.0" prefWidth="200.0">
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
                                                            prefWidth="-1.0"/>
@@ -28,7 +27,8 @@
                                                            prefWidth="-1.0"/>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
                                                            prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
+                                                           prefWidth="-1.0"/>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
                                                            prefWidth="-1.0"/>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
@@ -55,18 +55,14 @@
                                                         prefHeight="-1.0" vgrow="SOMETIMES"/>
                                         <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
                                                         prefHeight="-1.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints fillHeight="true" maxHeight="-1.0" minHeight="-1.0"
-                                                        percentHeight="10.0" prefHeight="-1.0" vgrow="SOMETIMES"/>
+                                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
+                                                        prefHeight="-1.0" vgrow="SOMETIMES"/>
                                         <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
                                                         prefHeight="-1.0" vgrow="SOMETIMES"/>
                                         <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
                                                         prefHeight="-1.0" vgrow="SOMETIMES"/>
                                     </rowConstraints>
                                 </GridPane>
-                                <Button fx:id="startButton" cache="false" cancelButton="false" defaultButton="false"
-                                        disable="false" layoutX="438.0" layoutY="32.0" mnemonicParsing="false"
-                                        onAction="#startPlay" prefWidth="119.0" text="Начать игру" textAlignment="LEFT"
-                                        textOverrun="CLIP" underline="false"/>
                                 <GridPane id="" fx:id="enemyFieldGridPane" focusTraversable="true"
                                           gridLinesVisible="true" layoutX="226.0" layoutY="32.0" maxHeight="-Infinity"
                                           maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
@@ -80,7 +76,8 @@
                                                            prefWidth="-1.0"/>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
                                                            prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
+                                                           prefWidth="-1.0"/>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
                                                            prefWidth="-1.0"/>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
@@ -107,6 +104,8 @@
                                 </GridPane>
                                 <Label layoutX="85.0" layoutY="10.0" text="Ваше поле"/>
                                 <Label layoutX="281.0" layoutY="10.0" text="Вражеское поле"/>
+                                <ToggleButton fx:id="readyToggleButton" layoutX="472.0" layoutY="32.0"
+                                              mnemonicParsing="false" onAction="#ready" text="Готов"/>
                             </children>
                         </AnchorPane>
                     </content>
@@ -148,7 +147,8 @@
                                                            prefWidth="-1.0"/>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
                                                            prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
+                                                           prefWidth="-1.0"/>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
                                                            prefWidth="-1.0"/>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
@@ -180,18 +180,15 @@
                                 <Label fx:id="amountLabel1" layoutX="368.0" layoutY="92.0" text="4"/>
                                 <Button fx:id="saveFieldButton" layoutX="401.0" layoutY="32.0" mnemonicParsing="false"
                                         onAction="#saveField" prefWidth="156.0" text="Сохранить поле"/>
-                                <Button fx:id="loadFieldButton" layoutX="401.0" layoutY="53.0" mnemonicParsing="false"
+                                <Button fx:id="loadFieldButton" layoutX="401.0" layoutY="54.0" mnemonicParsing="false"
                                         onAction="#loadField" prefWidth="156.0" text="Загрузить поле"/>
-                                <Button fx:id="setRestButton" layoutX="401.0" layoutY="74.0" mnemonicParsing="false"
+                                <Button fx:id="setRestButton" layoutX="401.0" layoutY="76.0" mnemonicParsing="false"
                                         onAction="#setRest" prefWidth="156.0" text="Расставить остальные"/>
-                                <Button fx:id="setAllButton" layoutX="401.0" layoutY="93.0" mnemonicParsing="false"
+                                <Button fx:id="setAllButton" layoutX="401.0" layoutY="98.0" mnemonicParsing="false"
                                         onAction="#setAll" prefWidth="156.0" text="Расставить все"/>
-                                <Button id="setAllButton" fx:id="clearFieldButton" layoutX="401.0" layoutY="114.0"
+                                <Button id="setAllButton" fx:id="clearFieldButton" layoutX="401.0" layoutY="120.0"
                                         mnemonicParsing="false" onAction="#clearField" prefWidth="156.0"
                                         text="Очистить поле"/>
-                                <Rectangle fx:id="ship1deck1" arcHeight="0.0" arcWidth="0.0" fill="#7a9900"
-                                           height="20.0" layoutX="231.0" layoutY="109.0" onDragDetected="#shipStartDrag"
-                                           smooth="true" stroke="BLACK" strokeType="INSIDE" width="20.0"/>
                             </children>
                         </AnchorPane>
                     </content>
@@ -219,8 +216,9 @@
                                 <RadioButton layoutX="14.0" layoutY="91.0" mnemonicParsing="false"
                                              onAction="#clientSelected" text="Подключиться"
                                              toggleGroup="$toggleConnection"/>
-                                <TextField fx:id="ipTextField" layoutX="14.0" layoutY="107.0" onAction="#ipEntered"
-                                           prefWidth="200.0" promptText="Введите IP адрес"/>
+                                <TextField fx:id="ipTextField" disable="false" layoutX="14.0" layoutY="107.0"
+                                           onAction="#ipEntered" prefWidth="200.0" promptText="Введите IP адрес"
+                                           text="127.0.0.1"/>
                                 <Button fx:id="connectButton" layoutX="456.0" layoutY="32.0" mnemonicParsing="false"
                                         onAction="#connect" text="Подключиться"/>
                             </children>
@@ -233,7 +231,7 @@
                                     prefHeight="180.0" prefWidth="200.0">
                             <children>
                                 <TextField fx:id="nameTextField" layoutX="14.0" layoutY="14.0" onAction="#nameEntered"
-                                           prefWidth="200.0" promptText="Имя"/>
+                                           prefWidth="200.0" promptText="Имя" text="Саша"/>
                             </children>
                         </AnchorPane>
                     </content>
@@ -246,12 +244,13 @@
                 <ScrollPane id="ScrollPane" fx:id="chatScrollPane" fitToHeight="true" fitToWidth="true"
                             hbarPolicy="NEVER" pannable="true" prefViewportHeight="93.0" prefViewportWidth="570.0">
                     <content>
-                        <TextArea id="" fx:id="chatTextArea" editable="false" focusTraversable="false" prefHeight="88.0"
-                                  prefWidth="572.0" promptText="Чат" wrapText="true"/>
+                        <TextArea id="" fx:id="chatTextArea" editable="false" focusTraversable="false"
+                                  mouseTransparent="true" prefHeight="88.0" prefWidth="572.0" promptText="Чат"
+                                  wrapText="true"/>
                     </content>
                 </ScrollPane>
-                <TextArea id="editChatArea" fx:id="editChatTextArea" onKeyTyped="#editChatKeyTyped" prefHeight="38.0"
-                          prefWidth="572.0" wrapText="true"/>
+                <TextArea id="editChatArea" fx:id="editChatTextArea" onKeyReleased="#editChatKeyReleased"
+                          onKeyTyped="#editChatKeyTyped" prefHeight="38.0" prefWidth="572.0" wrapText="true"/>
             </items>
         </SplitPane>
     </children>

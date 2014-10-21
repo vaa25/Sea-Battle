@@ -5,8 +5,6 @@ import model.MyField;
 import model.Player;
 import model.Ship;
 import networks.Network;
-import networks.ObjectParser;
-import networks.ObjectSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +12,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author Alexander Vlasov
@@ -23,8 +20,7 @@ public class Main implements Runnable {
     private Player player;
     private Double enemyRandom;
     private Network network;
-    private ObjectParser parser;
-    private ObjectSender sender;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Main(String name) {
@@ -73,23 +69,16 @@ public class Main implements Runnable {
         player.printMy();
         try {
 //            System.out.print(player.getName()+" ");
-            network = new Network(InetAddress.getLocalHost(), 10000);
-            parser = network.getParser();
-            sender = network.getSender();
+            network = new Network(InetAddress.getLocalHost(), 20000);
+            network.setAnyConnection();
+            player.setParser(network.getParser());
+            player.setSender(network.getSender());
         } catch (IOException e) {
             System.out.println(System.nanoTime() + " " + player.getName() + "Проблемы с сетью");
             e.printStackTrace();
         }
-
-        Random random = new Random();
-        Double myRandom;
-        do {
-            myRandom = random.nextDouble();
-            sender.sendMessage(myRandom);
-            enemyRandom = (double) takeObject(Double.class);
-        } while (myRandom.equals(enemyRandom));
         boolean myTurn;
-        if (enemyRandom > myRandom) {
+        if (!player.isIFirst()) {
             System.out.println(player.getName() + " Враг ходит первый");
             myTurn = false;
         } else {
@@ -100,19 +89,18 @@ public class Main implements Runnable {
         while (!player.isGameOver()) {
             if (myTurn) {
                 Coord coord = player.getRandomShootCoord();
-                sender.sendMessage(coord);
-                ShootResult shootResult = (ShootResult) takeObject(ShootResult.class);
-                player.setShootResult(shootResult);
+                player.sendObject(coord);
+                ShootResult shootResult = player.turn(coord);
                 if (shootResult == ShootResult.MISSED) {
                     myTurn = false;
                 }
                 System.out.println(player.getName() + " ход " + turn++ + ": Бью " + coord + " " + shootResult);
                 player.printEnemy();
             } else {
-                ShootResult shootResult = player.receiveShoot((Coord) takeObject(Coord.class));
+                ShootResult shootResult = player.receiveShoot((Coord) player.takeObject(Coord.class));
                 if (shootResult == ShootResult.KILLED)
                     System.out.println(player.getName() + " всего убито " + myField.getKilled() + " ships.size()=" + myField.getShipSize());
-                sender.sendMessage(shootResult);
+                player.sendObject(shootResult);
                 if (shootResult == ShootResult.MISSED) {
                     myTurn = true;
                 }
@@ -123,25 +111,6 @@ public class Main implements Runnable {
         network.close();
     }
 
-    private Object takeObject(Class clazz) {
-        logger.info(getName() + " пытаюсь принять класс ", clazz);
-        Object object = null;
-//        try {
-//            object = clazz.newInstance();
-//        } catch (InstantiationException e) {
-//            logger.error("InstantiationException: ",e);
-//        } catch (IllegalAccessException e) {
-//            logger.error("IllegalAccessException: ",e);
-//        }
-
-        try {
-            object = parser.take(clazz);
-        } catch (InterruptedException e) {
-            logger.error("InterruptedException: ", e);
-        }
-        logger.info(getName() + " принял объект ", object);
-        return object;
-    }
 
     public static void main(String[] args) throws IOException, InterruptedException {
         new Thread(new Main("Player 1: ")).start();

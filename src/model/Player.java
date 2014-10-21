@@ -2,7 +2,10 @@ package model;
 
 import common.Coord;
 import common.ShootResult;
+import networks.ObjectParser;
+import networks.ObjectSender;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -16,6 +19,8 @@ import java.util.Random;
 public class Player {
     final static boolean WON = true;
     final static boolean DONTWON = false;
+    private ObjectParser parser;
+    private ObjectSender sender;
     private String name;
     private MyField myField;
     private EnemyField enemyField;
@@ -28,6 +33,44 @@ public class Player {
         this.height = height;
         currentStatistic = new CurrentStatistic();
         this.name = name;
+    }
+
+    public Object takeObject(Class clazz) {
+
+        try {
+            return parser.take(clazz);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean isIFirst() {
+        Random random = new Random();
+        Double myRandom;
+        Double enemyRandom;
+        do {
+            myRandom = random.nextDouble();
+            sendObject(myRandom);
+            enemyRandom = (double) takeObject(Double.class);
+        } while (myRandom.equals(enemyRandom));
+        if (enemyRandom > myRandom) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public void sendObject(Object object) {
+        sender.sendObject(object);
+    }
+
+    public void setParser(ObjectParser parser) {
+        this.parser = parser;
+    }
+
+    public void setSender(ObjectSender sender) {
+        this.sender = sender;
     }
 
     public int getMyKilled() {
@@ -77,15 +120,25 @@ public class Player {
 
     }
 
+    public List<Ship> getReconstructedShips() {
+        return enemyField.getReconstructedShips();
+    }
+
+    public List<Coord> getWrecks() {
+        return enemyField.getWrecks();
+    }
+
     /**
-     * Jпределяет и возвращает результат выстрела врага
+     * Определяет и возвращает результат выстрела врага
      *
      * @param coord координаты выстрела врага
      *
      * @return результат выстрела
      */
     public ShootResult receiveShoot(Coord coord) {
-        return myField.shoot(coord);
+        ShootResult shootResult = myField.shoot(coord);
+        sender.sendObject(shootResult);
+        return shootResult;
     }
 
     public void printEnemy() {
@@ -101,7 +154,7 @@ public class Player {
     }
 
     /**
-     * выбирает рандомно координаты выстрела по врагу
+     * Выбирает рандомно координаты выстрела по врагу
      *
      * @return
      */
@@ -118,6 +171,13 @@ public class Player {
     public boolean canPlaceShip(Ship ship) {
 
         return myField.canPlace(ship);
+    }
+
+    public ShootResult turn(Coord coord) {
+        sendObject(coord);
+        ShootResult shootResult = (ShootResult) takeObject(ShootResult.class);
+        setShootResult(shootResult);
+        return shootResult;
     }
 
 

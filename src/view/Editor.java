@@ -15,11 +15,15 @@ import java.util.Map;
  * @author Alexander Vlasov
  */
 public class Editor {
-    List<Ship> placed;
+    private List<Ship> placed;
     private Ship selected;
     private Map<Integer, Integer> available;
     private MyField myField;
     private RandomSetter randomSetter;
+
+    public MyField getMyField() {
+        return myField;
+    }
 
     public Editor() {
         available = new HashMap<>();
@@ -27,6 +31,10 @@ public class Editor {
         myField = new MyField(10, 10);
         placed = new ArrayList<>();
         randomSetter = new RandomSetter(10, 10);
+    }
+
+    public List<Ship> getPlaced() {
+        return placed;
     }
 
     private void initAvailable() {
@@ -60,9 +68,9 @@ public class Editor {
         return myField.canPlace(selected);
     }
 
-    public void placeRest() {
+    public boolean placeRest() {
         List<Ship> rest = createRestShips();
-        if (rest.size() == 0) return;
+        if (rest.size() == 0) return false;
         placed.addAll(rest);
         randomSetter.setShips(placed);
         if (randomSetter.setRest()) {
@@ -71,8 +79,9 @@ public class Editor {
             clearAvailable();
         } else {
             placed.removeAll(rest);
+            return false;
         }
-
+        return true;
     }
 
     public void placeAll() {
