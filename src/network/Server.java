@@ -5,7 +5,7 @@ package network;
  * User: Alexey Nerodenko
  * Date: 02.09.14
  */
-import console.ConsoleHelper;
+
 import model.Cell;
 import model.Game;
 import model.Player;
@@ -16,9 +16,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 
-public class Server implements Runnable{
+public class Server implements Runnable {
     ServerSocket serverSocket;
     Socket connection; // connection-to-client
     ObjectOutputStream output;
@@ -47,7 +46,9 @@ public class Server implements Runnable{
             input.close();
             output.close();
             connection.close();
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void waitForConnection() {
@@ -56,7 +57,7 @@ public class Server implements Runnable{
             connection = serverSocket.accept(); // code will stop here until a connection occurs
             connection.setKeepAlive(true);
             System.out.println("Connection established with the client");
-        } catch (EOFException e){
+        } catch (EOFException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -64,7 +65,7 @@ public class Server implements Runnable{
     }
 
     public void getIOStreams() {
-        synchronized (Game.seaBattle){
+        synchronized (Game.seaBattle) {
             try {
                 output = new ObjectOutputStream(connection.getOutputStream());
                 output.flush(); // send header information to the client, which
@@ -80,7 +81,8 @@ public class Server implements Runnable{
     }
 
     public void keepConnectionAlive() {
-        while(!isClientDisconnected){}
+        while (!isClientDisconnected) {
+        }
 
     }
 
@@ -96,40 +98,44 @@ public class Server implements Runnable{
     public Cell receiveCell() {
         try {
             Cell cell = (Cell) input.readObject();
-            System.out.println("Server received cell " + cell);
+//            System.out.println("Server received cell " + cell);
             return cell;
         } catch (ClassNotFoundException e) {
             System.err.println("Object of an unknown type was received");
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
-    public void sendCell(Cell cell){
+    public void sendCell(Cell cell) {
         try {
             output.writeObject(cell);
             output.flush();
-            System.out.println("Server sent cell " + cell);
+//            System.out.println("Server sent cell " + cell);
         } catch (IOException e) {
             System.err.println("Error sending Cell object.");
         }
     }
 
-    public Player receivePlayer(){
+    public Player receivePlayer() {
         try {
             Player p = (Player) input.readObject();
-            System.out.println("Server received player " + p.getName());
+//            System.out.println("Server received player " + p.getName());
             return p;
         } catch (ClassNotFoundException e) {
             System.err.println("Object of an unknown type was received");
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
-    public void sendPlayer(Player p){
+    public void sendPlayer(Player p) {
         try {
             output.writeObject(p);
             output.flush();
-            System.out.println("Server sent player " + p.getName());
+//            System.out.println("Server sent player " + p.getName());
         } catch (IOException e) {
             System.out.println(e);
             System.err.println("Error sending Player object");

@@ -13,7 +13,6 @@ import model.Player;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -38,7 +37,9 @@ public class Client implements Runnable {
         } catch (UnknownHostException e) {
             System.err.println("Server unavailable");
             System.exit(1);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void closeConnection() {
@@ -46,23 +47,27 @@ public class Client implements Runnable {
             output.close();
             input.close();
             clientSocket.close();
-        }  catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getIOStreams() {
-        synchronized (Game.seaBattle){
+        synchronized (Game.seaBattle) {
             try {
                 output = new ObjectOutputStream(clientSocket.getOutputStream());
                 output.flush();
                 input = new ObjectInputStream(clientSocket.getInputStream());
                 System.out.println("Client established I/O Stream");
                 Game.seaBattle.notify();
-            } catch (IOException e) { e.printStackTrace(); }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void keepConnectionAlive() {
-        while(!isServerDisconnected){
+        while (!isServerDisconnected) {
 
         }
     }
@@ -72,47 +77,51 @@ public class Client implements Runnable {
             output.writeObject(s);
             output.flush();
         } catch (IOException e) {
-            System.err.println("Error writting the message");
+            System.err.println("Error writing the message");
         }
     }
 
     public Cell receiveCell() {
         try {
             Cell cell = (Cell) input.readObject();
-            System.out.println("Client received cell " + cell);
+//            System.out.println("Client received cell " + cell);
             return cell;
         } catch (ClassNotFoundException e) {
             System.err.println("Object of an unknown type was received");
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
-    public void sendCell(Cell cell){
+    public void sendCell(Cell cell) {
         try {
             output.writeObject(cell);
             output.flush();
-            System.out.println("Client sent cell " + cell);
+//            System.out.println("Client sent cell " + cell);
         } catch (IOException e) {
             System.err.println("Error sending Cell object.");
         }
     }
 
-    public Player receivePlayer(){
+    public Player receivePlayer() {
         try {
             Player p = (Player) input.readObject();
-            System.out.println("Client received player " + p.getName());
+//            System.out.println("Client received player " + p.getName());
             return p;
         } catch (ClassNotFoundException e) {
             System.err.println("Object of an unknown type was received");
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
-    public void sendPlayer(Player p){
+    public void sendPlayer(Player p) {
         try {
             output.writeObject(p);
             output.flush();
-            System.out.println("Client sent player " + p.getName());
+//            System.out.println("Client sent player " + p.getName());
         } catch (IOException e) {
             System.out.println(e);
             System.err.println("Error sending Player object.");
