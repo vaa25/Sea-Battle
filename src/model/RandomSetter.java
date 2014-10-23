@@ -31,6 +31,8 @@ public class RandomSetter {
      * Разделяет ships на уже расставленные и те, что нужно расставить
      */
     private void divideShipsList() {
+        shipsToPlace.clear();
+        shipsPlaced.clear();
         for (Ship ship : ships) {
             if (ship.isPlaced()) shipsPlaced.add(ship);
             else shipsToPlace.add(ship);
@@ -55,8 +57,9 @@ public class RandomSetter {
      * @return
      */
     public boolean setAll() {
-        shipsToPlace = ships;
+        shipsToPlace.clear();
         shipsPlaced.clear();
+        shipsToPlace.addAll(ships);
         return set();
     }
 
@@ -66,7 +69,6 @@ public class RandomSetter {
      * @return
      */
     public boolean setRest() {
-        shipsPlaced.clear();
         divideShipsList();
         return set();
 
