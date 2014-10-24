@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.util.Random;
+
 import static model.CellConstants.*;
 
 /**
@@ -72,11 +73,11 @@ public class Field implements Serializable {
         int areaY = 0;
 
         if (vertical){
-            areaX  = (x == 0 || x == height - shipLength) ? startX + 2 : startX + 3;
-            areaY  = (y == 0 || y == width  - shipLength) ? startY + shipLength + 1 : startY + shipLength + 2;
+            areaX = (x == 0 || x == height - shipLength) ? startX + shipLength + 1 : startX + shipLength + 2;
+            areaY = (y == 0 || y == width - shipLength) ? startY + 2 : startY + 3;
         } else {
-            areaX  = (x == 0 || x == height - shipLength) ? startX + shipLength + 1 : startX + shipLength + 2;
-            areaY  = (y == 0 || y == width  - shipLength) ? startY + 2 : startY + 3;
+            areaX = (x == 0 || x == height - shipLength) ? startX + 2 : startX + 3;
+            areaY = (y == 0 || y == width - shipLength) ? startY + shipLength + 1 : startY + shipLength + 2;
         }
 
         for(int i = startX; i < areaX; i++){
