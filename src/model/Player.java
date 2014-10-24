@@ -51,8 +51,12 @@ public class Player {
         Double enemyRandom;
         do {
             myRandom = random.nextDouble();
+            System.out.println(" Пытаюсь послать " + myRandom);
             sendObject(myRandom);
+            System.out.println(" Послал  " + myRandom);
+            System.out.println(" Пытаюсь принять вражеское число ");
             enemyRandom = (double) takeObject(Double.class);
+            System.out.println(" Принял вражеское число " + enemyRandom);
         } while (myRandom.equals(enemyRandom));
         if (enemyRandom > myRandom) {
             return false;

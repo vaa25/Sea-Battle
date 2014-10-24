@@ -20,13 +20,13 @@ public class ObjectSender {
     }
 
     public synchronized void sendObject(Object object) {
-        logger.info(Thread.currentThread().getName() + " ObjectSender пытается послать сообщение ", object);
+        logger.info(Thread.currentThread().getName() + " ObjectSender пытается послать сообщение " + object, object);
         try {
             objectOutputStream.writeObject(object);
             objectOutputStream.flush();
         } catch (IOException e) {
             logger.error(Thread.currentThread().getName() + "ObjectReceiver (" + Thread.currentThread().getName() + ") IOException: ", e);
         }
-        logger.info(Thread.currentThread().getName() + " ObjectSender послал сообщение ", object);
+        logger.info(Thread.currentThread().getName() + " ObjectSender послал сообщение " + object, object);
     }
 }

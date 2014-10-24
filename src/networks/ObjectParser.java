@@ -34,6 +34,9 @@ public class ObjectParser {
      * @throws InterruptedException
      */
     public Object take(Class clazz) throws InterruptedException {
+        while (!map.containsKey(clazz)) {
+            Thread.sleep(100);
+        }
         Object object = getQueue(clazz).take();
         logger.info(Thread.currentThread().getName() + " ObjectParser успешно take " + object);
         return object;

@@ -44,6 +44,7 @@ public class Controller implements Initializable, ObjectListener {
     private int port = 20000;
     private boolean ready;
     private boolean enemyReady;
+    private boolean gameIsGoing;
     @FXML
     private ResourceBundle resources;
 
@@ -395,7 +396,7 @@ public class Controller implements Initializable, ObjectListener {
                 network.getSender().sendObject(Special.Ready);
                 chatTextArea.appendText(" Я готов!" + "\n");
                 if (enemyReady) {
-
+                    gameIsGoing = true;
                     startPlay();
                 }
             } else {
@@ -502,6 +503,7 @@ public class Controller implements Initializable, ObjectListener {
         ready = false;
         enemyReady = false;
         setAll(null);
+        gameIsGoing = false;
     }
 
     private static final DataFormat shipImageDataFormat = new DataFormat("shipImage");
@@ -514,7 +516,11 @@ public class Controller implements Initializable, ObjectListener {
         if (object.equals(Special.Ready)) {
             enemyReady = true;
             chatTextArea.appendText(" Враг готов!" + "\n");
-            if (ready) startPlay();
+
+            if (ready) {
+                gameIsGoing = true;
+                startPlay();
+            }
         }
         if (object.equals(Special.NotReady)) {
             chatTextArea.appendText(" Враг не готов!" + "\n");
