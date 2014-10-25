@@ -72,6 +72,18 @@ public class Client implements Runnable {
         }
     }
 
+    public String receiveData() {
+        String s = null;
+        try {
+            s = (String) input.readObject();
+        } catch (ClassNotFoundException e) {
+            System.err.println("Object of an unknown type was received");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return s;
+    }
+
     public void sendData(String s) {
         try {
             output.writeObject(s);

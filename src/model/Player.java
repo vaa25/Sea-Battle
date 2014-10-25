@@ -86,4 +86,6 @@ public class Player implements Serializable {
     public ArrayList<Cell> getMadeShots() {
         return madeShots;
     }
+
+
 }
