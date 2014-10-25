@@ -14,8 +14,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ObjectParser {
     private ConcurrentHashMap<Class, ObjectListener> listeners;
     private ConcurrentHashMap<Class, BlockingQueue> map;
+    private BlockingQueue emergency;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public ObjectParser() {
         this.map = new ConcurrentHashMap<>();
         listeners = new ConcurrentHashMap<>();
@@ -48,6 +48,9 @@ public class ObjectParser {
         return oldQueue == null ? queue : oldQueue;
     }
 
+    public void setEmergency(BlockingQueue emergency) {
+        this.emergency = emergency;
+    }
 
     /**
      * Ложит объект на хранение
@@ -58,7 +61,11 @@ public class ObjectParser {
         getQueue(clazz).add(object);
         logger.info(Thread.currentThread().getName() + " ObjectParser успешно put " + object);
         if (listeners.keySet().contains(clazz)) {
-            listeners.get(clazz).takeFromParser(object);
+            try {
+                emergency.put(object);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

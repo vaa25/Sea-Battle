@@ -3,7 +3,9 @@ package view;
 import common.Coord;
 import common.ShootResult;
 import javafx.collections.ObservableList;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -20,14 +22,18 @@ import model.Ship;
 import networks.Network;
 import networks.ObjectListener;
 import networks.Special;
+import sampleFX.FirstLineService;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class Controller implements Initializable, ObjectListener {
@@ -159,7 +165,78 @@ public class Controller implements Initializable, ObjectListener {
 
     @FXML
     private ToggleGroup toggleServer;
+    private ServerSocketHandler serverSocketHandler;
+    private ObjectHandler objectHandler;
 
+    private void setServerSocketHandler() {
+        serverSocketHandler = new ServerSocketHandler();
+        serverSocketHandler.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent workerStateEvent) {
+                try {
+                    connectButton.setDisable(true);
+                    network.go((Socket) (workerStateEvent.getSource().getValue()));
+                    connectionEstablished();
+                } catch (IOException e) {
+                    connectButton.setDisable(false);
+                    e.printStackTrace();
+                    return;
+                }
+            }
+        });
+
+    }
+
+    private void setObjectHandler(BlockingQueue queue) {
+
+        objectHandler = new ObjectHandler(queue);
+        objectHandler.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent workerStateEvent) {
+                Object object = workerStateEvent.getSource().getValue();
+
+                if (object.getClass().equals(String.class)) {
+                    chatTextArea.appendText(" Враг: " + (String) object);
+                }
+                if (object.equals(Special.Ready)) {
+                    enemyReady = true;
+                    chatTextArea.appendText(" Враг готов!" + "\n");
+
+                    if (ready) {
+                        gameIsGoing = true;
+                        startPlay();
+                    }
+                }
+                if (object.equals(Special.NotReady)) {
+                    chatTextArea.appendText(" Враг не готов!" + "\n");
+                    enemyReady = false;
+                }
+                if (object.getClass().equals(Coord.class)) {
+                    chatTextArea.appendText(" Ход " + turn++ + "\n");
+                    Coord coord = (Coord) object;
+                    ShootResult shootResult = player.receiveShoot(coord);
+                    displayShootMy(coord, shootResult);
+                    if (shootResult.equals(ShootResult.MISSED)) {
+                        myTurn = true;
+                    }
+                    if (shootResult.equals(ShootResult.KILLED)) {
+                        if (player.isGameOver()) {
+                            gameOver();
+                            if (player.isEnemyLoose()) {
+                                chatTextArea.appendText(" Я победил" + "\n");
+                            } else {
+                                chatTextArea.appendText(" Я проиграл" + "\n");
+
+                            }
+
+                        }
+                    }
+                }
+                objectHandler.restart();
+            }
+        });
+        objectHandler.start();
+    }
 
     @FXML
     void clientSelected(ActionEvent event) {
@@ -180,18 +257,19 @@ public class Controller implements Initializable, ObjectListener {
         gameTab.setDisable(false);
         editChatTextArea.setDisable(false);
         readyToggleButton.setDisable(false);
+        connectButton.setDisable(true);
+        network.getParser().registerListener(String.class, this);
+        network.getParser().registerListener(Coord.class, this);
+        network.getParser().registerListener(Special.class, this);
+        BlockingQueue queue = new LinkedBlockingQueue();
+        network.getParser().setEmergency(queue);
+        setObjectHandler(queue);
     }
     @FXML
     void connect(ActionEvent event) {
         network = new Network();
         if (hostSelected) {
-            try {
-                network.setServerConnection(port);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
+            serverSocketHandler.restart();
         } else {
             try {
                 ip = InetAddress.getByName(ipTextField.getText());
@@ -200,11 +278,10 @@ public class Controller implements Initializable, ObjectListener {
                 return;
             }
             if (!network.setClientConnection(ip, port)) return;
+            else connectionEstablished();
         }
-        network.getParser().registerListener(String.class, this);
-        network.getParser().registerListener(Coord.class, this);
-        network.getParser().registerListener(Special.class, this);
-        connectionEstablished();
+
+
     }
 
     @FXML
@@ -490,7 +567,7 @@ public class Controller implements Initializable, ObjectListener {
 
     }
 
-
+    FirstLineService service = new FirstLineService();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         editor = new Editor();
@@ -504,6 +581,7 @@ public class Controller implements Initializable, ObjectListener {
         enemyReady = false;
         setAll(null);
         gameIsGoing = false;
+        setServerSocketHandler();
     }
 
     private static final DataFormat shipImageDataFormat = new DataFormat("shipImage");
@@ -530,7 +608,7 @@ public class Controller implements Initializable, ObjectListener {
             chatTextArea.appendText(" Ход " + turn++);
             Coord coord = (Coord) object;
             ShootResult shootResult = player.receiveShoot(coord);
-            displayShootResult(coord, shootResult);
+            displayShootEnemy(coord, shootResult);
             if (shootResult.equals(ShootResult.MISSED)) {
                 myTurn = true;
             }
@@ -557,9 +635,32 @@ public class Controller implements Initializable, ObjectListener {
         networkTab.setDisable(false);
     }
 
-    private void displayShootResult(Coord coord, ShootResult shootResult) {
+    private void displayShootEnemy(Coord coord, ShootResult shootResult) {
         int x = coord.getX();
         int y = coord.getY();
+        if (shootResult.equals(ShootResult.MISSED)) enemyFieldGridPane.add(new Text("  ."), x, y);
+        else if (shootResult.equals(ShootResult.HURT)) enemyFieldGridPane.add(new Text("  *"), x, y);
+        else if (shootResult.equals(ShootResult.KILLED)) {
+            clearGridPane(enemyFieldGridPane);
+            List<Ship> ships = player.getReconstructedShips();
+            for (Ship ship : ships) {
+                for (Coord coord2 : ship.getShipCoords()) {
+                    enemyFieldGridPane.add(new Text("  Ж"), coord2.getX(), coord2.getY());
+                }
+            }
+            List<Coord> wrecks = player.getWrecks();
+            for (Coord coord2 : wrecks) {
+                enemyFieldGridPane.add(new Text("  *"), coord2.getX(), coord2.getY());
+
+            }
+        }
+    }
+
+    private void displayShootMy(Coord coord, ShootResult shootResult) {
+        int x = coord.getX();
+        int y = coord.getY();
+        ObservableList<Node> source = myFieldGridPane.getChildren();
+        System.out.println(source.size());
         if (shootResult.equals(ShootResult.MISSED)) enemyFieldGridPane.add(new Text("  ."), x, y);
         else if (shootResult.equals(ShootResult.HURT)) enemyFieldGridPane.add(new Text("  *"), x, y);
         else if (shootResult.equals(ShootResult.KILLED)) {

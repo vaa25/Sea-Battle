@@ -27,7 +27,9 @@ public class Network {
     public Network() {
     }
 
-    ;
+    public Network(Socket conn) throws IOException {
+        go(conn);
+    }
 
     public Network(InetAddress host, int port) {
         this.host = host;
@@ -42,7 +44,7 @@ public class Network {
         return out;
     }
 
-    private void go() throws IOException {
+    public void go(Socket conn) throws IOException {
         //        logger.info( "Пытаюсь создать исходящий поток");
         out = new ObjectOutputStream(conn.getOutputStream());
 //        logger.info( "Иcходящий поток успешно создан " + out);
@@ -60,6 +62,10 @@ public class Network {
         receiverThread.start();
 //        logger.info("network (" + Thread.currentThread().getName() + ") starts receiverThread (" + receiverThread.getName() + ")");
 
+    }
+
+    private void go() throws IOException {
+        go(conn);
     }
 
     public void setAnyConnection() throws IOException {

@@ -1,6 +1,8 @@
 package sampleFX;
 
 import common.Coord;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.*;
@@ -136,9 +138,17 @@ public class Controller {
     }
 
     @FXML
-    void initialize() {
+    void initialize(URL url, ResourceBundle resourceBundle) {
         assert label != null : "fx:id=\"label\" was not injected: check your FXML file 'sample.fxml'.";
+        FirstLineService service = new FirstLineService();
+        service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
+            @Override
+            public void handle(WorkerStateEvent t) {
+                System.out.println("done:" + t.getSource().getValue());
+            }
+        });
+        service.start();
 
     }
 

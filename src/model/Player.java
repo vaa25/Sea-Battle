@@ -5,6 +5,7 @@ import common.ShootResult;
 import networks.ObjectParser;
 import networks.ObjectSender;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -33,8 +34,25 @@ public class Player {
         this.height = height;
         currentStatistic = new CurrentStatistic();
         this.name = name;
+        setEnemy();
     }
 
+    private void setEnemy() {
+        EnemyField enemyField = new EnemyField(10, 10);
+        List<Ship> enemyShips = new ArrayList<>();
+        enemyShips.add(new Ship(4));
+        enemyShips.add(new Ship(3));
+        enemyShips.add(new Ship(3));
+        enemyShips.add(new Ship(2));
+        enemyShips.add(new Ship(2));
+        enemyShips.add(new Ship(2));
+        enemyShips.add(new Ship(1));
+        enemyShips.add(new Ship(1));
+        enemyShips.add(new Ship(1));
+        enemyShips.add(new Ship(1));
+        enemyField.setShips(enemyShips);
+        setEnemyField(enemyField);
+    }
     public Object takeObject(Class clazz) {
 
         try {
@@ -178,6 +196,7 @@ public class Player {
     }
 
     public ShootResult turn(Coord coord) {
+        shootCoord = coord;
         sendObject(coord);
         ShootResult shootResult = (ShootResult) takeObject(ShootResult.class);
         setShootResult(shootResult);
