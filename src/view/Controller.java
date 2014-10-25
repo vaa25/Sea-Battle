@@ -5,6 +5,7 @@ import common.ShootResult;
 import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,7 +21,6 @@ import model.Orientation;
 import model.Player;
 import model.Ship;
 import networks.Network;
-import networks.ObjectListener;
 import networks.Special;
 import sampleFX.FirstLineService;
 
@@ -36,7 +36,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
-public class Controller implements Initializable, ObjectListener {
+public class Controller implements Initializable {
     private Editor editor;
     private Player player;
     private List<Ship> myShips;
@@ -167,7 +167,8 @@ public class Controller implements Initializable, ObjectListener {
     private ToggleGroup toggleServer;
     private ServerSocketHandler serverSocketHandler;
     private ObjectHandler objectHandler;
-
+    private FieldDisplay myFieldDisplay;
+    private FieldDisplay enemyFieldDisplay;
     private void setServerSocketHandler() {
         serverSocketHandler = new ServerSocketHandler();
         serverSocketHandler.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -196,7 +197,7 @@ public class Controller implements Initializable, ObjectListener {
                 Object object = workerStateEvent.getSource().getValue();
 
                 if (object.getClass().equals(String.class)) {
-                    chatTextArea.appendText(" Враг: " + (String) object);
+                    chatTextArea.appendText(" Враг: " + object);
                 }
                 if (object.equals(Special.Ready)) {
                     enemyReady = true;
@@ -215,20 +216,15 @@ public class Controller implements Initializable, ObjectListener {
                     chatTextArea.appendText(" Ход " + turn++ + "\n");
                     Coord coord = (Coord) object;
                     ShootResult shootResult = player.receiveShoot(coord);
-                    displayShootMy(coord, shootResult);
+                    myFieldDisplay.paint();
+                    chatTextArea.appendText(" Враг ударил в " + coord + ": " + shootResult + "\n");
                     if (shootResult.equals(ShootResult.MISSED)) {
                         myTurn = true;
                     }
                     if (shootResult.equals(ShootResult.KILLED)) {
                         if (player.isGameOver()) {
                             gameOver();
-                            if (player.isEnemyLoose()) {
-                                chatTextArea.appendText(" Я победил" + "\n");
-                            } else {
-                                chatTextArea.appendText(" Я проиграл" + "\n");
-
-                            }
-
+                            gameIsGoing = false;
                         }
                     }
                 }
@@ -238,6 +234,17 @@ public class Controller implements Initializable, ObjectListener {
         objectHandler.start();
     }
 
+    @FXML
+    void gameTabSelected(Event event) {
+        if (((Tab) (event.getSource())).isSelected()) {
+            if (myFieldDisplay != null) {
+                myFieldDisplay.paint();
+            }
+            if (enemyFieldDisplay != null) {
+                enemyFieldDisplay.clear();
+            }
+        }
+    }
     @FXML
     void clientSelected(ActionEvent event) {
         ipTextField.setEditable(true);
@@ -258,9 +265,9 @@ public class Controller implements Initializable, ObjectListener {
         editChatTextArea.setDisable(false);
         readyToggleButton.setDisable(false);
         connectButton.setDisable(true);
-        network.getParser().registerListener(String.class, this);
-        network.getParser().registerListener(Coord.class, this);
-        network.getParser().registerListener(Special.class, this);
+        network.getParser().registerEmergency(String.class);
+        network.getParser().registerEmergency(Coord.class);
+        network.getParser().registerEmergency(Special.class);
         BlockingQueue queue = new LinkedBlockingQueue();
         network.getParser().setEmergency(queue);
         setObjectHandler(queue);
@@ -354,16 +361,26 @@ public class Controller implements Initializable, ObjectListener {
 
     @FXML
     void enemyFieldClicked(MouseEvent event) {
-        if (!myTurn) return;
+
+        if (!gameIsGoing || !myTurn) return;
         int x = (int) (event.getX() / 20);
         int y = (int) (event.getY() / 20);
         Coord coord = new Coord(x, y);
+        if (player.getEnemyField().getCell(coord).isShoot()) {
+            chatTextArea.appendText(" Этот квадрат уже обстрелян. Выберите другой квадрат.\n");
+            return;
+        }
         ShootResult shootResult = player.turn(coord);
         if (shootResult == ShootResult.MISSED) {
             myTurn = false;
         }
         chatTextArea.appendText(" Ход " + turn++ + ": Бью " + coord + " " + shootResult + "\n");
-
+        enemyFieldDisplay.paint();
+        if (shootResult == ShootResult.KILLED) {
+            if (player.isGameOver()) {
+                gameOver();
+            }
+        }
     }
 
     @FXML
@@ -457,7 +474,16 @@ public class Controller implements Initializable, ObjectListener {
     }
 
     private void gameStarts() {
+        chatTextArea.appendText("Игра началась" + "\n");
+        player = new Player(10, 10, "Z");
+        player.setParser(network.getParser());
+        player.setSender(network.getSender());
+        player.setMyField(editor.getMyField());
         readyToggleButton.setDisable(true);
+        myFieldDisplay = new FieldDisplay(myFieldGridPane, player.getMyField());
+        enemyFieldDisplay = new FieldDisplay(enemyFieldGridPane, player.getEnemyField());
+        myFieldDisplay.paint();
+        enemyFieldDisplay.paint();
     }
     private void updateAmountAvailable() {
         amountLabel1.setText(String.valueOf(editor.getAmountAvailable(1)));
@@ -499,12 +525,8 @@ public class Controller implements Initializable, ObjectListener {
     }
 
     private boolean startPlay() {
+
         gameStarts();
-        chatTextArea.appendText("Игра началась" + "\n");
-        player = new Player(10, 10, "Z");
-        player.setParser(network.getParser());
-        player.setSender(network.getSender());
-        player.setMyField(editor.getMyField());
         if (player.isIFirst()) {
             chatTextArea.appendText(" Мой ход" + "\n");
             myTurn = true;
@@ -586,96 +608,18 @@ public class Controller implements Initializable, ObjectListener {
 
     private static final DataFormat shipImageDataFormat = new DataFormat("shipImage");
 
-    @Override
-    public void takeFromParser(Object object) {
-        if (object.getClass().equals(String.class)) {
-            chatTextArea.appendText(" Враг: " + (String) object);
-        }
-        if (object.equals(Special.Ready)) {
-            enemyReady = true;
-            chatTextArea.appendText(" Враг готов!" + "\n");
 
-            if (ready) {
-                gameIsGoing = true;
-                startPlay();
-            }
-        }
-        if (object.equals(Special.NotReady)) {
-            chatTextArea.appendText(" Враг не готов!" + "\n");
-            enemyReady = false;
-        }
-        if (object.getClass().equals(Coord.class)) {
-            chatTextArea.appendText(" Ход " + turn++);
-            Coord coord = (Coord) object;
-            ShootResult shootResult = player.receiveShoot(coord);
-            displayShootEnemy(coord, shootResult);
-            if (shootResult.equals(ShootResult.MISSED)) {
-                myTurn = true;
-            }
-            if (shootResult.equals(ShootResult.KILLED)) {
-                if (player.isGameOver()) {
-                    gameOver();
-                    if (player.isEnemyLoose()) {
-                        chatTextArea.appendText(" Я победил" + "\n");
-                    } else {
-                        chatTextArea.appendText(" Я проиграл" + "\n");
-
-                    }
-
-                }
-            }
-        }
-    }
 
     private void gameOver() {
         chatTextArea.appendText(" Игра окончена" + "\n");
+        if (player.isMyLoose()) chatTextArea.appendText(" Я проиграл.\n");
+        else chatTextArea.appendText(" Я выиграл.\n");
         readyToggleButton.setDisable(false);
         editTab.setDisable(false);
         miscTab.setDisable(false);
         networkTab.setDisable(false);
+        readyToggleButton.setSelected(false);
     }
 
-    private void displayShootEnemy(Coord coord, ShootResult shootResult) {
-        int x = coord.getX();
-        int y = coord.getY();
-        if (shootResult.equals(ShootResult.MISSED)) enemyFieldGridPane.add(new Text("  ."), x, y);
-        else if (shootResult.equals(ShootResult.HURT)) enemyFieldGridPane.add(new Text("  *"), x, y);
-        else if (shootResult.equals(ShootResult.KILLED)) {
-            clearGridPane(enemyFieldGridPane);
-            List<Ship> ships = player.getReconstructedShips();
-            for (Ship ship : ships) {
-                for (Coord coord2 : ship.getShipCoords()) {
-                    enemyFieldGridPane.add(new Text("  Ж"), coord2.getX(), coord2.getY());
-                }
-            }
-            List<Coord> wrecks = player.getWrecks();
-            for (Coord coord2 : wrecks) {
-                enemyFieldGridPane.add(new Text("  *"), coord2.getX(), coord2.getY());
 
-            }
-        }
-    }
-
-    private void displayShootMy(Coord coord, ShootResult shootResult) {
-        int x = coord.getX();
-        int y = coord.getY();
-        ObservableList<Node> source = myFieldGridPane.getChildren();
-        System.out.println(source.size());
-        if (shootResult.equals(ShootResult.MISSED)) enemyFieldGridPane.add(new Text("  ."), x, y);
-        else if (shootResult.equals(ShootResult.HURT)) enemyFieldGridPane.add(new Text("  *"), x, y);
-        else if (shootResult.equals(ShootResult.KILLED)) {
-            clearGridPane(enemyFieldGridPane);
-            List<Ship> ships = player.getReconstructedShips();
-            for (Ship ship : ships) {
-                for (Coord coord2 : ship.getShipCoords()) {
-                    enemyFieldGridPane.add(new Text("  Ж"), coord2.getX(), coord2.getY());
-                }
-            }
-            List<Coord> wrecks = player.getWrecks();
-            for (Coord coord2 : wrecks) {
-                enemyFieldGridPane.add(new Text("  *"), coord2.getX(), coord2.getY());
-
-            }
-        }
-    }
 }

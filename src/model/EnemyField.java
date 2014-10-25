@@ -39,6 +39,7 @@ public class EnemyField extends Field {
         setHurt(coord);
         addKilled();
         Ship killedShip = reconstructKilledShip(coord);
+        killedShip.kill();
         place(killedShip);
 //        reconstructedShips.add(killedShip);
         return killedShip;

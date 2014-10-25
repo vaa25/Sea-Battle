@@ -37,6 +37,14 @@ public class Player {
         setEnemy();
     }
 
+    public MyField getMyField() {
+        return myField;
+    }
+
+    public EnemyField getEnemyField() {
+        return enemyField;
+    }
+
     private void setEnemy() {
         EnemyField enemyField = new EnemyField(10, 10);
         List<Ship> enemyShips = new ArrayList<>();
@@ -134,7 +142,7 @@ public class Player {
                 enemyField.setHurt(shootCoord);
                 break;
             case KILLED:
-                enemyField.setKilled(shootCoord);
+                enemyField.place(enemyField.setKilled(shootCoord));
                 break;
             case MISSED:
                 enemyField.setShoot(shootCoord);

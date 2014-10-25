@@ -3,6 +3,6 @@ package networks;
 /**
  * @author Alexander Vlasov
  */
-public interface ObjectListener<T> {
+public interface EmergencyListener<T> {
     public void takeFromParser(T object);
 }

@@ -9,7 +9,7 @@
         <TabPane fx:id="tabPane" layoutX="14.0" layoutY="14.0" prefHeight="277.0" prefWidth="573.0"
                  tabClosingPolicy="UNAVAILABLE">
             <tabs>
-                <Tab fx:id="gameTab" text="Игра">
+                <Tab fx:id="gameTab" onSelectionChanged="#gameTabSelected" text="Игра">
                     <content>
                         <AnchorPane id="Content" fx:id="playAnchorPane" minHeight="0.0" minWidth="0.0"
                                     prefHeight="217.0" prefWidth="573.0">

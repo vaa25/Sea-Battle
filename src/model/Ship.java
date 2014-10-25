@@ -199,4 +199,8 @@ public class Ship implements Comparable<Ship>, Serializable {
         result = 31 * result + coordLeftUp.hashCode();
         return result;
     }
+
+    public void kill() {
+        health = 0;
+    }
 }

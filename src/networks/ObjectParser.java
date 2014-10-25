@@ -3,27 +3,32 @@ package networks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Класс принимает объекты и выдает их по запросу
+ *
  * @author Alexander Vlasov
  */
 public class ObjectParser {
-    private ConcurrentHashMap<Class, ObjectListener> listeners;
+    private Set<Class> emergencyClasses;
     private ConcurrentHashMap<Class, BlockingQueue> map;
     private BlockingQueue emergency;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     public ObjectParser() {
         this.map = new ConcurrentHashMap<>();
-        listeners = new ConcurrentHashMap<>();
+        emergencyClasses = new HashSet<>();
     }
 
-    public void registerListener(Class clazz, ObjectListener listener) {
-        listeners.putIfAbsent(clazz, listener);
+    public void registerEmergency(Class clazz) {
+        emergencyClasses.add(clazz);
     }
+
     /**
      * Извлекает объект нужного класса
      *
@@ -54,13 +59,14 @@ public class ObjectParser {
 
     /**
      * Ложит объект на хранение
+     *
      * @param object
      */
     public void put(Object object) {
         Class clazz = object.getClass();
         getQueue(clazz).add(object);
         logger.info(Thread.currentThread().getName() + " ObjectParser успешно put " + object);
-        if (listeners.keySet().contains(clazz)) {
+        if (emergencyClasses.contains(clazz)) {
             try {
                 emergency.put(object);
             } catch (InterruptedException e) {
