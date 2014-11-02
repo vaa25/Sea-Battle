@@ -12,25 +12,6 @@ import static model.CellConstants.*;
  * Date: 03.09.14
  */
 public class ConsoleHelper {
-
-    public static int[] getPlayerShot() {
-        while (true) {
-            Scanner scanner = new Scanner(System.in);
-            String input = scanner.nextLine();
-            if ("exit".equals(input)) {
-                System.exit(1);
-            }
-            String[] shootCoordinates = input.split(" ");
-            try {
-                int x = Integer.parseInt(shootCoordinates[0]);
-                int y = Integer.parseInt(shootCoordinates[1]);
-                return new int[]{x, y};
-            } catch (NumberFormatException e) {
-                System.out.println("Pls input two numbers, separated by space (e.g. \"3 15\") or \"exit\" to quit the game.");
-            }
-        }
-    }
-
     public static String getUserInput() {
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
@@ -41,7 +22,7 @@ public class ConsoleHelper {
         System.out.println(message);
     }
 
-    public static void printReal(Field field) {
+    public static void printRealField(Field field) {
         int[][] matrix = field.getMatrix();
         for (int i = 0; i < field.getHeight(); i++) {
             System.out.printf("%2d |", i);
@@ -59,7 +40,7 @@ public class ConsoleHelper {
         System.out.println();
     }
 
-    public static void printGame(Field field) {
+    public static void printGameField(Field field) {
         int[][] matrix = field.getMatrix();
         for (int i = 0; i < field.getHeight(); i++) {
             System.out.printf("%2d |", i);

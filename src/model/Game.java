@@ -1,6 +1,5 @@
 package model;
 
-import console.ConsoleHelper;
 import network.ChatClient;
 import network.ChatServer;
 import network.Client;
@@ -8,6 +7,7 @@ import network.Server;
 
 import java.util.Random;
 
+import static console.ConsoleHelper.*;
 import static model.Game.TurnToMove.playerTurn;
 import static model.Game.TurnToMove.remotePlayerTurn;
 
@@ -34,18 +34,18 @@ public class Game implements Runnable {
 
     public void run() {
 
-        ConsoleHelper.printMessage("Please input player's name: ");
-        player.setName(ConsoleHelper.getUserInput());
+        printMessage("Please input player's name: ");
+        player.setName(getUserInput());
 
         for (Ship ship : player.getShips()) {
             player.getField().randomlyPutShip(ship);
         }
 
-        ConsoleHelper.printMessage(player.getName() + ", Number of ships: " + player.numberOfShip());
-        ConsoleHelper.printReal(player.getField());
+        printMessage(player.getName() + ", Number of ships: " + player.numberOfShip());
+        printRealField(player.getField());
 
-        ConsoleHelper.printMessage("Choose Server(s) or Client(c): ");
-        switch (ConsoleHelper.getUserInput()) {
+        printMessage("Choose Server(s) or Client(c): ");
+        switch (getUserInput()) {
             case "s":
                 Server server = new Server();
                 new Thread(server).start();
@@ -58,19 +58,19 @@ public class Game implements Runnable {
                 }
                 playerRemote = server.receivePlayer();
 
-                ConsoleHelper.printMessage("Server randomly decides who moves first...");
+                printMessage("Server randomly decides who moves first...");
                 String msgTurn = seaBattle.whoMovesFirst();
                 server.sendData(msgTurn);
                 if (msgTurn.equals(playerTurn.name())) {
                     turn = playerTurn;
-                    ConsoleHelper.printMessage("You are lucky, make first move!");
+                    printMessage("You are lucky, make first move!");
                 } else {
                     turn = remotePlayerTurn;
-                    ConsoleHelper.printMessage("Your enemy moves first!");
+                    printMessage("Your enemy moves first!");
                 }
 
                 while (!isGameOver()) {
-                    ConsoleHelper.printMessage("You can chat!");
+                    printMessage("You can chat!");
                     new ChatServer(server).run();
                     switch (turn) {
                         case playerTurn:
@@ -78,31 +78,31 @@ public class Game implements Runnable {
                             server.sendCell(shootCell);
                             server.sendPlayer(player);
                             if (playerRemote.isShipDamaged(shootCell)) {
-                                ConsoleHelper.printMessage("HIT!\nYour enemy field: ");
-                                ConsoleHelper.printGame(playerRemote.getField());
-                                ConsoleHelper.printMessage("You make next move! (e.g. \"3 1\" or \"12 14\")");
+                                printMessage("HIT!\nYour enemy field: ");
+                                printGameField(playerRemote.getField());
+                                printMessage("You make next move! (e.g. \"3 1\" or \"12 14\")");
                                 break;
                             } else {
                                 turn = remotePlayerTurn;
-                                ConsoleHelper.printMessage("MISSED!\nYour enemy field: ");
-                                ConsoleHelper.printGame(playerRemote.getField());
-                                ConsoleHelper.printMessage("Your enemy makes next move!");
+                                printMessage("MISSED!\nYour enemy field: ");
+                                printGameField(playerRemote.getField());
+                                printMessage("Your enemy makes next move!");
                                 break;
                             }
                         case remotePlayerTurn:
                             shootCell = server.receiveCell();
                             playerRemote = server.receivePlayer();
                             if (player.isShipDamaged(shootCell)) {
-                                ConsoleHelper.printMessage("HIT!\nYour field: ");
-                                ConsoleHelper.printReal(player.getField());
-                                ConsoleHelper.printMessage("Your enemy makes next move!");
+                                printMessage("HIT!\nYour field: ");
+                                printRealField(player.getField());
+                                printMessage("Your enemy makes next move!");
                                 break;
                             } else {
-                                ConsoleHelper.printMessage("MISSED!\nYour field: ");
-                                ConsoleHelper.printReal(player.getField());
-                                ConsoleHelper.printMessage("Your enemy field: ");
-                                ConsoleHelper.printGame(playerRemote.getField());
-                                ConsoleHelper.printMessage("You make next move! (e.g. \"3 1\" or \"12 14\")");
+                                printMessage("MISSED!\nYour field: ");
+                                printRealField(player.getField());
+                                printMessage("Your enemy field: ");
+                                printGameField(playerRemote.getField());
+                                printMessage("You make next move! (e.g. \"3 1\" or \"12 14\")");
                                 turn = playerTurn;
                                 break;
                             }
@@ -121,18 +121,18 @@ public class Game implements Runnable {
                 }
                 client.sendPlayer(player);
 
-                ConsoleHelper.printMessage("Server randomly decides who moves first...");
+                printMessage("Server randomly decides who moves first...");
                 msgTurn = client.receiveData();
                 if (msgTurn.equals(playerTurn.name())) {
                     turn = playerTurn;
-                    ConsoleHelper.printMessage("Your enemy moves first!");
+                    printMessage("Your enemy moves first!");
                 } else {
                     turn = remotePlayerTurn;
-                    ConsoleHelper.printMessage("You are lucky, make first move!");
+                    printMessage("You are lucky, make first move!");
                 }
 
                 while (!isGameOver()) {
-                    ConsoleHelper.printMessage("You can chat!");
+                    printMessage("You can chat!");
                     new ChatClient(client).run();
 
                     switch (turn) {
@@ -140,17 +140,17 @@ public class Game implements Runnable {
                             Cell shootCell = client.receiveCell();
                             playerRemote = client.receivePlayer();
                             if (player.isShipDamaged(shootCell)) {
-                                ConsoleHelper.printMessage("HIT!\nYour field: ");
-                                ConsoleHelper.printReal(player.getField());
-                                ConsoleHelper.printMessage("Your enemy makes next move!");
+                                printMessage("HIT!\nYour field: ");
+                                printRealField(player.getField());
+                                printMessage("Your enemy makes next move!");
                                 break;
                             } else {
                                 turn = remotePlayerTurn;
-                                ConsoleHelper.printMessage("MISSED!\nYour field: ");
-                                ConsoleHelper.printReal(player.getField());
-                                ConsoleHelper.printMessage("Your enemy field: ");
-                                ConsoleHelper.printGame(playerRemote.getField());
-                                ConsoleHelper.printMessage("You make next move! (e.g. \"3 1\" or \"12 14\")");
+                                printMessage("MISSED!\nYour field: ");
+                                printRealField(player.getField());
+                                printMessage("Your enemy field: ");
+                                printGameField(playerRemote.getField());
+                                printMessage("You make next move! (e.g. \"3 1\" or \"12 14\")");
                                 break;
                             }
                         case remotePlayerTurn:
@@ -158,15 +158,15 @@ public class Game implements Runnable {
                             client.sendCell(shootCell);
                             client.sendPlayer(player);
                             if (playerRemote.isShipDamaged(shootCell)) {
-                                ConsoleHelper.printMessage("HIT!\nYour enemy field: ");
-                                ConsoleHelper.printGame(playerRemote.getField());
-                                ConsoleHelper.printMessage("You make next move! (e.g. \"3 1\" or \"12 14\")");
+                                printMessage("HIT!\nYour enemy field: ");
+                                printGameField(playerRemote.getField());
+                                printMessage("You make next move! (e.g. \"3 1\" or \"12 14\")");
                                 break;
                             } else {
                                 turn = playerTurn;
-                                ConsoleHelper.printMessage("MISSED!\nYour enemy field: ");
-                                ConsoleHelper.printGame(playerRemote.getField());
-                                ConsoleHelper.printMessage("Your enemy makes next move!");
+                                printMessage("MISSED!\nYour enemy field: ");
+                                printGameField(playerRemote.getField());
+                                printMessage("Your enemy makes next move!");
                                 break;
                             }
                     }
@@ -192,10 +192,10 @@ public class Game implements Runnable {
     private boolean isGameOver() {
         if (playerRemote == null) return false;
         if (player.numberOfShip() == 0) {
-            ConsoleHelper.printMessage(playerRemote.getName() + " won");
+            printMessage(playerRemote.getName() + " won");
             return true;
         } else if (playerRemote.numberOfShip() == 0) {
-            ConsoleHelper.printMessage(player.getName() + " won");
+            printMessage(player.getName() + " won");
             return true;
         } else {
             return false;
