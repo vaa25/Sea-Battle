@@ -58,7 +58,8 @@ public class ChatServer implements Runnable {
             } catch (ClassNotFoundException e) {
                 System.err.println("Object of an unknown type was received");
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Client disconnected.");
+                System.exit(1);
             }
         }
 

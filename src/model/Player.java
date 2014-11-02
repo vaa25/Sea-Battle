@@ -35,8 +35,7 @@ public class Player implements Serializable {
 
         Cell shootCell = new Cell(shootCoordinates[0], shootCoordinates[1]);
         madeShots.add(shootCell);
-        ConsoleHelper.printMessage(name + "\n" +
-                "Number of ships: " + this.ships.size() + "\n" +
+        ConsoleHelper.printMessage(name + ", Number of ships: " + this.ships.size() + "\n" +
                 "Moves made : " + this.madeShots);
         return shootCell;
     }

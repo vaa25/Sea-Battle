@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class Client implements Runnable {
     Socket clientSocket;
@@ -34,11 +33,9 @@ public class Client implements Runnable {
         System.out.println("Trying to connect to the server");
         try {
             clientSocket = new Socket(serverAddress, 6000);
-        } catch (UnknownHostException e) {
-            System.err.println("Server unavailable");
-            System.exit(1);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Server unavailable.");
+            System.exit(1);
         }
     }
 
