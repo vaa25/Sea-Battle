@@ -35,6 +35,10 @@ public abstract class Field {
         this.ships = ships;
     }
 
+    public List<Ship> getShips() {
+        return ships;
+    }
+
     protected Ship getShip(Coord coord) {
         return field[coord.getX()][coord.getY()].getShip();
     }
@@ -73,12 +77,18 @@ public abstract class Field {
      * @param ship
      */
     public void place(Ship ship) {
-
+        ship.setPlaced(true);
         for (Coord coord : ship.getShipCoords()) {
             getCell(coord).setShip(ship);
         }
     }
 
+    public void unplace(Ship ship) {
+        ship.setPlaced(false);
+        for (Coord coord : ship.getShipCoords()) {
+            getCell(coord).setShip(null);
+        }
+    }
     public Cell getCell(Coord coord) {
         return field[coord.getX()][coord.getY()];
     }

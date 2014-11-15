@@ -40,6 +40,10 @@ public class Ship implements Comparable<Ship>, Serializable {
 
     }
 
+    public Orientation getOrientation() {
+        return orientation;
+    }
+
     public int getSize() {
         return size;
     }

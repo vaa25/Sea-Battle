@@ -3,8 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <AnchorPane id="AnchorPane" fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="475.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
-            xmlns="http://javafx.com/javafx/2.2" fx:controller="view.Controller">
+            minWidth="-Infinity" prefHeight="475.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.Controller">
     <children>
         <TabPane fx:id="tabPane" layoutX="14.0" layoutY="14.0" prefHeight="277.0" prefWidth="573.0"
                  tabClosingPolicy="UNAVAILABLE">
@@ -14,94 +14,10 @@
                         <AnchorPane id="Content" fx:id="playAnchorPane" minHeight="0.0" minWidth="0.0"
                                     prefHeight="217.0" prefWidth="573.0">
                             <children>
-                                <GridPane id="" fx:id="myFieldGridPane" focusTraversable="true" gridLinesVisible="true"
-                                          layoutX="14.0" layoutY="32.0" maxHeight="-Infinity" maxWidth="-Infinity"
-                                          minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#myFieldClicked"
-                                          prefHeight="200.0" prefWidth="200.0">
-                                    <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
-                                                        prefHeight="-1.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
-                                                        prefHeight="-1.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
-                                                        prefHeight="-1.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
-                                                        prefHeight="-1.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
-                                                        prefHeight="-1.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
-                                                        prefHeight="-1.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
-                                                        prefHeight="-1.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
-                                                        prefHeight="-1.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
-                                                        prefHeight="-1.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="-1.0" minHeight="-1.0" percentHeight="10.0"
-                                                        prefHeight="-1.0" vgrow="SOMETIMES"/>
-                                    </rowConstraints>
-                                </GridPane>
-                                <GridPane id="" fx:id="enemyFieldGridPane" focusTraversable="true"
-                                          gridLinesVisible="true" layoutX="226.0" layoutY="32.0" maxHeight="-Infinity"
-                                          maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                                          onMouseClicked="#enemyFieldClicked" prefHeight="200.0" prefWidth="200.0">
-                                    <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                    </rowConstraints>
-                                </GridPane>
+                                <Pane fx:id="myFieldPane" focusTraversable="true" layoutX="13.5" layoutY="31.5"
+                                      onMouseClicked="#myFieldClicked" prefHeight="200.0" prefWidth="200.0"/>
+                                <Pane fx:id="enemyFieldPane" layoutX="225.5" layoutY="31.5"
+                                      onMouseClicked="#enemyFieldClicked" prefHeight="200.0" prefWidth="200.0"/>
                                 <Label layoutX="85.0" layoutY="10.0" text="Ваше поле"/>
                                 <Label layoutX="281.0" layoutY="10.0" text="Вражеское поле"/>
                                 <ToggleButton fx:id="readyToggleButton" layoutX="472.0" layoutY="32.0"
@@ -113,71 +29,37 @@
                 <Tab fx:id="editTab" closable="true" disable="false" text="Редактирование">
                     <content>
                         <AnchorPane id="Content" fx:id="editAnchorPane" minHeight="0.0" minWidth="0.0"
+                                    onKeyPressed="#editPaneKeyPressed" onKeyReleased="#editPaneKeyReleased"
                                     prefHeight="180.0" prefWidth="200.0">
                             <children>
-                                <RadioButton id="fourDeckRB" fx:id="radioDeck4" layoutX="231.0" layoutY="33.0"
-                                             mnemonicParsing="false" onAction="#radioDeckOnAction4" selected="true"
-                                             text="четырехпалубный" textAlignment="RIGHT" wrapText="true">
-                                    <toggleGroup>
-                                        <ToggleGroup fx:id="toggleDeck"/>
-                                    </toggleGroup>
-                                </RadioButton>
-                                <RadioButton fx:id="radioDeck3" layoutX="231.0" layoutY="52.0" mnemonicParsing="false"
-                                             onAction="#radioDeckOnAction3" selected="false" text="трехпалубный"
-                                             toggleGroup="$toggleDeck"/>
-                                <RadioButton fx:id="radioDeck1" layoutX="231.0" layoutY="92.0" mnemonicParsing="false"
-                                             onAction="#radioDeckOnAction1" selected="false" text="однопалубный"
-                                             toggleGroup="$toggleDeck"/>
-                                <RadioButton fx:id="radioDeck2" layoutX="231.0" layoutY="72.0" mnemonicParsing="false"
-                                             onAction="#radioDeckOnAction2" selected="false" text="двухпалубный"
-                                             toggleGroup="$toggleDeck"/>
-                                <GridPane id="" fx:id="editGridPane" focusTraversable="true" gridLinesVisible="true"
-                                          layoutX="14.0" layoutY="32.0" maxHeight="-Infinity" maxWidth="-Infinity"
-                                          minHeight="-Infinity" minWidth="-Infinity"
-                                          onContextMenuRequested="#editPaneContextMenuRequested"
-                                          onDragOver="#editPaneDragOver" onKeyPressed="#editPaneKeyPressed"
-                                          onKeyReleased="#editPaneKeyReleased" onMouseClicked="#editPaneMouseClicked"
-                                          onMouseMoved="#editPaneMouseMoved" prefHeight="200.0" prefWidth="200.0">
-                                    <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" percentWidth="10.0"
-                                                           prefWidth="-1.0"/>
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                        <RowConstraints percentHeight="10.0" vgrow="SOMETIMES"/>
-                                    </rowConstraints>
-                                </GridPane>
+                                <Pane fx:id="shipyardPane" layoutX="231.0" layoutY="33.0">
+                                    <children>
+                                        <RadioButton fx:id="radioDeck2" layoutY="39.0" mnemonicParsing="false"
+                                                     onAction="#radioDeckOnAction2" selected="false"
+                                                     text="двухпалубный">
+                                            <toggleGroup>
+                                                <ToggleGroup fx:id="toggleDeck"/>
+                                            </toggleGroup>
+                                        </RadioButton>
+                                        <RadioButton fx:id="radioDeck4" mnemonicParsing="false"
+                                                     onAction="#radioDeckOnAction4" selected="true"
+                                                     text="четырехпалубный" toggleGroup="$toggleDeck" wrapText="true"/>
+                                        <RadioButton fx:id="radioDeck1" layoutY="59.0" mnemonicParsing="false"
+                                                     onAction="#radioDeckOnAction1" selected="false" text="однопалубный"
+                                                     toggleGroup="$toggleDeck"/>
+                                        <RadioButton fx:id="radioDeck3" layoutY="19.0" mnemonicParsing="false"
+                                                     onAction="#radioDeckOnAction3" selected="false" text="трехпалубный"
+                                                     toggleGroup="$toggleDeck"/>
+                                        <Label fx:id="amountLabel3" layoutX="137.0" layoutY="19.0" text="2"/>
+                                        <Label fx:id="amountLabel4" layoutX="137.0" text="1"/>
+                                        <Label fx:id="amountLabel2" layoutX="137.0" layoutY="39.0" text="3"/>
+                                        <Label fx:id="amountLabel1" layoutX="137.0" layoutY="59.0" text="4"/>
+                                    </children>
+                                </Pane>
+                                <Pane fx:id="editPane" focusTraversable="true" layoutX="13.5" layoutY="31.5"
+                                      onMouseClicked="#editPaneMouseClicked" onMouseExited="#editPaneMouseExited"
+                                      onMouseMoved="#editPaneMouseMoved" prefHeight="200.0" prefWidth="200.0"/>
                                 <Label layoutX="85.0" layoutY="10.0" text="Ваше поле"/>
-                                <Label fx:id="amountLabel4" layoutX="368.0" layoutY="33.0" text="1"/>
-                                <Label fx:id="amountLabel3" layoutX="368.0" layoutY="52.0" text="2"/>
-                                <Label fx:id="amountLabel2" layoutX="368.0" layoutY="72.0" text="3"/>
-                                <Label fx:id="amountLabel1" layoutX="368.0" layoutY="92.0" text="4"/>
                                 <Button fx:id="saveFieldButton" layoutX="401.0" layoutY="32.0" mnemonicParsing="false"
                                         onAction="#saveField" prefWidth="156.0" text="Сохранить поле"/>
                                 <Button fx:id="loadFieldButton" layoutX="401.0" layoutY="54.0" mnemonicParsing="false"
@@ -189,6 +71,8 @@
                                 <Button id="setAllButton" fx:id="clearFieldButton" layoutX="401.0" layoutY="120.0"
                                         mnemonicParsing="false" onAction="#clearField" prefWidth="156.0"
                                         text="Очистить поле"/>
+                                <Label focusTraversable="false" layoutX="231.0" layoutY="116.0" mouseTransparent="true"
+                                       text="&lt;Ctrl&gt; - vertical orientation"/>
                             </children>
                         </AnchorPane>
                     </content>

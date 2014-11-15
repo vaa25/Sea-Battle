@@ -11,18 +11,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import model.Orientation;
 import model.Player;
 import model.Ship;
 import networks.Network;
 import networks.Special;
-import sampleFX.FirstLineService;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -51,6 +53,8 @@ public class Controller implements Initializable {
     private boolean ready;
     private boolean enemyReady;
     private boolean gameIsGoing;
+    private boolean editPaneOut;
+    private boolean keyPressed;
     @FXML
     private ResourceBundle resources;
 
@@ -97,10 +101,10 @@ public class Controller implements Initializable {
     private Tab editTab;
 
     @FXML
-    private GridPane editGridPane;
+    private Pane editPane;
 
     @FXML
-    private GridPane enemyFieldGridPane;
+    private Pane enemyFieldPane;
 
     @FXML
     private Tab gameTab;
@@ -118,7 +122,7 @@ public class Controller implements Initializable {
     private Tab miscTab;
 
     @FXML
-    private GridPane myFieldGridPane;
+    private Pane myFieldPane;
 
     @FXML
     private TextField nameTextField;
@@ -162,9 +166,11 @@ public class Controller implements Initializable {
 
     @FXML
     private ToggleGroup toggleDeck;
-
+    @FXML
+    private Pane shipyardPane;
     @FXML
     private ToggleGroup toggleServer;
+
     private ServerSocketHandler serverSocketHandler;
     private ObjectHandler objectHandler;
     private FieldDisplay myFieldDisplay;
@@ -293,7 +299,6 @@ public class Controller implements Initializable {
 
     @FXML
     void editChatKeyTyped(KeyEvent event) {
-
     }
 
     @FXML
@@ -306,57 +311,43 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    void editPaneContextMenuRequested(ContextMenuEvent event) {
-    }
-
-    @FXML
-    void editPaneDragOver(DragEvent event) {
-    }
-
-    @FXML
     void editPaneKeyPressed(KeyEvent event) {
+        keyPressed = true;
+        System.out.println(event.getText() + " pressed");
+//        if (editPaneOut==false){
         editor.setOrientation(Orientation.Vertical);
+//        }
     }
 
     @FXML
     void editPaneKeyReleased(KeyEvent event) {
+        keyPressed = false;
+        System.out.println(event.getText() + " released");
+//        if (editPaneOut==false){
         editor.setOrientation(Orientation.Horizontal);
+//        }
     }
 
     @FXML
     void editPaneMouseClicked(MouseEvent event) {
+        editor.editPaneMouseClicked();
+        refreshPane(editPane, editor.getPlaced());
+//        if (keyPressed)editor.setOrientation(Orientation.Vertical);
     }
-
     @FXML
-    void shipStartDrag(MouseEvent event) {
-        /* drag was detected, start a drag-and-drop gesture*/
-        /* allow any transfer mode */
-//            Rectangle source= (Rectangle)event.getSource();
-//        System.out.println(source.toString());
-//            Dragboard db = source.startDragAndDrop(TransferMode.ANY);
-//
-//        /* Put a string on a dragboard */
-//            ClipboardContent content = new ClipboardContent();
-//            content.put(shipImageDataFormat, source);
-//            db.setContent(content);
-//
-//            event.consume();
+    void editPaneMouseExited(MouseEvent event) {
+        refreshPane(editPane, editor.getPlaced());
+        editPaneOut = true;
     }
 
     @FXML
     void editPaneMouseMoved(MouseEvent event) {
+        editor.editPaneMouseMoved(event);
+        editPaneOut = false;
 
-        int x = (int) event.getX() / 20;
-        int y = (int) event.getY() / 20;
-        Coord coord = new Coord(x, y);
-        boolean canPlace = editor.isCanPlace(coord);
-        if (canPlace) drawShip(editGridPane, coord, editor.getSelected(), Color.GREEN);
     }
 
-    private void drawShip(GridPane pane, Coord coord, Ship ship, Color color) {
-        for (int i = 0; i < ship.getSize(); i++) {
-        }
-    }
+
 
 
     @FXML
@@ -404,7 +395,6 @@ public class Controller implements Initializable {
     @FXML
     void radioDeckOnAction1(ActionEvent event) {
         editor.setSelected(1);
-
     }
 
     @FXML
@@ -428,49 +418,76 @@ public class Controller implements Initializable {
 
     @FXML
     void setAll(ActionEvent event) {
-//        clearMyFields();
+//        clearMyPanes();
         editor.placeAll();
         updateAmountAvailable();
-        clearMyFields();
-        paintMyShips(editGridPane, editor.getPlaced());
-        paintMyShips(myFieldGridPane, editor.getPlaced());
-//        editGridPane.getColumnConstraints().get(0).setFillWidth(true);
+        clearMyPanes();
+//        editor.refreshEditPane();
+        refreshPane(editPane, editor.getPlaced());
+        refreshPane(myFieldPane, editor.getPlaced());
+
+//        editPane.getColumnConstraints().get(0).setFillWidth(true);
     }
 
+    public void refreshPane(Pane pane, List<Ship> placed) {
+        clearPane(pane);
+        for (Ship ship : placed) {
+            drawShip(pane, ship, Color.BLACK);
+        }
+    }
+
+    private void drawShip(Pane pane, Ship ship, Color color) {
+        Coord coord = ship.getShipCoords()[0];
+        Orientation orientation = ship.getOrientation();
+        int width, height;
+        if (orientation == Orientation.Horizontal) {
+            width = ship.getSize();
+            height = 1;
+        } else {
+            height = ship.getSize();
+            width = 1;
+        }
+        Rectangle rectangle = new Rectangle(coord.getX() * 20, coord.getY() * 20, width * 20, height * 20);
+        rectangle.setFill(color);
+        pane.getChildren().add(rectangle);
+    }
     @FXML
     void clearField(ActionEvent event) {
         editor.clearAll();
-        updateAmountAvailable();
-        clearMyFields();
+//        updateAmountAvailable();
+        clearMyPanes();
+        editor.setSelected((int) (toggleDeck.getSelectedToggle().getUserData()));
     }
 
-    private void clearMyFields() {
-        clearGridPane(editGridPane);
-        clearGridPane(myFieldGridPane);
+    private void clearMyPanes() {
+        clearPane(editPane);
+        clearPane(myFieldPane);
     }
 
-    private void clearGridPane(GridPane gridPane) {
+
+    private void clearPane(Pane gridPane) {
         ObservableList<Node> list = gridPane.getChildren();
-        Node group = list.get(0);
         list.clear();
-        list.add(group);
+        drawGrid(gridPane);
+    }
+
+    private void drawGrid(Pane pane) {
+        ObservableList<Node> nodes = pane.getChildren();
+        for (int i = 0; i <= 10; i++) {
+            Line line = new Line(i * 20, 0, i * 20, 10 * 20);
+            Line line2 = new Line(0, i * 20, 10 * 20, i * 20);
+            nodes.addAll(line, line2);
+        }
     }
     @FXML
     void setRest(ActionEvent event) {
         if (editor.placeRest()) {
-            updateAmountAvailable();
-            paintMyShips(editGridPane, editor.getPlaced());
-            paintMyShips(myFieldGridPane, editor.getPlaced());
+//            updateAmountAvailable();
+//            paintMyShips(editPane, editor.getPlaced());
+            refreshPane(editPane, editor.getPlaced());
+            refreshPane(myFieldPane, editor.getPlaced());
 
         }
-    }
-
-    private void paintMyShips(GridPane pane, List<Ship> ships) {
-        for (Ship ship : ships)
-            for (Coord coord : ship.getShipCoords()) {
-
-                pane.add(new Text("  X"), coord.getX(), coord.getY());
-            }
     }
 
     private void gameStarts() {
@@ -480,8 +497,8 @@ public class Controller implements Initializable {
         player.setSender(network.getSender());
         player.setMyField(editor.getMyField());
         readyToggleButton.setDisable(true);
-        myFieldDisplay = new FieldDisplay(myFieldGridPane, player.getMyField());
-        enemyFieldDisplay = new FieldDisplay(enemyFieldGridPane, player.getEnemyField());
+        myFieldDisplay = new FieldDisplay(myFieldPane, player.getMyField());
+        enemyFieldDisplay = new FieldDisplay(enemyFieldPane, player.getEnemyField());
         myFieldDisplay.paint();
         enemyFieldDisplay.paint();
     }
@@ -562,14 +579,14 @@ public class Controller implements Initializable {
         assert editAnchorPane != null : "fx:id=\"editAnchorPane\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert editChatTextArea != null : "fx:id=\"editChatTextArea\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert editTab != null : "fx:id=\"editTab\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
-        assert editGridPane != null : "fx:id=\"elitGridPane\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
-        assert enemyFieldGridPane != null : "fx:id=\"enemyFieldGridPane\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
+        assert editPane != null : "fx:id=\"elitGridPane\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
+        assert enemyFieldPane != null : "fx:id=\"enemyFieldPane\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert gameTab != null : "fx:id=\"gameTab\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert ipTextField != null : "fx:id=\"ipTextField\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert loadFieldButton != null : "fx:id=\"loadFieldButton\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert micsAnchorPane != null : "fx:id=\"micsAnchorPane\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert miscTab != null : "fx:id=\"miscTab\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
-        assert myFieldGridPane != null : "fx:id=\"myFieldGridPane\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
+        assert myFieldPane != null : "fx:id=\"myFieldPane\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert nameTextField != null : "fx:id=\"nameTextField\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert networkAncorPane != null : "fx:id=\"networkAncorPane\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
         assert networkTab != null : "fx:id=\"networkTab\" was not injected: check your FXML file 'Sea-Battle.fxml'.";
@@ -589,11 +606,19 @@ public class Controller implements Initializable {
 
     }
 
-    FirstLineService service = new FirstLineService();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        editor = new Editor();
-        editor.setSelected(4);
+        radioDeck1.setUserData(1);
+        radioDeck2.setUserData(2);
+        radioDeck3.setUserData(3);
+        radioDeck4.setUserData(4);
+        editor = new Editor(editPane);
+        editor.setAmountLabel((int) (radioDeck1.getUserData()), amountLabel1);
+        editor.setAmountLabel((int) (radioDeck2.getUserData()), amountLabel2);
+        editor.setAmountLabel((int) (radioDeck3.getUserData()), amountLabel3);
+        editor.setAmountLabel((int) (radioDeck4.getUserData()), amountLabel4);
+        editor.initAvailable();
+        editor.setSelected((int) (toggleDeck.getSelectedToggle().getUserData()));
         myShips = new ArrayList<>();
         hostSelected = true;
         serverSelected = false;
@@ -601,9 +626,12 @@ public class Controller implements Initializable {
         readyToggleButton.setDisable(true);
         ready = false;
         enemyReady = false;
-        setAll(null);
+//        setAll(null);
         gameIsGoing = false;
         setServerSocketHandler();
+        drawGrid(myFieldPane);
+        drawGrid(editPane);
+        drawGrid(enemyFieldPane);
     }
 
     private static final DataFormat shipImageDataFormat = new DataFormat("shipImage");
