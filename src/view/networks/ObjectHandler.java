@@ -1,4 +1,4 @@
-package view;
+package view.networks;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -22,6 +22,7 @@ public class ObjectHandler extends Service {
             protected Object call() throws Exception {
                 return queue.take();
             }
+
         };
     }
 }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<AnchorPane id="Content"
+            fx:id="editAnchorPane"
+            minHeight="0.0" minWidth="0.0" prefHeight="284.0" prefWidth="581.0"
+            onKeyPressed="#editPaneKeyPressed"
+            onKeyReleased="#editPaneKeyReleased"
+            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="view.EditController">
+    <children>
+        <Pane fx:id="shipyardPane" layoutX="231.0" layoutY="33.0">
+            <children>
+                <RadioButton fx:id="radioDeck2" layoutY="39.0" mnemonicParsing="false" onAction="#radioDeckOnAction2"
+                             selected="false" text="двухпалубный">
+                    <toggleGroup>
+                        <ToggleGroup fx:id="toggleDeck"/>
+                    </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="radioDeck4" mnemonicParsing="false" onAction="#radioDeckOnAction4" selected="true"
+                             text="четырехпалубный" toggleGroup="$toggleDeck" wrapText="true"/>
+                <RadioButton fx:id="radioDeck1" layoutY="59.0" mnemonicParsing="false" onAction="#radioDeckOnAction1"
+                             selected="false" text="однопалубный" toggleGroup="$toggleDeck"/>
+                <RadioButton fx:id="radioDeck3" layoutY="19.0" mnemonicParsing="false" onAction="#radioDeckOnAction3"
+                             selected="false" text="трехпалубный" toggleGroup="$toggleDeck"/>
+                <Label fx:id="amountLabel3" layoutX="137.0" layoutY="19.0" text="2"/>
+                <Label fx:id="amountLabel4" layoutX="137.0" text="1"/>
+                <Label fx:id="amountLabel2" layoutX="137.0" layoutY="39.0" text="3"/>
+                <Label fx:id="amountLabel1" layoutX="137.0" layoutY="59.0" text="4"/>
+            </children>
+        </Pane>
+        <Pane fx:id="editPane" focusTraversable="true" layoutX="13.5" layoutY="31.5" onKeyPressed="#editPaneKeyPressed"
+              onKeyReleased="#editPaneKeyReleased" onMouseClicked="#editPaneMouseClicked"
+              onMouseExited="#editPaneMouseExited" onMouseMoved="#editPaneMouseMoved" prefHeight="200.0"
+              prefWidth="200.0"/>
+        <Label layoutX="85.0" layoutY="10.0" text="Ваше поле"/>
+        <Button fx:id="setRestButton" layoutX="401.0" layoutY="36.0" mnemonicParsing="false" onAction="#setRest"
+                prefWidth="156.0" text="Расставить остальные"/>
+        <Button fx:id="setAllButton" layoutX="401.0" layoutY="58.0" mnemonicParsing="false" onAction="#setAll"
+                prefWidth="156.0" text="Расставить все"/>
+        <Button id="setAllButton" fx:id="clearFieldButton" layoutX="401.0" layoutY="80.0" mnemonicParsing="false"
+                onAction="#clearField" prefWidth="156.0" text="Очистить поле"/>
+        <Label focusTraversable="false" layoutX="231.0" layoutY="116.0" mouseTransparent="true"
+               text="&lt;Ctrl&gt; - vertical orientation"/>
+    </children>
+</AnchorPane>

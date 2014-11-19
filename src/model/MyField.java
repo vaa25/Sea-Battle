@@ -125,7 +125,8 @@ public class MyField extends Field {
     }
 
     private void unPlace(List<Ship> ships) {
-        for (Ship ship : ships) {
+        while (ships.size() > 0) {
+            Ship ship = ships.get(0);
             unPlace(ship);
         }
     }

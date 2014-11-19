@@ -2,6 +2,7 @@ package networks;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import view.Command;
 
 /**
  * Посылает раз в 20 секунд пустой Message чтобы соединение не отвалилось
@@ -29,7 +30,7 @@ public class HeartBeatSender implements Runnable {
 
 //            logger.info("HeartBeatSender (" + Thread.currentThread().getName() + ") interrupt == " + interrupt);
 //            if (!interrupt) {
-            sender.sendObject(Special.HeartBeat);
+            sender.sendObject(Command.HeartBeat);
 //            } else {
 //                logger.info("HeartBeatSender (" + Thread.currentThread().getName() + ") must return = " + interrupt);
 //                break;

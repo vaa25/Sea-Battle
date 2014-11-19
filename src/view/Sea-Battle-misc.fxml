@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane id="Content" fx:id="micsAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
+            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="view.MiscController">
+    <children>
+        <TextField fx:id="nameTextField" layoutX="14.0" layoutY="14.0" onAction="#nameEntered"
+                   prefWidth="200.0" promptText="Имя" text="Саша"/>
+    </children>
+</AnchorPane>

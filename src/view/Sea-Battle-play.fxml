@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<AnchorPane id="Content"
+            fx:id="playAnchorPane"
+            minHeight="0.0" minWidth="0.0" prefHeight="217.0" prefWidth="573.0"
+            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="view.PlayController">
+    <children>
+        <Pane fx:id="myFieldPane" focusTraversable="true" layoutX="13.5" layoutY="31.5"
+              onMouseClicked="#myFieldClicked" prefHeight="200.0" prefWidth="200.0"/>
+        <Pane fx:id="enemyFieldPane" layoutX="225.5" layoutY="31.5"
+              onMouseClicked="#enemyFieldClicked" prefHeight="200.0" prefWidth="200.0"/>
+        <Label layoutX="85.0" layoutY="10.0" text="Ваше поле"/>
+        <Label layoutX="281.0" layoutY="10.0" text="Вражеское поле"/>
+        <ToggleButton fx:id="readyToggleButton" layoutX="472.0" layoutY="32.0"
+                      mnemonicParsing="false" onAction="#ready" text="Готов"/>
+    </children>
+</AnchorPane>
+

@@ -23,9 +23,7 @@ public class Network {
     private Thread receiverThread;
     private InetAddress host;
     private int port;
-
-    public Network() {
-    }
+    private boolean connected;
 
     public Network(Socket conn) throws IOException {
         go(conn);
@@ -34,6 +32,9 @@ public class Network {
     public Network(InetAddress host, int port) {
         this.host = host;
         this.port = port;
+    }
+
+    public Network() {
     }
 
     public ObjectInputStream getIn() {
@@ -61,7 +62,7 @@ public class Network {
 //        logger.info("network (" + Thread.currentThread().getName() + ") starts noTimeOutThread (" + noTimeOutThread.getName() + ")");
         receiverThread.start();
 //        logger.info("network (" + Thread.currentThread().getName() + ") starts receiverThread (" + receiverThread.getName() + ")");
-
+        connected=true;
     }
 
     private void go() throws IOException {
@@ -111,6 +112,7 @@ public class Network {
 ////        receiver.interrupt();
 //        receiverThread.interrupt();
         try {
+            connected=false;
             in.close();
             out.close();
             conn.close();
@@ -133,5 +135,7 @@ public class Network {
         }
     }
 
-
+    public boolean isConnected() {
+        return connected;
+    }
 }

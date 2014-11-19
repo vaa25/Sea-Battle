@@ -2,6 +2,7 @@ package networks;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import view.Command;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -29,27 +30,36 @@ public class ObjectReceiver implements Runnable {
     public void run() {
         while (true) {
             try {
-                logger.info(Thread.currentThread().getName() + " ObjectReceiver пытается принять произвольный объект");
+                logger.info(Thread.currentThread().getName() + " пытается принять произвольный объект");
                 Object object = in.readObject();
-                logger.info(Thread.currentThread().getName() + " ObjectReceiver принял объект " + object);
-                if (object != Special.HeartBeat) parser.put(object);
+                logger.info(Thread.currentThread().getName() + " принял объект " + object);
+                if (object != Command.HeartBeat) parser.put(object);
             } catch (EOFException e) {
-                logger.error(Thread.currentThread().getName() + " ObjectReceiver (" + Thread.currentThread().getName() + ") EOFException: ObjectInputStream closed first", e);
+                logger.error(Thread.currentThread().getName() + " EOFException: ObjectInputStream closed first:", e);
+                close();
                 break;
             } catch (SocketException e) {
-                logger.error(Thread.currentThread().getName() + "ObjectReceiver (" + Thread.currentThread().getName() + ") SocketException: ObjectInputStream closed first", e);
+                logger.error(Thread.currentThread().getName() + " SocketException: ObjectInputStream closed first:", e);
+                close();
                 break;
             } catch (IOException e) {
-                logger.error(Thread.currentThread().getName() + "ObjectReceiver (" + Thread.currentThread().getName() + ") IOException: ", e);
+                logger.error(Thread.currentThread().getName() + " IOException:", e);
+                close();
                 break;
             } catch (ClassNotFoundException e) {
-                logger.error(Thread.currentThread().getName() + "ObjectReceiver (" + Thread.currentThread().getName() + ") ClassNotFoundException: Unknown class received", e);
+                logger.error(Thread.currentThread().getName() + " ClassNotFoundException: Unknown class received:", e);
                 break;
             }
         }
-        logger.info(Thread.currentThread().getName() + " ObjectReceiver (" + Thread.currentThread().getName() + ") returns");
+        logger.info(Thread.currentThread().getName() + " returns");
     }
-
+    private void close(){
+        try {
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 //    public void interrupt() {
 //        System.out.println("MessageReceiver (" + Thread.currentThread().getName() + ")set interrupt = true");
 //        interrupt = true;
