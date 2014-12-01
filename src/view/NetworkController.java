@@ -1,7 +1,10 @@
 package view;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -9,14 +12,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import view.networks.NetworkClient;
+import view.networks.NetworkSpecial;
 
 import java.io.IOException;
 import java.net.*;
@@ -44,7 +47,9 @@ public class NetworkController implements Initializable {
     @FXML
     private TitledPane p2pTitledPane;
     @FXML
-    private AnchorPane contentElements;
+    private VBox personListVBox;
+    @FXML
+    private TabPane networkModeTabPane;
 
     BlockingQueue received;
     private NetworkClient networkClient;
@@ -53,10 +58,20 @@ public class NetworkController implements Initializable {
     boolean serverSelected;
     private InetAddress ip;
     SimpleBooleanProperty connected;
+    SimpleBooleanProperty waitingConnection;
     private int port = 30000;
     private Service serverSocketHandler;
-    SimpleStringProperty chatMessage;
+    SimpleStringProperty printChatMessage;
 
+
+    public boolean send(Object object) {
+        return networkClient.send(object);
+    }
+
+    @FXML
+    void personListVBoxMouseClicked(MouseEvent event) {
+
+    }
     @FXML
     void clientSelected(ActionEvent event) {
         ipTextField.setDisable(false);
@@ -68,49 +83,61 @@ public class NetworkController implements Initializable {
         if (!serverSelected) {
 //            networkClient = new NetworkClient();
             if (hostSelected) {
-                serverSocketHandler.restart();
-                connectVisuality();
+                waitConnectionAsHost();
+
             } else {
-                try {
-                    ip = InetAddress.getByName(ipTextField.getText());
-                } catch (UnknownHostException e) {
-                    chatMessage.set("IP " + ipTextField.getText() + " is incorrect. Enter correct IP\n");
-                    chatMessage.set(null);
-                    logger.error("IP " + ipTextField.getText() + " is incorrect", e);
-                    return;
-                }
-                try {
-                    Socket socket = new Socket(ip, port);
-                    System.out.println(socket.isConnected());
-                    logger.info(socket + " created");
-                    networkClient = new NetworkClient(socket, received);
-                    connectVisuality();
-                    connectionEstablished();
-                } catch (IOException e) {
-                    chatMessage.set("Can't connect to host " + ip.toString() + "\n");
-                    chatMessage.set(null);
-                    logger.error("Can't connect to host " + ip.toString(), e);
-                    return;
-                }
+                connectToHostAsClient();
             }
         } else {
-            chatMessage.setValue("Server not available\n");
-            chatMessage.setValue(null);
+            printChatMessage.setValue("Server not available\n");
+            printChatMessage.setValue(null);
         }
     }
 
+    private void connectToHostAsClient() {
+        try {
+            ip = InetAddress.getByName(ipTextField.getText());
+        } catch (UnknownHostException e) {
+            printChatMessage.set("IP " + ipTextField.getText() + " is incorrect. Enter correct IP\n");
+            printChatMessage.set(null);
+            logger.error("IP " + ipTextField.getText() + " is incorrect", e);
+            return;
+        }
+        try {
+            Socket socket = new Socket(ip, port);
+            logger.info(socket + " created");
+            networkClient = new NetworkClient(socket, received);
+            connectingVisuality();
+            connected();
+        } catch (IOException e) {
+            printChatMessage.set("Can't connect to host " + ip.toString() + "\n");
+            printChatMessage.set(null);
+            logger.error("Can't connect to host " + ip.toString(), e);
+            return;
+        }
+    }
     @FXML
     void disconnect(ActionEvent event) {
-        disconnectVisuality();
-        if (serverSocketHandler.isRunning()) {
-            serverSocketHandler.cancel();
-        }
-        chatMessage.set("Disconnecting\n");
-        chatMessage.set(null);
-        if (networkClient != null) networkClient.close();
+        if (networkClient != null) networkClient.send(NetworkSpecial.Disconnect);
+        waitingConnection.set(false);
         connected.set(false);
     }
 
+    void disconnect() {
+        disconnectVisuality();
+        if (serverSocketHandler.isRunning()) {
+            if (!serverSocketHandler.cancel()) {
+                logger.error("Can't cancel serverSocketHandler");
+            }
+        }
+        printChatMessage.set("Disconnecting\n");
+        printChatMessage.set(null);
+        if (networkClient != null) {
+            networkClient.close();
+            networkClient = null;
+        }
+        waitingConnection.set(false);
+    }
     @FXML
     void hostSelected(ActionEvent event) {
         ipTextField.setDisable(true);
@@ -138,25 +165,28 @@ public class NetworkController implements Initializable {
         serverSelected = false;
     }
 
-    private void connectVisuality() {
+    void connectingVisuality() {
         connectButton.setDisable(true);
-        contentElements.setDisable(true);
+        networkModeTabPane.setDisable(true);
         disconnectButton.setDisable(false);
 
     }
 
-    private void disconnectVisuality() {
+    void disconnectVisuality() {
         connectButton.setDisable(false);
-        contentElements.setDisable(false);
+        networkModeTabPane.setDisable(false);
         disconnectButton.setDisable(true);
     }
 
-    private void connectionEstablished() {
+    private void connected() {
         connected.set(true);
-        chatMessage.setValue("Новое соединение установлено\n");
-        chatMessage.setValue(null);
+        printChatMessage.setValue("Новое соединение установлено\n");
+        printChatMessage.setValue(null);
     }
 
+    private void waitConnectionAsHost() {
+        serverSocketHandler.restart();
+    }
     private void setServerSocketHandler() {
         serverSocketHandler = new Service() {
             ServerSocket serverSocket;
@@ -168,11 +198,13 @@ public class NetworkController implements Initializable {
                     @Override
                     protected Socket call() throws IOException {
                         serverSocket = new ServerSocket(port);
-//                            logger.error("can't open serverSocket",e);
+                        waitingConnection.set(true);
+                        Platform.runLater(() -> connectingVisuality());
+
                         logger.info("try to accept new connection with serverSocket");
-                        //                            logger.error(" accept serverSocket error",e);
-                        logger.info(serverSocket.accept() + " accepted");
-                        return serverSocket.accept();
+                        Socket socket = serverSocket.accept();
+                        if (socket.isConnected()) logger.info(socket + " connected");
+                        return socket;
                     }
                 };
             }
@@ -183,12 +215,13 @@ public class NetworkController implements Initializable {
                 if (serverSocket != null) {
                     try {
                         serverSocket.close();
-                        logger.info(" serverSocked closed");
+                        logger.info(serverSocket + " closed");
                     } catch (IOException e) {
                         logger.error("can't close " + serverSocket, e);
                         return false;
                     }
                 }
+                waitingConnection.set(false);
                 return true;
             }
         };
@@ -198,6 +231,7 @@ public class NetworkController implements Initializable {
                 disconnectVisuality();
                 logger.error("serverSocketHandler Exception", event.getSource().getException());
                 serverSocketHandler.cancel();
+                waitingConnection.set(false);
             }
         });
         serverSocketHandler.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -206,8 +240,9 @@ public class NetworkController implements Initializable {
                 Socket socket = (Socket) (workerStateEvent.getSource().getValue());
                 logger.info(socket + " handled");
                 try {
+                    received.clear();
                     networkClient = new NetworkClient(socket, received);
-                    connectionEstablished();
+                    connected();
                 } catch (IOException e) {
                     logger.error("Can't create networkClient", e);
                     e.printStackTrace();
@@ -224,6 +259,20 @@ public class NetworkController implements Initializable {
         setServerSocketHandler();
         withoutServerSelected(null);
         hostSelected(null);
+
+        waitingConnection = new SimpleBooleanProperty(false);
+        waitingConnection.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+                if (!t1) {
+                    if (!connected.getValue()) {
+                        disconnectVisuality();
+                        serverSocketHandler.cancel();
+                    }
+
+                }
+            }
+        });
     }
 
 

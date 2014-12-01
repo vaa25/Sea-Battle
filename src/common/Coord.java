@@ -10,9 +10,11 @@ import java.io.Serializable;
  *
  * @author Alexander Vlasov
  */
-public class Coord implements Serializable {
-    private final int x, y;
+public class Coord implements Serializable, Comparable<Coord> {
+    private int x, y;
 
+    public Coord() {
+    }
     public Coord(int x, int y) {
         this.x = x;
         this.y = y;
@@ -88,5 +90,14 @@ public class Coord implements Serializable {
                 x +
                 "," + y +
                 ")";
+    }
+
+    @Override
+    public int compareTo(Coord o) {
+        if (x < o.x) return -1;
+        if (x > o.x) return 1;
+        if (y < o.y) return -1;
+        if (y > o.y) return 1;
+        return 0;
     }
 }

@@ -24,6 +24,7 @@ public class MyObjectInputStream implements Runnable {
 
     public MyObjectInputStream(InputStream in, BlockingQueue queue) {
         this.in = in;
+        queue.clear();
         this.queue = queue;
     }
 
@@ -70,8 +71,8 @@ public class MyObjectInputStream implements Runnable {
                     data[i] = (byte) value;
                 }
                 Object received = Serializator.build(data);
-                put(received);
                 logger.info("Принял " + received);
+                put(received);
             } catch (SocketTimeoutException | SocketException e) {
                 logger.error("Connection reset", e);
                 closed = true;

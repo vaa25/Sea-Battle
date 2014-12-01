@@ -39,20 +39,24 @@ public class FieldDisplay {
                 if (ship == null) {
                     if (cell.isHurt()) drawWreck(i, j);
                     else if (cell.isShoot()) drawShoot(i, j);
+                } else {
+                    if (ship.isAlive() && cell.isHurt()) {
+                        drawWreck(i, j);
+                    }
                 }
             }
         }
     }
 
     private void drawWreck(int x, int y) {
-        Rectangle rectangle = new Rectangle(x * 20, y * 20, width * 20, height * 20);
-        rectangle.setFill(Color.BROWN);
+        Rectangle rectangle = new Rectangle(x * 20, y * 20, 20, 20);
+        rectangle.setFill(Color.RED);
         pane.getChildren().add(rectangle);
     }
 
     private void drawShoot(int x, int y) {
-        Rectangle rectangle = new Rectangle(x * 20, y * 20, width * 20, height * 20);
-        rectangle.setFill(Color.BROWN);
+        Rectangle rectangle = new Rectangle(x * 20, y * 20, 20, 20);
+        rectangle.setFill(Color.GRAY);
         pane.getChildren().add(rectangle);
     }
 
@@ -77,7 +81,7 @@ public class FieldDisplay {
             if (ship.isAlive()) {
                 drawShip(pane, ship, Color.BLACK);
             } else {
-                drawShip(pane, ship, Color.RED);
+                drawShip(pane, ship, Color.BROWN);
 
             }
         }

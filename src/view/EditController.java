@@ -85,7 +85,7 @@ public class EditController implements Initializable {
     private Map<Integer, Label> amountLabels;
     private boolean editPaneOut;
     private boolean keyPressed;
-    SimpleStringProperty chatMessage;
+    SimpleStringProperty printChatMessage;
     SimpleBooleanProperty allShipSetted;
 
     public EditController() {

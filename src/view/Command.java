@@ -5,5 +5,5 @@ package view;
  * @author Alexander Vlasov
  */
 public enum Command {
-    HeartBeat, Ready, NotReady
+    HeartBeat, Ready, BreakPlay, NotReady
 }

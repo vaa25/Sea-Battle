@@ -3,6 +3,7 @@ package view;
 import common.Coord;
 import common.ShootResult;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -16,6 +17,8 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import model.Player;
 import model.Ship;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import view.networks.NetworkSpecial;
 import view.networks.ObjectHandler;
 
@@ -27,14 +30,16 @@ import java.util.concurrent.BlockingQueue;
 
 
 public class Controller implements Initializable {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private Player player;
     private int turn;
-    private boolean ready;
+    private SimpleBooleanProperty ready;
     private boolean gameIsGoing;
     private List<Ship> myShips;
     private ObjectHandler objectHandler;
-    SimpleStringProperty chatMessage;
+    SimpleStringProperty printChatMessage;
     SimpleBooleanProperty connected;
+    SimpleObjectProperty sendObject;
     private BlockingQueue received;
     @FXML
     private ChatController chatController;
@@ -75,6 +80,8 @@ public class Controller implements Initializable {
     void playTabSelected(Event event) {
         if (playTab.isSelected() && editController != null) {
             PaneService.refreshPane(playController.myFieldPane, editController.getPlaced());
+            PaneService.refreshPane(playController.enemyFieldPane, new ArrayList<>());
+
         }
 
     }
@@ -86,47 +93,6 @@ public class Controller implements Initializable {
         }
     }
 
-    private void gameStarts() {
-//        chatTextArea.appendText("Игра началась" + "\n");
-//        player = new Player(10, 10, "Z");
-//        player.setParser(network.getParser());
-//        player.setSender(network.getSender());
-////        player.setMyField(editor.getMyField());
-////        readyToggleButton.setDisable(true);
-////        myFieldDisplay = new FieldDisplay(myFieldPane, player.getMyField());
-////        enemyFieldDisplay = new FieldDisplay(enemyFieldPane, player.getEnemyField());
-//        myFieldDisplay.paint();
-//        enemyFieldDisplay.paint();
-    }
-
-    private boolean checkReady() {
-//        if (editor == null || editor.getPlaced().size() != 10) {
-//            chatTextArea.appendText(" Сначала расставь все корабли" + "\n");
-//            return false;
-////        }
-//        if (!connected) {
-//            chatTextArea.appendText(" Сначала установи соединение с кем-либо!" + "\n");
-//            return false;
-//        }
-        return true;
-    }
-
-    private boolean startPlay() {
-
-        gameStarts();
-//        if (player.isIFirst()) {
-//            chatTextArea.appendText(" Мой ход" + "\n");
-//            myTurn = true;
-//        } else {
-//            chatTextArea.appendText(" Враг ходит первый" + "\n");
-//            myTurn = false;
-//        }
-//        readyToggleButton.setDisable(true);
-        turn = 1;
-        editTab.setDisable(true);
-        return true;
-    }
-
     private void setObjectHandler() {
         received = networkController.received;
         objectHandler = new ObjectHandler(received);
@@ -134,42 +100,29 @@ public class Controller implements Initializable {
             @Override
             public void handle(WorkerStateEvent workerStateEvent) {
                 Object object = workerStateEvent.getSource().getValue();
-                if (object.getClass().equals(String.class)) {
-                    chatMessage.set(" Враг: " + object);
-                }
-                if (object.equals(Command.Ready)) {
-                    playController.enemyReady = true;
-                    chatMessage.set(" Враг готов!" + "\n");
+                logger.info("Принял " + object.toString());
 
-                    if (ready) {
-                        gameIsGoing = true;
-                        Controller.this.startPlay();
-                    }
-                }
-                if (object.equals(Command.NotReady)) {
-                    chatMessage.set(" Враг не готов!" + "\n");
-                    playController.enemyReady = false;
-                }
-                if (object.equals(NetworkSpecial.LostConnection)) {
-                    networkController.disconnect(null);
-                    objectHandler.cancel();
+                if (object.getClass().equals(String.class)) {
+                    printChatMessage.set(" Враг: " + object + "\n");
+                } else if (object.equals(Command.Ready)) {
+                    playController.enemyReady.set(true);
+                } else if (object.equals(Command.NotReady)) {
+                    playController.enemyReady.set(false);
+                } else if (object.equals(NetworkSpecial.LostConnection)) {
+                    connected.set(false);
                     return;
-                }
-                if (object.getClass().equals(Coord.class)) {
-                    chatMessage.set(" Ход " + turn++ + "\n");
-                    Coord coord = (Coord) object;
-                    ShootResult shootResult = player.receiveShoot(coord);
-                    playController.myFieldDisplay.paint();
-                    chatMessage.set(" Враг ударил в " + coord + ": " + shootResult + "\n");
-                    if (shootResult.equals(ShootResult.MISSED)) {
-                        playController.myTurn = true;
-                    }
-                    if (shootResult.equals(ShootResult.KILLED)) {
-                        if (player.isGameOver()) {
-                            Controller.this.gameOver();
-                            gameIsGoing = false;
-                        }
-                    }
+                } else if (object.equals(NetworkSpecial.Disconnect)) {
+                    connected.set(false);
+                    return;
+                } else if (object.getClass().equals(ShootResult.class)) {
+                    playController.setShootResult((ShootResult) object);
+                } else if (object.getClass().equals(Double.class)) {
+                    playController.setEnemyRandom((Double) object);
+                } else if (object.getClass().equals(Command.BreakPlay)) {
+                    printChatMessage.set(" Бой прерван врагом\n");
+                    playController.playIsGoing.set(false);
+                } else if (object.getClass().equals(Coord.class)) {
+                    playController.setCoord((Coord) object);
                 }
                 objectHandler.restart();
             }
@@ -182,63 +135,193 @@ public class Controller implements Initializable {
         System.out.println("Main init");
         tabPane.getSelectionModel().select(editTab);
         myShips = new ArrayList<>();
+        setPrintChatMessage();
+        setConnected();
+        setPlayIsGoing();
+        setReady();
+        setEnemyReady();
+        setAllShipSetted();
+        setSendObject();
+        setGameOver();
+        playTab.setDisable(true);
+    }
 
-        chatMessage = new SimpleStringProperty();
-        networkController.chatMessage = chatMessage;
-        playController.chatMessage = chatMessage;
-        editController.chatMessage = chatMessage;
-        chatMessage.addListener(new ChangeListener<String>() {
+    private void setGameOver() {
+        SimpleBooleanProperty gameOver = new SimpleBooleanProperty(false);
+        playController.gameOver = gameOver;
+        gameOver.addListener(new ChangeListener<Boolean>() {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (t1 != null) chatController.print(t1);
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+
+                }
             }
         });
+    }
 
-        connected = new SimpleBooleanProperty(false);
-        networkController.connected = connected;
-        connected.addListener(new ChangeListener<Boolean>() {
+    private void setSendObject() {
+        sendObject = new SimpleObjectProperty();
+        playController.sendObject = sendObject;
+        chatController.sendChatMessage = sendObject;
+        sendObject.addListener(new ChangeListener() {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-                if (t1) setObjectHandler();
-                else networkController.disconnect(null);
-
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                if (newValue != null) {
+                    networkController.send(newValue);
+                    sendObject.set(null);
+                }
             }
         });
+    }
 
+    private void setAllShipSetted() {
         SimpleBooleanProperty allShipSetted = new SimpleBooleanProperty(false);
         playController.allShipSetted = allShipSetted;
         editController.allShipSetted = allShipSetted;
         allShipSetted.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-                if (t1) playTab.setDisable(false);
-                else playTab.setDisable(true);
+                if (t1) {
+                    playTab.setDisable(false);
+                    playController.readyToggleButton.setDisable(false);
+                    playController.myField = editController.getMyField();
+                    playController.readyToggleButton.setDisable(false);
+                } else {
+                    playTab.setDisable(true);
+                    playController.readyToggleButton.setDisable(true);
+                }
             }
         });
-
-        playTab.setDisable(true);
-
-
-//        hostSelected = true;
-//        serverSelected = false;
-//        editChatTextArea.setDisable(true);
-//        ready = false;
-//        enemyReady = false;
-////        setAll(null);
-//        gameIsGoing = false;
-//        setServerSocketHandler();
     }
 
-    private void gameOver() {
-//        chatTextArea.appendText(" Игра окончена" + "\n");
-//        if (player.isMyLoose()) chatTextArea.appendText(" Я проиграл.\n");
-//        else chatTextArea.appendText(" Я выиграл.\n");
-//        readyToggleButton.setDisable(false);
-        editTab.setDisable(false);
-        miscTab.setDisable(false);
-        networkTab.setDisable(false);
-//        readyToggleButton.setSelected(false);
+    private void setEnemyReady() {
+        SimpleBooleanProperty enemyReady = new SimpleBooleanProperty(false);
+        playController.enemyReady = enemyReady;
+        enemyReady.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+                    printChatMessage.set(" Враг готов!\n");
+                    if (playController.ready.getValue()) {
+
+                        playController.startPlay();
+                    }
+                } else {
+                    printChatMessage.set(" Враг не готов!\n");
+                }
+            }
+
+
+        });
     }
 
+    private void setReady() {
+        ready = new SimpleBooleanProperty(false);
+        playController.ready = ready;
+        ready.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+                    chatController.print(" Я готов!\n");
+                    readyVisibilityOn();
+                    if (connected.getValue()) {
+                        networkController.send(Command.Ready);
+                        if (playController.enemyReady.getValue()) {
+                            playController.startPlay();
+                        }
+                    }
+                } else {
+                    chatController.print(" Я не готов!\n");
+                    readyVisibilityOff();
+                    if (connected.getValue()) {
+                        networkController.send(Command.NotReady);
+                    }
+                }
+            }
 
+            private void readyVisibilityOff() {
+                editTab.setDisable(false);
+                networkTab.setDisable(false);
+            }
+
+            private void readyVisibilityOn() {
+                editTab.setDisable(true);
+                networkTab.setDisable(true);
+            }
+
+
+        });
+    }
+
+    private void setPlayIsGoing() {
+        SimpleBooleanProperty playIsGoing = new SimpleBooleanProperty(false);
+        playController.playIsGoing = playIsGoing;
+        playIsGoing.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+                    playIsGoingVisibilityOn();
+                } else {
+                    playIsGoingVisibilityOff();
+                }
+            }
+
+            private void playIsGoingVisibilityOn() {
+                playController.readyToggleButton.setDisable(true);
+                playController.breakPlayButton.setDisable(false);
+            }
+
+            private void playIsGoingVisibilityOff() {
+                playController.readyToggleButton.setDisable(false);
+                playController.breakPlayButton.setDisable(true);
+
+            }
+        });
+    }
+
+    private void setConnected() {
+        connected = new SimpleBooleanProperty(false);
+        networkController.connected = connected;
+        connected.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+                if (t1) {
+                    connectedVisibilityOn();
+                    setObjectHandler();
+                    chatController.activate();
+                    if (ready.getValue()) {
+                        networkController.send(Command.Ready);
+                    }
+                } else {
+                    connectedVisibilityOff();
+                    networkController.disconnect();
+                    objectHandler.cancel();
+                    chatController.disactivate();
+                    playController.playIsGoing.set(false);
+                }
+
+            }
+
+            private void connectedVisibilityOn() {
+                miscTab.setDisable(true);
+            }
+
+            private void connectedVisibilityOff() {
+                miscTab.setDisable(false);
+            }
+        });
+    }
+
+    private void setPrintChatMessage() {
+        printChatMessage = new SimpleStringProperty();
+        networkController.printChatMessage = printChatMessage;
+        playController.printChatMessage = printChatMessage;
+        editController.printChatMessage = printChatMessage;
+        printChatMessage.addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
+                if (t1 != null) chatController.print(t1);
+            }
+        });
+    }
 }

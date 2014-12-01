@@ -1,6 +1,7 @@
 package view.networks.serializators;
 
 
+import common.Coord;
 import view.Person;
 import view.networks.NetworkSpecial;
 
@@ -15,7 +16,7 @@ public class TestObject extends Person {
     private int anInt = 100;
     private List list;
     private NetworkSpecial networkSpecial;
-
+    private Coord coord = new Coord(5, 3);
     public TestObject() {
         super("Саша");
         setOnline(false);
@@ -33,6 +34,7 @@ public class TestObject extends Person {
                 ", string=" + string +
                 ", list=" + list.toString() +
                 ", special=" + networkSpecial +
+                ", coord=" + coord +
                 '}';
     }
 }

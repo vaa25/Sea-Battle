@@ -167,7 +167,7 @@ public class Player {
      */
     public ShootResult receiveShoot(Coord coord) {
         ShootResult shootResult = myField.shoot(coord);
-        sender.sendObject(shootResult);
+//        sender.sendObject(shootResult);
         return shootResult;
     }
 
@@ -209,6 +209,10 @@ public class Player {
         ShootResult shootResult = (ShootResult) takeObject(ShootResult.class);
         setShootResult(shootResult);
         return shootResult;
+    }
+
+    public void setShootCoord(Coord shootCoord) {
+        this.shootCoord = shootCoord;
     }
 
 

@@ -3,10 +3,7 @@ package model;
 
 import common.Coord;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,6 +24,9 @@ public class EnemyField extends Field {
 
     }
 
+    public List<Ship> getShips() {
+        return getReconstructedShips();
+    }
     public List<Ship> getReconstructedShips() {
         return reconstructedShips;
     }
@@ -64,10 +64,12 @@ public class EnemyField extends Field {
         Set<Coord> wrecks = new HashSet<>();
         searchWrecks(wrecks, shootCoord);
         Ship ship = new Ship(wrecks.size());
-        Coord[] coords = ship.getShipCoords();
-        int i = 0;
-        for (Coord wreck : wrecks) {
-            coords[i++] = wreck;
+        Coord[] coords = new Coord[wrecks.size()];
+        coords = wrecks.toArray(coords);
+        Arrays.sort(coords);
+        ship.setCoords(coords[0]);
+        if (coords[0].getY() != coords[coords.length - 1].getY()) {
+            ship.setOrientation(Orientation.Vertical);
         }
         reconstructedShips.add(ship);
         return ship;
@@ -77,7 +79,7 @@ public class EnemyField extends Field {
      * находит цепочку рядом стоящих обломков и удаляет их из общего списка обломков
      *
      * @param coords начальная точка поиска
-     * @param coord  set найденных координат обломков
+     * @param coord  set найденных координат цепочки обломков
      */
     private void searchWrecks(Set<Coord> coords, Coord coord) {
         if (coords.add(coord)) {

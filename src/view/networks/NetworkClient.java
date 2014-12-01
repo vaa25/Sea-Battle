@@ -39,12 +39,16 @@ public class NetworkClient {
             logger.error("Connection with server lost: ", e);
             return false;
         }
+        logger.info("Отправлен " + object.toString());
         return true;
     }
 
     public void close() {
         if (!socket.isClosed()) try {
             socket.close();
+            in = null;
+            out = null;
+            socket = null;
         } catch (IOException e) {
             e.printStackTrace();
         }

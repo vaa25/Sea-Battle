@@ -1,42 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.AnchorPane?>
-<AnchorPane id="Content" fx:id="networkAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="575.0"
+<?import javafx.scene.layout.*?>
+<AnchorPane id="Content" fx:id="networkAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="223.0" prefWidth="575.0"
             xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="view.NetworkController">
     <children>
-        <AnchorPane fx:id="contentElements" layoutX="14.0" layoutY="33.0">
-            <children>
-                <RadioButton mnemonicParsing="false" onAction="#withoutServerSelected" selected="true"
-                             text="Без сервера">
-                    <toggleGroup>
-                        <ToggleGroup fx:id="toggleServer"/>
-                    </toggleGroup>
-                </RadioButton>
-                <TitledPane fx:id="p2pTitledPane" animated="false" collapsible="false" layoutY="42.0"
-                            text="Peer to peer">
+        <TabPane fx:id="networkModeTabPane" layoutX="14.0" layoutY="19.0" prefHeight="195.0" prefWidth="405.0"
+                 tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="peer-to-peer mode">
                     <content>
-                        <AnchorPane>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="171.0" prefWidth="398.0">
                             <children>
-                                <TextField fx:id="ipTextField" disable="false" layoutY="32.0" onAction="#ipEntered"
-                                           prefWidth="200.0" promptText="Введите IP адрес" text="127.0.0.1"/>
-                                <RadioButton mnemonicParsing="false" onAction="#hostSelected" selected="true"
-                                             text="Ожидать подключение">
+                                <RadioButton layoutX="14.0" layoutY="6.0" mnemonicParsing="false"
+                                             onAction="#withoutServerSelected" selected="true" text="Без сервера">
                                     <toggleGroup>
-                                        <ToggleGroup fx:id="toggleConnection"/>
+                                        <ToggleGroup fx:id="toggleServer"/>
                                     </toggleGroup>
                                 </RadioButton>
-                                <RadioButton layoutY="16.0" mnemonicParsing="false" onAction="#clientSelected"
-                                             text="Подключиться" toggleGroup="$toggleConnection"/>
+                                <TitledPane fx:id="p2pTitledPane" animated="false" collapsible="false" layoutX="14.0"
+                                            layoutY="32.0" text="Peer to peer">
+                                    <content>
+                                        <AnchorPane>
+                                            <children>
+                                                <TextField fx:id="ipTextField" disable="false" layoutY="32.0"
+                                                           onAction="#ipEntered" prefWidth="200.0"
+                                                           promptText="Введите IP адрес" text="127.0.0.1"/>
+                                                <RadioButton mnemonicParsing="false" onAction="#hostSelected"
+                                                             selected="true" text="Ожидать подключение">
+                                                    <toggleGroup>
+                                                        <ToggleGroup fx:id="toggleConnection"/>
+                                                    </toggleGroup>
+                                                </RadioButton>
+                                                <RadioButton layoutY="16.0" mnemonicParsing="false"
+                                                             onAction="#clientSelected" text="Подключиться"
+                                                             toggleGroup="$toggleConnection"/>
+                                            </children>
+                                        </AnchorPane>
+                                    </content>
+                                </TitledPane>
                             </children>
                         </AnchorPane>
                     </content>
-                </TitledPane>
-                <RadioButton layoutX="293.0" mnemonicParsing="false" onAction="#withServerSelected" selected="false"
-                             text="С сервером" toggleGroup="$toggleServer"/>
-            </children>
-        </AnchorPane>
+                </Tab>
+                <Tab text="central server mode">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="171.0" prefWidth="410.0">
+                            <children>
+                                <RadioButton layoutX="14.0" layoutY="6.0" mnemonicParsing="false"
+                                             onAction="#withServerSelected" selected="false" text="С сервером"
+                                             toggleGroup="$toggleServer"/>
+                                <ScrollPane hbarPolicy="NEVER" layoutX="14.0" layoutY="32.0" prefViewportHeight="120.0"
+                                            prefViewportWidth="382.0">
+                                    <content>
+                                        <VBox fx:id="personListVBox" layoutX="14.0" layoutY="32.0"
+                                              onMouseClicked="#personListVBoxMouseClicked" prefHeight="120.0"
+                                              prefWidth="382.0"/>
+                                    </content>
+                                </ScrollPane>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
         <Button fx:id="connectButton" defaultButton="true" layoutX="456.0" layoutY="32.0" mnemonicParsing="false"
                 onAction="#connect" text="Подключиться"/>
         <Button fx:id="disconnectButton" cancelButton="true" disable="true" layoutX="456.0" layoutY="57.0"

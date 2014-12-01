@@ -6,5 +6,5 @@ package view.networks;
  * @author Alexander Vlasov
  */
 public enum NetworkSpecial {
-    LostConnection
+    LostConnection, Disconnect
 }
