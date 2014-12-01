@@ -6,15 +6,14 @@
             xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="view.NetworkController">
     <children>
-        <TabPane fx:id="networkModeTabPane" layoutX="14.0" layoutY="19.0" prefHeight="195.0" prefWidth="405.0"
-                 tabClosingPolicy="UNAVAILABLE">
+        <TabPane fx:id="networkModeTabPane" prefHeight="223.0" prefWidth="405.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
                 <Tab text="peer-to-peer mode">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="171.0" prefWidth="398.0">
                             <children>
                                 <RadioButton layoutX="14.0" layoutY="6.0" mnemonicParsing="false"
-                                             onAction="#withoutServerSelected" selected="true" text="Без сервера">
+                                             onAction="#withoutServerSelected" selected="true" text="Включить">
                                     <toggleGroup>
                                         <ToggleGroup fx:id="toggleServer"/>
                                     </toggleGroup>
@@ -49,14 +48,14 @@
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="171.0" prefWidth="410.0">
                             <children>
                                 <RadioButton layoutX="14.0" layoutY="6.0" mnemonicParsing="false"
-                                             onAction="#withServerSelected" selected="false" text="С сервером"
+                                             onAction="#withServerSelected" selected="false" text="Включить"
                                              toggleGroup="$toggleServer"/>
-                                <ScrollPane hbarPolicy="NEVER" layoutX="14.0" layoutY="32.0" prefViewportHeight="120.0"
-                                            prefViewportWidth="382.0">
+                                <ScrollPane hbarPolicy="NEVER" layoutX="14.0" layoutY="32.0" prefHeight="160.0"
+                                            prefViewportHeight="120.0" prefViewportWidth="382.0" prefWidth="384.0">
                                     <content>
                                         <VBox fx:id="personListVBox" layoutX="14.0" layoutY="32.0"
-                                              onMouseClicked="#personListVBoxMouseClicked" prefHeight="120.0"
-                                              prefWidth="382.0"/>
+                                              onMouseClicked="#personListVBoxMouseClicked" prefHeight="156.0"
+                                              prefWidth="381.0"/>
                                     </content>
                                 </ScrollPane>
                             </children>

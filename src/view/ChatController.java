@@ -25,7 +25,7 @@ public class ChatController implements Initializable {
     @FXML
     private TextArea chatTextArea;
 
-    SimpleObjectProperty sendChatMessage;
+    SimpleObjectProperty sendObject;
 
     @FXML
     void editChatKeyTyped(KeyEvent event) {
@@ -34,10 +34,10 @@ public class ChatController implements Initializable {
     @FXML
     void editChatKeyReleased(KeyEvent event) {
         if (event.getCode().equals(KeyCode.ENTER)) {
-            sendChatMessage.set(editChatTextArea.getText());
-            chatTextArea.appendText(" Я: " + sendChatMessage.getValue() + "\n");
-            editChatTextArea.setText("");
-            sendChatMessage.set(null);
+            String text = editChatTextArea.getText();
+            sendObject.set(text);
+            print(" Я: " + text + "\n");
+            editChatTextArea.clear();
 
         }
     }

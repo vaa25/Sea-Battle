@@ -181,6 +181,7 @@ public class EditController implements Initializable {
         updateAmountAvailable();
         clearMyPanes();
         PaneService.refreshPane(editPane, getPlaced());
+        allShipSetted.setValue(null);
         allShipSetted.set(true);
 
     }
@@ -209,6 +210,7 @@ public class EditController implements Initializable {
     void setRest(ActionEvent event) {
         if (placeRest()) {
             PaneService.refreshPane(editPane, getPlaced());
+            allShipSetted.setValue(null);
             allShipSetted.set(true);
         }
     }

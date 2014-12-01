@@ -41,6 +41,7 @@ public class Controller implements Initializable {
     SimpleBooleanProperty connected;
     SimpleObjectProperty sendObject;
     private BlockingQueue received;
+    Person me;
     @FXML
     private ChatController chatController;
     @FXML
@@ -81,7 +82,7 @@ public class Controller implements Initializable {
         if (playTab.isSelected() && editController != null) {
             PaneService.refreshPane(playController.myFieldPane, editController.getPlaced());
             PaneService.refreshPane(playController.enemyFieldPane, new ArrayList<>());
-
+            playController.myNameLabel.setText(me.getName());
         }
 
     }
@@ -93,6 +94,12 @@ public class Controller implements Initializable {
         }
     }
 
+    @FXML
+    void miscTabSelected(Event event) {
+        if (!miscTab.isSelected()) {
+            miscController.nameEntered(null);
+        }
+    }
     private void setObjectHandler() {
         received = networkController.received;
         objectHandler = new ObjectHandler(received);
@@ -103,7 +110,7 @@ public class Controller implements Initializable {
                 logger.info("Принял " + object.toString());
 
                 if (object.getClass().equals(String.class)) {
-                    printChatMessage.set(" Враг: " + object + "\n");
+                    printChatMessage.set(playController.enemyPerson.getName() + ": " + object + "\n");
                 } else if (object.equals(Command.Ready)) {
                     playController.enemyReady.set(true);
                 } else if (object.equals(Command.NotReady)) {
@@ -114,13 +121,16 @@ public class Controller implements Initializable {
                 } else if (object.equals(NetworkSpecial.Disconnect)) {
                     connected.set(false);
                     return;
+                } else if (object.equals(Command.BreakPlay)) {
+                    printChatMessage.set(" Бой прерван врагом\n");
+                    playController.breakPlay();
                 } else if (object.getClass().equals(ShootResult.class)) {
                     playController.setShootResult((ShootResult) object);
                 } else if (object.getClass().equals(Double.class)) {
                     playController.setEnemyRandom((Double) object);
-                } else if (object.getClass().equals(Command.BreakPlay)) {
-                    printChatMessage.set(" Бой прерван врагом\n");
-                    playController.playIsGoing.set(false);
+                } else if (object.getClass().equals(Person.class)) {
+                    playController.enemyPerson = (Person) object;
+                    playController.enemyNameLabel.setText(playController.enemyPerson.getName());
                 } else if (object.getClass().equals(Coord.class)) {
                     playController.setCoord((Coord) object);
                 }
@@ -144,6 +154,7 @@ public class Controller implements Initializable {
         setSendObject();
         setGameOver();
         playTab.setDisable(true);
+        me = miscController.getPerson();
     }
 
     private void setGameOver() {
@@ -162,7 +173,7 @@ public class Controller implements Initializable {
     private void setSendObject() {
         sendObject = new SimpleObjectProperty();
         playController.sendObject = sendObject;
-        chatController.sendChatMessage = sendObject;
+        chatController.sendObject = sendObject;
         sendObject.addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
@@ -292,6 +303,7 @@ public class Controller implements Initializable {
                     if (ready.getValue()) {
                         networkController.send(Command.Ready);
                     }
+                    sendObject.set(me);
                 } else {
                     connectedVisibilityOff();
                     networkController.disconnect();

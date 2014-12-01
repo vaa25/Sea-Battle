@@ -24,7 +24,7 @@
                         <fx:include fx:id="network" source="Sea-Battle-network.fxml"/>
                     </content>
                 </Tab>
-                <Tab fx:id="miscTab" text="Разное">
+                <Tab fx:id="miscTab" onSelectionChanged="#miscTabSelected" text="Разное">
                     <content>
                         <fx:include fx:id="misc" source="Sea-Battle-misc.fxml"/>
                     </content>

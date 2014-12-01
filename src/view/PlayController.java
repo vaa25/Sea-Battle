@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -35,18 +36,22 @@ public class PlayController implements Initializable {
     SimpleStringProperty printChatMessage;
     SimpleBooleanProperty playIsGoing;
     SimpleBooleanProperty allShipSetted;
-
     SimpleObjectProperty sendObject;
+    SimpleBooleanProperty gameOver;
+    Person enemyPerson;
+    @FXML
+    Label myNameLabel;
+    @FXML
+    Label enemyNameLabel;
     @FXML
     Pane myFieldPane;
     @FXML
     Pane enemyFieldPane;
     @FXML
     ToggleButton readyToggleButton;
+
     @FXML
     Button breakPlayButton;
-
-    public SimpleBooleanProperty gameOver;
 
     @FXML
     void myFieldClicked(MouseEvent event) {
@@ -55,10 +60,16 @@ public class PlayController implements Initializable {
     }
     @FXML
     void breakPlay(ActionEvent event) {
-        playIsGoing.set(false);
+        printChatMessage.set(" Бой прерван мной\n");
         sendObject.set(Command.BreakPlay);
+        breakPlay();
     }
 
+    void breakPlay() {
+        playIsGoing.set(false);
+        readyToggleButton.fire();
+        readyToggleButton.setDisable(true);
+    }
     @FXML
     void ready(ActionEvent event) {
         if (readyToggleButton.isSelected()) {
