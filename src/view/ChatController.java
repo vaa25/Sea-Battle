@@ -16,6 +16,7 @@ import java.util.ResourceBundle;
  * @author Alexander Vlasov
  */
 public class ChatController implements Initializable {
+    SimpleObjectProperty sendObject;
     @FXML
     private ScrollPane chatScrollPane;
     @FXML
@@ -24,8 +25,6 @@ public class ChatController implements Initializable {
     private SplitPane chatSplitPane;
     @FXML
     private TextArea chatTextArea;
-
-    SimpleObjectProperty sendObject;
 
     @FXML
     void editChatKeyTyped(KeyEvent event) {
@@ -44,7 +43,6 @@ public class ChatController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("Chat init");
         disactivate();
     }
 

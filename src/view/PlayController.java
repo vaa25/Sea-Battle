@@ -24,9 +24,7 @@ import java.util.ResourceBundle;
  * @author Alexander Vlasov
  */
 public class PlayController implements Initializable {
-    private Player player;
     boolean myTurn;
-    private int turn;
     double myRandom;
     MyField myField;
     SimpleBooleanProperty ready;
@@ -49,9 +47,10 @@ public class PlayController implements Initializable {
     Pane enemyFieldPane;
     @FXML
     ToggleButton readyToggleButton;
-
     @FXML
     Button breakPlayButton;
+    private Player player;
+    private int turn;
 
     @FXML
     void myFieldClicked(MouseEvent event) {
@@ -167,7 +166,6 @@ public class PlayController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("Play init");
         PaneService.drawGrid(myFieldPane);
         PaneService.drawGrid(enemyFieldPane);
 

@@ -31,17 +31,17 @@ import java.util.concurrent.BlockingQueue;
 
 public class Controller implements Initializable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    SimpleStringProperty printChatMessage;
+    SimpleBooleanProperty connected;
+    SimpleObjectProperty sendObject;
+    Person me;
     private Player player;
     private int turn;
     private SimpleBooleanProperty ready;
     private boolean gameIsGoing;
     private List<Ship> myShips;
     private ObjectHandler objectHandler;
-    SimpleStringProperty printChatMessage;
-    SimpleBooleanProperty connected;
-    SimpleObjectProperty sendObject;
     private BlockingQueue received;
-    Person me;
     @FXML
     private ChatController chatController;
     @FXML
@@ -142,7 +142,6 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("Main init");
         tabPane.getSelectionModel().select(editTab);
         myShips = new ArrayList<>();
         setPrintChatMessage();

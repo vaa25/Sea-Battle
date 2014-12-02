@@ -28,42 +28,32 @@ import java.util.*;
  * @author Alexander Vlasov
  */
 public class EditController implements Initializable {
+    SimpleStringProperty printChatMessage;
+    SimpleBooleanProperty allShipSetted;
     @FXML
     private AnchorPane editAnchorPane;
-
     @FXML
     private Label amountLabel1;
-
     @FXML
     private Label amountLabel2;
-
     @FXML
     private Label amountLabel3;
-
     @FXML
     private Label amountLabel4;
-
     @FXML
     private Pane editPane;
-
     @FXML
     private RadioButton radioDeck1;
-
     @FXML
     private RadioButton radioDeck2;
-
     @FXML
     private RadioButton radioDeck3;
-
     @FXML
     private RadioButton radioDeck4;
-
     @FXML
     private Button setAllButton;
-
     @FXML
     private Button setRestButton;
-
     @FXML
     private ToggleGroup toggleDeck;
     /**
@@ -85,8 +75,6 @@ public class EditController implements Initializable {
     private Map<Integer, Label> amountLabels;
     private boolean editPaneOut;
     private boolean keyPressed;
-    SimpleStringProperty printChatMessage;
-    SimpleBooleanProperty allShipSetted;
 
     public EditController() {
         availableShips = new HashMap<>();
@@ -374,7 +362,6 @@ public class EditController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("Edit init");
         radioDeck1.setUserData(1);
         radioDeck2.setUserData(2);
         radioDeck3.setUserData(3);
