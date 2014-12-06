@@ -15,8 +15,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
-import model.Player;
-import model.Ship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import view.networks.NetworkSpecial;
@@ -24,7 +22,6 @@ import view.networks.ObjectHandler;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 
@@ -34,12 +31,8 @@ public class Controller implements Initializable {
     SimpleStringProperty printChatMessage;
     SimpleBooleanProperty connected;
     SimpleObjectProperty sendObject;
-    Person me;
-    private Player player;
-    private int turn;
+    Person myPerson;
     private SimpleBooleanProperty ready;
-    private boolean gameIsGoing;
-    private List<Ship> myShips;
     private ObjectHandler objectHandler;
     private BlockingQueue received;
     @FXML
@@ -82,7 +75,7 @@ public class Controller implements Initializable {
         if (playTab.isSelected() && editController != null) {
             PaneService.refreshPane(playController.myFieldPane, editController.getPlaced());
             PaneService.refreshPane(playController.enemyFieldPane, new ArrayList<>());
-            playController.myNameLabel.setText(me.getName());
+            playController.myNameLabel.setText(myPerson.getName());
         }
 
     }
@@ -110,7 +103,8 @@ public class Controller implements Initializable {
                 logger.info("Принял " + object.toString());
 
                 if (object.getClass().equals(String.class)) {
-                    printChatMessage.set(playController.enemyPerson.getName() + ": " + object + "\n");
+                    printChatMessage.set(playController.enemyPerson.getName() + ": " + object);
+                    printChatMessage.set(null);
                 } else if (object.equals(Command.Ready)) {
                     playController.enemyReady.set(true);
                 } else if (object.equals(Command.NotReady)) {
@@ -143,7 +137,6 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         tabPane.getSelectionModel().select(editTab);
-        myShips = new ArrayList<>();
         setPrintChatMessage();
         setConnected();
         setPlayIsGoing();
@@ -153,7 +146,7 @@ public class Controller implements Initializable {
         setSendObject();
         setGameOver();
         playTab.setDisable(true);
-        me = miscController.getPerson();
+        myPerson = miscController.getPerson();
     }
 
     private void setGameOver() {
@@ -302,7 +295,7 @@ public class Controller implements Initializable {
                     if (ready.getValue()) {
                         networkController.send(Command.Ready);
                     }
-                    sendObject.set(me);
+                    sendObject.set(myPerson);
                 } else {
                     connectedVisibilityOff();
                     networkController.disconnect();
@@ -331,7 +324,10 @@ public class Controller implements Initializable {
         printChatMessage.addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                if (t1 != null) chatController.print(t1);
+                if (t1 != null) {
+                    chatController.print(t1);
+                    printChatMessage.set(null);
+                }
             }
         });
     }

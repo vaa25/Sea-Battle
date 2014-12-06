@@ -32,12 +32,20 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class NetworkController implements Initializable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    BlockingQueue received;
+    boolean hostSelected;
+    boolean serverSelected;
+    SimpleBooleanProperty connected;
+    SimpleBooleanProperty waitingConnection;
+    SimpleStringProperty printChatMessage;
     @FXML
     private Button connectButton;
     @FXML
     private Button disconnectButton;
     @FXML
     private TextField ipTextField;
+    @FXML
+    private TextField portTextField;
     @FXML
     private AnchorPane networkAnchorPane;
     @FXML
@@ -50,19 +58,10 @@ public class NetworkController implements Initializable {
     private VBox personListVBox;
     @FXML
     private TabPane networkModeTabPane;
-
-    BlockingQueue received;
     private NetworkClient networkClient;
-
-    boolean hostSelected;
-    boolean serverSelected;
     private InetAddress ip;
-    SimpleBooleanProperty connected;
-    SimpleBooleanProperty waitingConnection;
     private int port = 30000;
     private Service serverSocketHandler;
-    SimpleStringProperty printChatMessage;
-
 
     public boolean send(Object object) {
         return networkClient.send(object);
@@ -149,6 +148,17 @@ public class NetworkController implements Initializable {
         try {
             ip = InetAddress.getByName(ipTextField.getText());
         } catch (UnknownHostException e) {
+            ipTextField.clear();
+        }
+    }
+
+    @FXML
+    void portEntered(ActionEvent event) {
+        try {
+            int port = Integer.valueOf(ipTextField.getText());
+            if (port < 1000 || port > 65535) ipTextField.clear();
+            else this.port = port;
+        } catch (NumberFormatException e) {
             ipTextField.clear();
         }
     }

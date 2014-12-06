@@ -2,8 +2,8 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane id="Content" fx:id="networkAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="223.0" prefWidth="575.0"
-            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="Content" fx:id="networkAnchorPane" minHeight="0.0" minWidth="0.0"
+            prefHeight="223.0" prefWidth="575.0" xmlns="http://javafx.com/javafx/8"
             fx:controller="view.NetworkController">
     <children>
         <TabPane fx:id="networkModeTabPane" prefHeight="223.0" prefWidth="405.0" tabClosingPolicy="UNAVAILABLE">
@@ -35,6 +35,9 @@
                                                 <RadioButton layoutY="16.0" mnemonicParsing="false"
                                                              onAction="#clientSelected" text="Подключиться"
                                                              toggleGroup="$toggleConnection"/>
+                                                <TextField fx:id="portTextField" disable="false" layoutY="57.0"
+                                                           onAction="#portEntered" prefWidth="200.0"
+                                                           promptText="Введите номер порта" text="3000"/>
                                             </children>
                                         </AnchorPane>
                                     </content>

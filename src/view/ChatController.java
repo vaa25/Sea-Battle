@@ -35,7 +35,7 @@ public class ChatController implements Initializable {
         if (event.getCode().equals(KeyCode.ENTER)) {
             String text = editChatTextArea.getText();
             sendObject.set(text);
-            print(" Я: " + text + "\n");
+            print(" Я: " + text);
             editChatTextArea.clear();
 
         }
