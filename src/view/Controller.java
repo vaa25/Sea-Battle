@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
+import model.Ship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import view.networks.NetworkSpecial;
@@ -22,19 +23,21 @@ import view.networks.ObjectHandler;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 
 
 public class Controller implements Initializable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    SimpleStringProperty printChatMessage;
-    SimpleBooleanProperty connected;
-    SimpleObjectProperty sendObject;
-    Person myPerson;
+    private SimpleStringProperty printChatMessage;
+    private SimpleBooleanProperty connected;
+    private SimpleObjectProperty sendObject;
+    private Person myPerson;
     private SimpleBooleanProperty ready;
     private ObjectHandler objectHandler;
     private BlockingQueue received;
+    private SimpleBooleanProperty gameOver;
     @FXML
     private ChatController chatController;
     @FXML
@@ -105,28 +108,40 @@ public class Controller implements Initializable {
                 if (object.getClass().equals(String.class)) {
                     printChatMessage.set(playController.enemyPerson.getName() + ": " + object);
                     printChatMessage.set(null);
+
                 } else if (object.equals(Command.Ready)) {
                     playController.enemyReady.set(true);
+
                 } else if (object.equals(Command.NotReady)) {
                     playController.enemyReady.set(false);
+
                 } else if (object.equals(NetworkSpecial.LostConnection)) {
                     connected.set(false);
                     return;
+
                 } else if (object.equals(NetworkSpecial.Disconnect)) {
                     connected.set(false);
                     return;
+
                 } else if (object.equals(Command.BreakPlay)) {
                     printChatMessage.set(" Бой прерван врагом\n");
                     playController.breakPlay();
+
                 } else if (object.getClass().equals(ShootResult.class)) {
                     playController.setShootResult((ShootResult) object);
+
                 } else if (object.getClass().equals(Double.class)) {
                     playController.setEnemyRandom((Double) object);
+
                 } else if (object.getClass().equals(Person.class)) {
                     playController.enemyPerson = (Person) object;
                     playController.enemyNameLabel.setText(playController.enemyPerson.getName());
+
                 } else if (object.getClass().equals(Coord.class)) {
                     playController.setCoord((Coord) object);
+
+                } else if (object.getClass().equals(ArrayList.class)) {
+                    playController.setEnemyShips((List<Ship>) object);
                 }
                 objectHandler.restart();
             }
@@ -155,9 +170,10 @@ public class Controller implements Initializable {
         gameOver.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue) {
-
+                if (newValue && !playController.iLoose) {
+                    sendObject.set(playController.myField.getAliveShips());
                 }
+                playController.myField.clear();
             }
         });
     }
@@ -188,7 +204,6 @@ public class Controller implements Initializable {
                     playTab.setDisable(false);
                     playController.readyToggleButton.setDisable(false);
                     playController.myField = editController.getMyField();
-                    playController.readyToggleButton.setDisable(false);
                 } else {
                     playTab.setDisable(true);
                     playController.readyToggleButton.setDisable(true);
@@ -210,7 +225,7 @@ public class Controller implements Initializable {
                         playController.startPlay();
                     }
                 } else {
-                    printChatMessage.set(" Враг не готов!\n");
+//                    printChatMessage.set(" Враг не готов!\n");
                 }
             }
 
@@ -234,7 +249,7 @@ public class Controller implements Initializable {
                         }
                     }
                 } else {
-                    chatController.print(" Я не готов!\n");
+//                    chatController.print(" Я не готов!\n");
                     readyVisibilityOff();
                     if (connected.getValue()) {
                         networkController.send(Command.NotReady);
@@ -249,7 +264,7 @@ public class Controller implements Initializable {
 
             private void readyVisibilityOn() {
                 editTab.setDisable(true);
-                networkTab.setDisable(true);
+                if (connected.getValue()) networkTab.setDisable(true);
             }
 
 
@@ -308,6 +323,7 @@ public class Controller implements Initializable {
 
             private void connectedVisibilityOn() {
                 miscTab.setDisable(true);
+                if (ready.getValue()) networkTab.setDisable(true);
             }
 
             private void connectedVisibilityOff() {

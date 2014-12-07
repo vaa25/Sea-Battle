@@ -6,6 +6,7 @@ import common.ShootResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created with IntelliJ IDEA.
@@ -137,5 +138,9 @@ public class MyField extends Field {
 
     public void unPlaceAll() {
         unPlace(ships);
+    }
+
+    public List<Ship> getAliveShips() {
+        return ships.stream().filter(Ship::isAlive).collect(Collectors.toList());
     }
 }

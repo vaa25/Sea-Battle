@@ -41,8 +41,16 @@ public class Player {
         return myField;
     }
 
+    public void setMyField(MyField myField) {
+        this.myField = myField;
+    }
+
     public EnemyField getEnemyField() {
         return enemyField;
+    }
+
+    public void setEnemyField(EnemyField enemyField) {
+        this.enemyField = enemyField;
     }
 
     private void setEnemy() {
@@ -61,6 +69,11 @@ public class Player {
         enemyField.setShips(enemyShips);
         setEnemyField(enemyField);
     }
+
+    public void addEnemyShips(List<Ship> ships) {
+
+    }
+
     public Object takeObject(Class clazz) {
 
         try {
@@ -106,18 +119,10 @@ public class Player {
     public int getMyKilled() {
         return myField.getKilled();
     }
+
     public String getName() {
         return name;
     }
-
-    public void setMyField(MyField myField) {
-        this.myField = myField;
-    }
-
-    public void setEnemyField(EnemyField enemyField) {
-        this.enemyField = enemyField;
-    }
-
 
     public boolean isEnemyLoose() {
         return enemyField.isLoose();

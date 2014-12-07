@@ -1,18 +1,12 @@
 package model;
 
-import common.Coord;
-
 /**
  * @author Alexander Vlasov
  */
 public class Cell {
     private Ship ship;
-    private Coord coord;
     private boolean shoot;
     private boolean hurt;
-    public Cell(Coord coord) {
-        this.coord = coord;
-    }
 
     public Ship getShip() {
         return ship;
@@ -36,5 +30,20 @@ public class Cell {
 
     public void setHurt(boolean hurt) {
         this.hurt = hurt;
+    }
+
+    public void clear() {
+        ship = null;
+        shoot = false;
+        hurt = false;
+    }
+
+    @Override
+    public String toString() {
+        return "Cell{" +
+                "ship=" + ship +
+                ", shoot=" + shoot +
+                ", hurt=" + hurt +
+                '}';
     }
 }

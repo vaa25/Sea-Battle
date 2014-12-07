@@ -15,8 +15,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import model.MyField;
 import model.Player;
+import model.Ship;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -36,6 +38,7 @@ public class PlayController implements Initializable {
     SimpleBooleanProperty allShipSetted;
     SimpleObjectProperty sendObject;
     SimpleBooleanProperty gameOver;
+    boolean iLoose;
     Person enemyPerson;
     @FXML
     Label myNameLabel;
@@ -156,12 +159,22 @@ public class PlayController implements Initializable {
 
     private void gameOver() {
         printChatMessage.set(" Игра окончена\n");
-        if (player.isMyLoose()) printChatMessage.set(" Я проиграл\n");
-        else printChatMessage.set(" Я выиграл\n");
+        if (player.isMyLoose()) {
+            printChatMessage.set(" Я проиграл\n");
+            iLoose = true;
+        } else {
+            printChatMessage.set(" Я выиграл\n");
+            iLoose = false;
+        }
         gameOver.set(true);
         playIsGoing.set(false);
         readyToggleButton.fire();
         readyToggleButton.setDisable(true);
+    }
+
+    public void setEnemyShips(List<Ship> ships) {
+        player.getEnemyField().getShips().addAll(ships);
+        enemyFieldDisplay.paint();
     }
 
     @Override

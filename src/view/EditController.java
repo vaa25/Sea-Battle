@@ -164,13 +164,18 @@ public class EditController implements Initializable {
     }
 
     @FXML
+    void setRest(ActionEvent event) {
+        if (placeRest()) {
+            PaneService.refreshPane(editPane, getPlaced());
+        }
+    }
+
+    @FXML
     void setAll(ActionEvent event) {
         placeAll();
         updateAmountAvailable();
         clearMyPanes();
         PaneService.refreshPane(editPane, getPlaced());
-        allShipSetted.setValue(null);
-        allShipSetted.set(true);
 
     }
 
@@ -192,15 +197,6 @@ public class EditController implements Initializable {
 
     private void clearMyPanes() {
         PaneService.clearPane(editPane);
-    }
-
-    @FXML
-    void setRest(ActionEvent event) {
-        if (placeRest()) {
-            PaneService.refreshPane(editPane, getPlaced());
-            allShipSetted.setValue(null);
-            allShipSetted.set(true);
-        }
     }
 
     private void paint(Ship ship) {
@@ -274,23 +270,31 @@ public class EditController implements Initializable {
         return true;
     }
     public boolean placeRest() {
+        boolean result = true;
+        allShipSetted.set(false);
         List<Ship> rest = createRestShips();
-        if (rest.size() == 0) return false;
-        placed.addAll(rest);
-        randomSetter.setShips(placed);
-        if (randomSetter.setRest()) {
-            myField.setShips(placed);
-            myField.place(placed);
-            clearAvailable();
-        } else {
-            placed.removeAll(rest);
-            return false;
+        if (rest.size() > 0) {
+            placed.addAll(rest);
+            randomSetter.setShips(placed);
+            if (randomSetter.setRest()) {
+                myField.setShips(placed);
+                myField.place(placed);
+                clearAvailable();
+                result = true;
+            } else {
+                placed.removeAll(rest);
+                result = false;
+            }
+            selected = null;
         }
-        selected = null;
-        return true;
+        if (result) {
+            allShipSetted.set(true);
+        }
+        return result;
     }
 
     public void placeAll() {
+        allShipSetted.set(false);
         initAvailable();
         placed.clear();
         placed.addAll(createRestShips());
@@ -300,8 +304,12 @@ public class EditController implements Initializable {
         myField.place(placed);
         clearAvailable();
         selected = null;
+        allShipSetted.set(true);
     }
 
+    /**
+     * Сбрасывает доступные для расстановки корабли в ноль
+     */
     private void clearAvailable() {
         for (int i = 0; i < availableShips.size(); i++) {
             availableShips.put(i + 1, 0);
@@ -325,7 +333,8 @@ public class EditController implements Initializable {
 
     public void clearAll() {
         initAvailable();
-        myField.unPlaceAll();
+//        myField.unPlaceAll();
+        myField.clear();
         placed.clear();
 
     }

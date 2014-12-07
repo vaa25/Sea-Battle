@@ -74,6 +74,7 @@ public class NetworkController implements Initializable {
     @FXML
     void clientSelected(ActionEvent event) {
         ipTextField.setDisable(false);
+        portTextField.setDisable(false);
         hostSelected = false;
     }
 
@@ -140,6 +141,7 @@ public class NetworkController implements Initializable {
     @FXML
     void hostSelected(ActionEvent event) {
         ipTextField.setDisable(true);
+        portTextField.setDisable(true);
         hostSelected = true;
     }
 

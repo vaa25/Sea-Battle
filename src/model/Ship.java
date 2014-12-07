@@ -20,13 +20,15 @@ public class Ship implements Comparable<Ship>, Serializable {
 //            {0,0,0,0},
 //            {0,0,0,0}
 //    };
-    private final int size;
+    private int size;
     private Orientation orientation;
     private Coord[] coords;
     private Coord coordLeftUp;
     private int health;
     private boolean placed;
 
+    public Ship() {
+    }
     public Ship(int size, Coord[] coords) {
         this(size);
         this.coords = coords;
@@ -44,16 +46,21 @@ public class Ship implements Comparable<Ship>, Serializable {
         return orientation;
     }
 
+    public void setOrientation(Orientation orientation) {
+        this.orientation = orientation;
+        setCoords(coordLeftUp);
+    }
+
     public int getSize() {
         return size;
     }
 
-    public void setPlaced(boolean placed) {
-        this.placed = placed;
-    }
-
     public boolean isPlaced() {
         return placed;
+    }
+
+    public void setPlaced(boolean placed) {
+        this.placed = placed;
     }
 
     /**
@@ -108,11 +115,6 @@ public class Ship implements Comparable<Ship>, Serializable {
     public void changeOrientation() {
         if (orientation == Orientation.Horizontal) orientation = Orientation.Vertical;
         else orientation = Orientation.Horizontal;
-        setCoords(coordLeftUp);
-    }
-
-    public void setOrientation(Orientation orientation) {
-        this.orientation = orientation;
         setCoords(coordLeftUp);
     }
 

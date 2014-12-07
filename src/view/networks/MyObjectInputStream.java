@@ -73,6 +73,10 @@ public class MyObjectInputStream implements Runnable {
                 Object received = Serializator.build(data);
                 logger.info("Принял " + received);
                 put(received);
+                if (received == NetworkSpecial.Disconnect) {
+                    break;
+                }
+
             } catch (SocketTimeoutException | SocketException e) {
                 logger.error("Connection reset", e);
                 closed = true;

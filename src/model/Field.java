@@ -15,10 +15,10 @@ import java.util.List;
  * @author Alexander Vlasov
  */
 public abstract class Field {
-    private Cell[][] field;
-    protected List<Ship> ships;
     protected final int width;
     protected final int height;
+    protected List<Ship> ships;
+    private Cell[][] field;
     private int killed;
 
     public Field(int width, int height) {
@@ -31,12 +31,12 @@ public abstract class Field {
 
     }
 
-    public void setShips(List<Ship> ships) {
-        this.ships = ships;
-    }
-
     public List<Ship> getShips() {
         return ships;
+    }
+
+    public void setShips(List<Ship> ships) {
+        this.ships = ships;
     }
 
     protected Ship getShip(Coord coord) {
@@ -47,8 +47,7 @@ public abstract class Field {
         for (int i = 0; i < field.length; i++) {
             Cell[] collumn = field[i];
             for (int j = 0; j < collumn.length; j++) {
-                collumn[j] = new Cell(new Coord(i, j));
-
+                collumn[j] = new Cell();
             }
 
         }
@@ -122,6 +121,15 @@ public abstract class Field {
                 }
             }
             System.out.println();
+        }
+    }
+
+    public void clear() {
+        ships.clear();
+        for (int i = 0; i < field.length; i++) {
+            for (int j = 0; j < field[i].length; j++) {
+                field[i][j].clear();
+            }
         }
     }
 }

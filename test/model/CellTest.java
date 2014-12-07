@@ -13,11 +13,9 @@ public class CellTest extends TestCase {
     @Before
     public void setUp() throws Exception {
         coord=new Coord(3,5);
-        cell = new Cell(coord);
+        cell = new Cell();
         ship=new Ship(2);
         ship2=new Ship(1);
-
-
     }
 
     @Test

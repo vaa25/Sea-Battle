@@ -3,17 +3,16 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
-<SplitPane xmlns:fx="http://javafx.com/fxml/1" id="SplitPane"
-           fx:id="chatSplitPane" dividerPositions="0.7338129496402878" layoutX="15.0" layoutY="327.0"
-           orientation="VERTICAL"
-           prefWidth="572.0" xmlns="http://javafx.com/javafx/8"
+<SplitPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
+           id="SplitPane" fx:id="chatSplitPane"
+           dividerPositions="0.7338129496402878" layoutX="15.0" layoutY="327.0" orientation="VERTICAL" prefWidth="572.0"
            fx:controller="view.ChatController">
     <items>
         <ScrollPane id="ScrollPane" fx:id="chatScrollPane" fitToHeight="true" fitToWidth="true"
                     hbarPolicy="NEVER" pannable="true" prefViewportHeight="93.0" prefViewportWidth="570.0">
             <content>
                 <TextArea id="" fx:id="chatTextArea" editable="false" focusTraversable="true"
-                          mouseTransparent="true" prefHeight="88.0" prefWidth="572.0" promptText="Чат"
+                          mouseTransparent="false" prefHeight="88.0" prefWidth="572.0" promptText="Чат"
                           wrapText="true"/>
             </content>
         </ScrollPane>

@@ -40,7 +40,7 @@ public class FieldDisplay {
                     if (cell.isHurt()) drawWreck(i, j);
                     else if (cell.isShoot()) drawShoot(i, j);
                 } else {
-                    if (ship.isAlive() && cell.isHurt()) {
+                    if (ship.isAlive() && cell.isShoot()) {
                         drawWreck(i, j);
                     }
                 }
