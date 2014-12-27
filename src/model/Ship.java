@@ -29,10 +29,6 @@ public class Ship implements Comparable<Ship>, Serializable {
 
     public Ship() {
     }
-    public Ship(int size, Coord[] coords) {
-        this(size);
-        this.coords = coords;
-    }
 
     public Ship(int size) {
         this.size = size;

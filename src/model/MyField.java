@@ -17,13 +17,10 @@ import java.util.stream.Collectors;
  * @author Alexander Vlasov
  */
 public class MyField extends Field {
-    private RandomSetter randomSetter;
 
     public MyField(int width, int height) {
         super(width, height);
         createCells();
-        randomSetter = new RandomSetter(width, height);
-
     }
 
     /**
@@ -77,29 +74,6 @@ public class MyField extends Field {
         return res;
     }
 
-    /**
-     * Удаляет из ячеек корабль
-     *
-     * @param ship
-     */
-    public void unPlace(Ship ship) {
-        if (ships.remove(ship)) {
-            for (int i = 0; i < ship.getShipCoords().length; i++) {
-                getCell(ship.getShipCoords()[i]).setShip(null);
-            }
-        }
-    }
-
-    /**
-     * расставляет рандомно корабли
-     */
-    public void placeRandom() {
-        randomSetter.setShips(ships);
-        randomSetter.setAll();
-        place(randomSetter.getShipsPlaced());
-    }
-
-
     public void place(List<Ship> ships) {
         for (Ship ship : ships) {
             place(ship);
@@ -123,21 +97,6 @@ public class MyField extends Field {
             cell.setShoot(true);
             return ShootResult.MISSED;
         }
-    }
-
-    private void unPlace(List<Ship> ships) {
-        while (ships.size() > 0) {
-            Ship ship = ships.get(0);
-            unPlace(ship);
-        }
-    }
-
-    public int getShipSize() {
-        return ships.size();
-    }
-
-    public void unPlaceAll() {
-        unPlace(ships);
     }
 
     public List<Ship> getAliveShips() {
