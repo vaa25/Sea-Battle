@@ -17,9 +17,10 @@ import java.util.stream.Collectors;
  * @author Alexander Vlasov
  */
 public class MyField extends Field {
-
+    private Bounds bounds;
     public MyField(int width, int height) {
         super(width, height);
+        bounds = new Bounds(width, height);
         createCells();
     }
 
@@ -31,26 +32,13 @@ public class MyField extends Field {
      * @return
      */
     public boolean canPlace(Ship ship) {
-        if (!inBorders(ship)) return false;
+        if (!bounds.isInBounds(ship)) return false;
         for (Ship alreadyPlaced : ships) {
             if (ship.isCrossing(alreadyPlaced)) return false;
         }
         return true;
     }
 
-    /**
-     * Проверяет, находится ли весь корабль в границах поля
-     *
-     * @param ship
-     *
-     * @return true, если находится
-     */
-    private boolean inBorders(Ship ship) {
-        for (Coord coord : ship.getShipCoords()) {
-            if (coord.getX() < 0 || coord.getY() < 0 || coord.getX() >= width || coord.getY() >= height) return false;
-        }
-        return true;
-    }
 
     /**
      * Ячейки вдали от кораблей
@@ -84,8 +72,8 @@ public class MyField extends Field {
         Cell cell = getCell(coord);
         Ship ship = cell.getShip();
         if (ship != null) {
-            if (!cell.isShoot()) {
-                cell.setShoot(true);
+            if (!cell.isShooted()) {
+                cell.setShooted(true);
                 ship.reduceHealth();
             }
             if (ship.isAlive()) return ShootResult.HURT;
@@ -94,7 +82,7 @@ public class MyField extends Field {
                 return ShootResult.KILLED;
             }
         } else {
-            cell.setShoot(true);
+            cell.setShooted(true);
             return ShootResult.MISSED;
         }
     }

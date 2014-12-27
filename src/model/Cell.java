@@ -5,7 +5,7 @@ package model;
  */
 public class Cell {
     private Ship ship;
-    private boolean shoot;
+    private boolean shooted;
     private boolean hurt;
 
     public Ship getShip() {
@@ -16,12 +16,12 @@ public class Cell {
         this.ship = ship;
     }
 
-    public boolean isShoot() {
-        return shoot;
+    public boolean isShooted() {
+        return shooted;
     }
 
-    public void setShoot(boolean shoot) {
-        this.shoot = shoot;
+    public void setShooted(boolean shooted) {
+        this.shooted = shooted;
     }
 
     public boolean isHurt() {
@@ -34,7 +34,7 @@ public class Cell {
 
     public void clear() {
         ship = null;
-        shoot = false;
+        shooted = false;
         hurt = false;
     }
 
@@ -42,7 +42,7 @@ public class Cell {
     public String toString() {
         return "Cell{" +
                 "ship=" + ship +
-                ", shoot=" + shoot +
+                ", shooted=" + shooted +
                 ", hurt=" + hurt +
                 '}';
     }

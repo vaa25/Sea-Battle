@@ -183,7 +183,7 @@ public class Player {
     }
 
     private boolean isAlreadyShooted(Coord coord) {
-        return enemyField.getCell(coord).isShoot();
+        return enemyField.getCell(coord).isShooted();
     }
 
     /**

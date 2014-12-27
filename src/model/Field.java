@@ -67,7 +67,7 @@ public abstract class Field {
      * @param coord
      */
     public void setShoot(Coord coord) {
-        getCell(coord).setShoot(true);
+        getCell(coord).setShooted(true);
     }
 
     /**
@@ -113,10 +113,10 @@ public abstract class Field {
             for (Cell cell : cells) {
                 if (cell.getShip() == null) {
                     if (cell.isHurt()) System.out.println("+ ");
-                    else if (cell.isShoot()) System.out.print(". ");
+                    else if (cell.isShooted()) System.out.print(". ");
                     else System.out.print("  ");
                 } else {
-                    if (cell.isShoot()) System.out.print("* ");
+                    if (cell.isShooted()) System.out.print("* ");
                     else System.out.print("O ");
                 }
             }

@@ -88,7 +88,7 @@ public class PlayController implements Initializable {
         int x = (int) (event.getX() / 20);
         int y = (int) (event.getY() / 20);
         Coord coord = new Coord(x, y);
-        if (player.getEnemyField().getCell(coord).isShoot()) {
+        if (player.getEnemyField().getCell(coord).isShooted()) {
             printChatMessage.set(" Этот квадрат уже обстрелян. Выберите другой квадрат.\n");
             printChatMessage.set(null);
             return;

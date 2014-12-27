@@ -33,41 +33,41 @@ public class CellTest extends TestCase {
 
     @Test
     public void testIsShoot() throws Exception {
-        cell.setShoot(true);
-        assertTrue(cell.isShoot());
+        cell.setShooted(true);
+        assertTrue(cell.isShooted());
         assertFalse(cell.isHurt());
-        cell.setShoot(false);
-        assertFalse(cell.isShoot());
+        cell.setShooted(false);
+        assertFalse(cell.isShooted());
         assertFalse(cell.isHurt());
     }
 
     @Test
     public void testSetShoot() throws Exception {
-        cell.setShoot(true);
-        assertTrue(cell.isShoot());
+        cell.setShooted(true);
+        assertTrue(cell.isShooted());
         assertFalse(cell.isHurt());
-        cell.setShoot(false);
-        assertFalse(cell.isShoot());
+        cell.setShooted(false);
+        assertFalse(cell.isShooted());
         assertFalse(cell.isHurt());
     }
 
     @Test
     public void testIsHurt() throws Exception {
         cell.setHurt(true);
-        assertFalse(cell.isShoot());
+        assertFalse(cell.isShooted());
         assertTrue(cell.isHurt());
         cell.setHurt(false);
-        assertFalse(cell.isShoot());
+        assertFalse(cell.isShooted());
         assertFalse(cell.isHurt());
     }
 
     @Test
     public void testSetHurt() throws Exception {
         cell.setHurt(true);
-        assertFalse(cell.isShoot());
+        assertFalse(cell.isShooted());
         assertTrue(cell.isHurt());
         cell.setHurt(false);
-        assertFalse(cell.isShoot());
+        assertFalse(cell.isShooted());
         assertFalse(cell.isHurt());
     }
 }
