@@ -34,6 +34,7 @@ public class EnemyField extends Field {
         Ship killedShip = reconstructKilledShip(coord);
         killedShip.kill();
         place(killedShip);
+        reconstructedShips.add(killedShip);
         return killedShip;
     }
 
@@ -50,8 +51,6 @@ public class EnemyField extends Field {
      *
      * @return
      */
-
-
     private Ship reconstructKilledShip(Coord shootCoord) {
         Set<Coord> wrecks = new HashSet<>();
         searchWrecks(wrecks, shootCoord);
@@ -63,25 +62,30 @@ public class EnemyField extends Field {
         if (coords[0].getY() != coords[coords.length - 1].getY()) {
             ship.setOrientation(Orientation.Vertical);
         }
-        reconstructedShips.add(ship);
         return ship;
     }
 
     /**
      * находит цепочку рядом стоящих обломков и удаляет их из общего списка обломков
      *
-     * @param coords начальная точка поиска
-     * @param coord  set найденных координат цепочки обломков
+     * @param coords set найденных координат цепочки обломков
+     * @param coord  начальная точка поиска
      */
     private void searchWrecks(Set<Coord> coords, Coord coord) {
         if (coords.add(coord)) {
-            int x = coord.getX();
-            int y = coord.getY();
             Coord newCoord;
-            if (x > 0 && (wrecks.remove(newCoord = coord.getLeft()))) searchWrecks(coords, newCoord);
-            if (y > 0 && (wrecks.remove(newCoord = coord.getUp()))) searchWrecks(coords, newCoord);
-            if (x < width - 1 && (wrecks.remove(newCoord = coord.getRight()))) searchWrecks(coords, newCoord);
-            if (y < height - 1 && (wrecks.remove(newCoord = coord.getDown()))) searchWrecks(coords, newCoord);
+            if (coord.getX() > 0 && (wrecks.remove(newCoord = coord.getLeft()))) {
+                searchWrecks(coords, newCoord);
+            }
+            if (coord.getY() > 0 && (wrecks.remove(newCoord = coord.getUp()))) {
+                searchWrecks(coords, newCoord);
+            }
+            if (coord.getX() < width - 1 && (wrecks.remove(newCoord = coord.getRight()))) {
+                searchWrecks(coords, newCoord);
+            }
+            if (coord.getY() < height - 1 && (wrecks.remove(newCoord = coord.getDown()))) {
+                searchWrecks(coords, newCoord);
+            }
         }
     }
 
