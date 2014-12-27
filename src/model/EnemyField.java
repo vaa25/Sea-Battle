@@ -28,17 +28,12 @@ public class EnemyField extends Field {
         return reconstructedShips;
     }
 
-    public List<Coord> getWrecks() {
-        return wrecks;
-    }
-
     public Ship setKilled(Coord coord) {
         setHurt(coord);
         addKilled();
         Ship killedShip = reconstructKilledShip(coord);
         killedShip.kill();
         place(killedShip);
-//        reconstructedShips.add(killedShip);
         return killedShip;
     }
 
@@ -57,7 +52,7 @@ public class EnemyField extends Field {
      */
 
 
-    public Ship reconstructKilledShip(Coord shootCoord) {
+    private Ship reconstructKilledShip(Coord shootCoord) {
         Set<Coord> wrecks = new HashSet<>();
         searchWrecks(wrecks, shootCoord);
         Ship ship = new Ship(wrecks.size());
