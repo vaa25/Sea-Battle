@@ -24,9 +24,6 @@ public class EnemyField extends Field {
 
     }
 
-    public List<Ship> getShips() {
-        return getReconstructedShips();
-    }
     public List<Ship> getReconstructedShips() {
         return reconstructedShips;
     }

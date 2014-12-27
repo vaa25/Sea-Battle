@@ -173,7 +173,7 @@ public class PlayController implements Initializable {
     }
 
     public void setEnemyShips(List<Ship> ships) {
-        player.getEnemyField().getShips().addAll(ships);
+        player.getEnemyField().getReconstructedShips().addAll(ships);
         enemyFieldDisplay.paint();
     }
 
