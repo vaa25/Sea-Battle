@@ -132,7 +132,7 @@ public class PlayController implements Initializable {
         playIsGoing.set(true);
         breakPlayButton.setDisable(false);
         printChatMessage.set("Игра началась\n");
-        player = new Player(10, 10, "Z");
+        player = new Player("Z");
         player.setMyField(myField);
         readyToggleButton.setDisable(true);
         myFieldDisplay = new FieldDisplay(myFieldPane, player.getMyField());
