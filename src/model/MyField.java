@@ -86,7 +86,7 @@ public class MyField extends Field {
         if (ship != null) {
             if (!cell.isShoot()) {
                 cell.setShoot(true);
-                ship.shoot();
+                ship.reduceHealth();
             }
             if (ship.isAlive()) return ShootResult.HURT;
             else {

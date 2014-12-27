@@ -74,7 +74,7 @@ public class Ship implements Comparable<Ship>, Serializable {
     /**
      * Вызывается, когда по кораблю попадают
      */
-    public void shoot() {
+    public void reduceHealth() {
         health--;
     }
 

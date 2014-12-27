@@ -8,10 +8,10 @@ import org.junit.Test;
 import java.util.Arrays;
 
 public class ShipTest extends TestCase {
+    Coord leftUp = new Coord(3, 5);
     private Ship ship;
     private Ship ship2;
     private Ship ship3;
-    Coord leftUp = new Coord(3, 5);
 
     @Before
     public void setUp() throws Exception {
@@ -52,22 +52,22 @@ public class ShipTest extends TestCase {
     @Test
     public void testShoot() throws Exception {
         assertTrue(ship.isAlive());
-        ship.shoot();
+        ship.reduceHealth();
         assertFalse(ship.isAlive());
-        ship.shoot();
+        ship.reduceHealth();
         assertFalse(ship.isAlive());
-        ship3.shoot();
+        ship3.reduceHealth();
         assertTrue(ship3.isAlive());
     }
 
     @Test
     public void testIsAlive() throws Exception {
         assertTrue(ship.isAlive());
-        ship.shoot();
+        ship.reduceHealth();
         assertFalse(ship.isAlive());
-        ship.shoot();
+        ship.reduceHealth();
         assertFalse(ship.isAlive());
-        ship3.shoot();
+        ship3.reduceHealth();
         assertTrue(ship3.isAlive());
     }
 
