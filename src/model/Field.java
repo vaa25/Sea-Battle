@@ -112,7 +112,7 @@ public abstract class Field {
         for (Cell[] cells : field) {
             for (Cell cell : cells) {
                 if (cell.getShip() == null) {
-                    if (cell.isHurt()) System.out.println("+ ");
+                    if (cell.isHurted()) System.out.println("+ ");
                     else if (cell.isShooted()) System.out.print(". ");
                     else System.out.print("  ");
                 } else {

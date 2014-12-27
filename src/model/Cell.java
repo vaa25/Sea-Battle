@@ -6,7 +6,7 @@ package model;
 public class Cell {
     private Ship ship;
     private boolean shooted;
-    private boolean hurt;
+    private boolean hurted;
 
     public Ship getShip() {
         return ship;
@@ -24,18 +24,18 @@ public class Cell {
         this.shooted = shooted;
     }
 
-    public boolean isHurt() {
-        return hurt;
+    public boolean isHurted() {
+        return hurted;
     }
 
-    public void setHurt(boolean hurt) {
-        this.hurt = hurt;
+    public void setHurted(boolean hurted) {
+        this.hurted = hurted;
     }
 
     public void clear() {
         ship = null;
         shooted = false;
-        hurt = false;
+        hurted = false;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class Cell {
         return "Cell{" +
                 "ship=" + ship +
                 ", shooted=" + shooted +
-                ", hurt=" + hurt +
+                ", hurted=" + hurted +
                 '}';
     }
 }

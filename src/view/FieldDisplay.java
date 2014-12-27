@@ -37,7 +37,7 @@ public class FieldDisplay {
                 Cell cell = field.getCell(new Coord(i, j));
                 Ship ship = cell.getShip();
                 if (ship == null) {
-                    if (cell.isHurt()) drawWreck(i, j);
+                    if (cell.isHurted()) drawWreck(i, j);
                     else if (cell.isShooted()) drawShoot(i, j);
                 } else {
                     if (ship.isAlive() && cell.isShooted()) {
