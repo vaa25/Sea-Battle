@@ -26,13 +26,11 @@ public class Player {
     private MyField myField;
     private EnemyField enemyField;
     private int width, height;
-    private CurrentStatistic currentStatistic;
     private Coord shootCoord;
 
     public Player(int width, int height, String name) {
         this.width = width;
         this.height = height;
-        currentStatistic = new CurrentStatistic();
         this.name = name;
         setEnemy();
     }

@@ -12,6 +12,9 @@ import java.net.SocketTimeoutException;
 import java.util.concurrent.BlockingQueue;
 
 /**
+ * Принимает байты, преодбразовывает их в объекты с помощью Serializator и кидает в блокирующую очередь.
+ * Запускается в отдельном потоке. При получении сиграла отсоединения с другой стороны или другой ошибке кидает
+ * соответствующий NetworkSpecial в очередь и завершает свою работу.
  * @author Alexander Vlasov
  */
 public class MyObjectInputStream implements Runnable {
@@ -19,9 +22,17 @@ public class MyObjectInputStream implements Runnable {
     private InputStream in;
     private byte[] data;
     private volatile boolean transferComplete;
+
     private boolean closed;
+
     private BlockingQueue queue;
 
+    /**
+     * Конструктор.
+     *
+     * @param in    поток, из которого нужно принимать данные
+     * @param queue очередь, куда их нужно кидать. Очередь сначала обнуляется.
+     */
     public MyObjectInputStream(InputStream in, BlockingQueue queue) {
         this.in = in;
         queue.clear();
@@ -74,6 +85,7 @@ public class MyObjectInputStream implements Runnable {
                 logger.info("Принял " + received);
                 put(received);
                 if (received == NetworkSpecial.Disconnect) {
+                    closed=true;
                     break;
                 }
 
@@ -107,5 +119,9 @@ public class MyObjectInputStream implements Runnable {
             logger.error("Interrupted", e);
             e.printStackTrace();
         }
+    }
+
+    public boolean isClosed() {
+        return closed;
     }
 }

@@ -37,7 +37,7 @@
                                                              toggleGroup="$toggleConnection"/>
                                                 <TextField fx:id="portTextField" disable="false" layoutY="57.0"
                                                            onAction="#portEntered" prefWidth="200.0"
-                                                           promptText="Введите номер порта" text="3000"/>
+                                                           promptText="Введите номер порта" text="30000"/>
                                             </children>
                                         </AnchorPane>
                                     </content>

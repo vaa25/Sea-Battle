@@ -74,7 +74,6 @@ public class NetworkController implements Initializable {
     @FXML
     void clientSelected(ActionEvent event) {
         ipTextField.setDisable(false);
-        portTextField.setDisable(false);
         hostSelected = false;
     }
 
@@ -97,10 +96,19 @@ public class NetworkController implements Initializable {
     private void connectToHostAsClient() {
         try {
             ip = InetAddress.getByName(ipTextField.getText());
+            port = Integer.valueOf(portTextField.getText());
+            if (port < 1000 || port > 65535) {
+                throw new NumberFormatException("port is out of range (1000-65535)");
+            }
         } catch (UnknownHostException e) {
             printChatMessage.set("IP " + ipTextField.getText() + " is incorrect. Enter correct IP\n");
             printChatMessage.set(null);
             logger.error("IP " + ipTextField.getText() + " is incorrect", e);
+            return;
+        } catch (NumberFormatException e) {
+            printChatMessage.set("port " + portTextField.getText() + " is incorrect. Enter correct port\n");
+            printChatMessage.set(null);
+            logger.error("port " + portTextField.getText() + " is incorrect", e);
             return;
         }
         try {
@@ -141,7 +149,6 @@ public class NetworkController implements Initializable {
     @FXML
     void hostSelected(ActionEvent event) {
         ipTextField.setDisable(true);
-        portTextField.setDisable(true);
         hostSelected = true;
     }
 
