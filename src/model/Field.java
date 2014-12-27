@@ -18,6 +18,7 @@ public abstract class Field {
     protected final int width;
     protected final int height;
     protected List<Ship> ships;
+    protected Bounds bounds;
     private Cell[][] field;
     private int killed;
 
@@ -28,6 +29,7 @@ public abstract class Field {
         ships = new ArrayList<>();
         createCells();
         killed = 0;
+        bounds = new Bounds(width, height);
 
     }
 
@@ -39,11 +41,7 @@ public abstract class Field {
         this.ships = ships;
     }
 
-    protected Ship getShip(Coord coord) {
-        return field[coord.getX()][coord.getY()].getShip();
-    }
-
-    public void createCells() {
+    private void createCells() {
         for (int i = 0; i < field.length; i++) {
             Cell[] collumn = field[i];
             for (int j = 0; j < collumn.length; j++) {
@@ -66,7 +64,7 @@ public abstract class Field {
      *
      * @param coord
      */
-    public void setShoot(Coord coord) {
+    public void setShooted(Coord coord) {
         getCell(coord).setShooted(true);
     }
 
@@ -82,12 +80,6 @@ public abstract class Field {
         }
     }
 
-    public void unplace(Ship ship) {
-        ship.setPlaced(false);
-        for (Coord coord : ship.getShipCoords()) {
-            getCell(coord).setShip(null);
-        }
-    }
     public Cell getCell(Coord coord) {
         return field[coord.getX()][coord.getY()];
     }
@@ -96,11 +88,7 @@ public abstract class Field {
         return killed;
     }
 
-    public int getShipsSize() {
-        return ships.size();
-    }
-
-    public void addKilled() {
+    protected void addKilled() {
         killed++;
     }
 

@@ -1,5 +1,7 @@
 package model;
 
+import common.ShootResult;
+
 /**
  * @author Alexander Vlasov
  */
@@ -45,5 +47,25 @@ public class Cell {
                 ", shooted=" + shooted +
                 ", hurted=" + hurted +
                 '}';
+    }
+
+    public ShootResult shoot() {
+        if (shooted) return null;
+        setShooted(true);
+        if (hasShip()) {
+            ship.reduceHealth();
+            hurted = true;
+            if (ship.isAlive()) {
+                return ShootResult.HURTED;
+            } else {
+                return ShootResult.KILLED;
+            }
+        } else {
+            return ShootResult.MISSED;
+        }
+    }
+
+    private boolean hasShip() {
+        return ship != null;
     }
 }

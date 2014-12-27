@@ -141,14 +141,14 @@ public class Player {
      */
     public void setShootResult(ShootResult shootResult) {
         switch (shootResult) {
-            case HURT:
+            case HURTED:
                 enemyField.setHurt(shootCoord);
                 break;
             case KILLED:
                 enemyField.place(enemyField.setKilled(shootCoord));
                 break;
             case MISSED:
-                enemyField.setShoot(shootCoord);
+                enemyField.setShooted(shootCoord);
         }
 
     }
@@ -238,7 +238,7 @@ public class Player {
 //                System.out.println("in reality:");
 //                shooted.printMy();
 //            }
-//            while (shootResult == ShootResult.HURT);
+//            while (shootResult == ShootResult.HURTED);
 //            if (shootResult == ShootResult.KILLED) {
 //                if (shooting.isEnemyLoose()) {
 //                    System.out.println(shooting.getName() + " won");

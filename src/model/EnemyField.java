@@ -46,7 +46,7 @@ public class EnemyField extends Field {
     }
 
     public void setHurt(Coord coord) {
-        setShoot(coord);
+        setShooted(coord);
         wrecks.add(coord);
         getCell(coord).setHurted(true);
     }

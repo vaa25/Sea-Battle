@@ -87,10 +87,10 @@ public class MyFieldTest extends TestCase {
     @Test
     public void testShoot() throws Exception {
         myField.place(ships);
-        assertEquals(ShootResult.HURT, myField.shoot(new Coord(0, 0)));
+        assertEquals(ShootResult.HURTED, myField.shoot(new Coord(0, 0)));
         assertEquals(ShootResult.KILLED, myField.shoot(new Coord(1, 0)));
         assertEquals(ShootResult.MISSED, myField.shoot(new Coord(1, 1)));
-        assertEquals(ShootResult.MISSED, myField.shoot(new Coord(1, 1)));
+        assertNull("Double shoot not accepted", myField.shoot(new Coord(1, 1)));
     }
 
     @Test

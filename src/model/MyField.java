@@ -17,11 +17,9 @@ import java.util.stream.Collectors;
  * @author Alexander Vlasov
  */
 public class MyField extends Field {
-    private Bounds bounds;
+
     public MyField(int width, int height) {
         super(width, height);
-        bounds = new Bounds(width, height);
-        createCells();
     }
 
     /**
@@ -69,22 +67,11 @@ public class MyField extends Field {
     }
 
     public ShootResult shoot(Coord coord) {
-        Cell cell = getCell(coord);
-        Ship ship = cell.getShip();
-        if (ship != null) {
-            if (!cell.isShooted()) {
-                cell.setShooted(true);
-                ship.reduceHealth();
-            }
-            if (ship.isAlive()) return ShootResult.HURT;
-            else {
-                addKilled();
-                return ShootResult.KILLED;
-            }
-        } else {
-            cell.setShooted(true);
-            return ShootResult.MISSED;
+        ShootResult shootResult = getCell(coord).shoot();
+        if (shootResult == ShootResult.KILLED) {
+            addKilled();
         }
+        return shootResult;
     }
 
     public List<Ship> getAliveShips() {
