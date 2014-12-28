@@ -74,16 +74,16 @@ public class ShipTest extends TestCase {
     @Test
     public void testSetCoords() throws Exception {
         Coord leftUp = new Coord(3, 5);
-        Coord[] coordsH = {
+        Coord[] coordsHorizontal = {
                 new Coord(3, 5),
                 new Coord(4, 5),
                 new Coord(5, 5),
         };
-//        assertNull(ship3.getShipCoords()[0]);
         ship3.setCoords(leftUp);
-        assertEquals(coordsH, ship3.getShipCoords());
-        coordsH[0] = coordsH[0].getLeft();
-        assertFalse(coordsH.equals(ship3.getShipCoords()));
+        assertTrue(Arrays.toString(coordsHorizontal) + " not equals " + Arrays.toString(ship3.getShipCoords()),
+                Arrays.equals(coordsHorizontal, ship3.getShipCoords()));
+        coordsHorizontal[0] = coordsHorizontal[0].getLeft();
+        assertFalse(Arrays.equals(coordsHorizontal, (ship3.getShipCoords())));
     }
 
     @Test

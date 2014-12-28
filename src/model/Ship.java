@@ -68,7 +68,7 @@ public class Ship implements Comparable<Ship>, Serializable {
      */
     @Override
     public int compareTo(Ship o) {
-        return size - o.size;
+        return (size - o.size);
     }
 
     /**
@@ -82,7 +82,7 @@ public class Ship implements Comparable<Ship>, Serializable {
      * @return true , если корабль не потоплен
      */
     public boolean isAlive() {
-        return health > 0;
+        return (health > 0);
     }
 
     /**
@@ -109,8 +109,11 @@ public class Ship implements Comparable<Ship>, Serializable {
     }
 
     public void changeOrientation() {
-        if (orientation == Orientation.Horizontal) orientation = Orientation.Vertical;
-        else orientation = Orientation.Horizontal;
+        if (orientation == Orientation.Horizontal) {
+            orientation = Orientation.Vertical;
+        } else {
+            orientation = Orientation.Horizontal;
+        }
         setCoords(coordLeftUp);
     }
 
@@ -120,38 +123,47 @@ public class Ship implements Comparable<Ship>, Serializable {
      * @return
      */
     public Coord[] getAroundCoords() {
-        Coord[] res = new Coord[size * 3 + 6];
         if (orientation == Orientation.Horizontal) {
-            Coord coordLeft = coords[0];
-            res[0] = coordLeft.getLeftUp();
-            res[1] = coordLeft.getLeft();
-            res[2] = coordLeft.getLeftDown();
-            Coord coordRight = coords[size - 1];
-            res[3] = coordRight.getRightUp();
-            res[4] = coordRight.getRight();
-            res[5] = coordRight.getRightDown();
-            for (int i = 0; i < size; i++) {
-                res[6 + i] = coords[i].getUp();
-                res[6 + i + size] = coords[i].getCenter();
-                res[6 + i + size + size] = coords[i].getDown();
-            }
+            return getHorizontalAroundCoords();
         } else {
-            Coord coordUp = coords[0];
-            res[0] = coordUp.getLeftUp();
-            res[1] = coordUp.getUp();
-            res[2] = coordUp.getRightUp();
-            Coord coordDown = coords[size - 1];
-            res[3] = coordDown.getLeftDown();
-            res[4] = coordDown.getDown();
-            res[5] = coordDown.getRightDown();
-            for (int i = 0; i < size; i++) {
-                res[6 + i] = coords[i].getLeft();
-                res[6 + i + size] = coords[i].getCenter();
-                res[6 + i + size + size] = coords[i].getRight();
-            }
+            return getVerticalAroundCoords();
         }
+    }
 
-        return res;
+    private Coord[] getVerticalAroundCoords() {
+        Coord[] result = new Coord[size * 3 + 6];
+        Coord coordUp = coords[0];
+        result[0] = coordUp.getLeftUp();
+        result[1] = coordUp.getUp();
+        result[2] = coordUp.getRightUp();
+        Coord coordDown = coords[size - 1];
+        result[3] = coordDown.getLeftDown();
+        result[4] = coordDown.getDown();
+        result[5] = coordDown.getRightDown();
+        for (int i = 0; i < size; i++) {
+            result[6 + i] = coords[i].getLeft();
+            result[6 + i + size] = coords[i].getCenter();
+            result[6 + i + size + size] = coords[i].getRight();
+        }
+        return result;
+    }
+
+    private Coord[] getHorizontalAroundCoords() {
+        Coord[] result = new Coord[size * 3 + 6];
+        Coord coordLeft = coords[0];
+        result[0] = coordLeft.getLeftUp();
+        result[1] = coordLeft.getLeft();
+        result[2] = coordLeft.getLeftDown();
+        Coord coordRight = coords[size - 1];
+        result[3] = coordRight.getRightUp();
+        result[4] = coordRight.getRight();
+        result[5] = coordRight.getRightDown();
+        for (int i = 0; i < size; i++) {
+            result[6 + i] = coords[i].getUp();
+            result[6 + i + size] = coords[i].getCenter();
+            result[6 + i + size + size] = coords[i].getDown();
+        }
+        return result;
     }
 
     /**
@@ -165,7 +177,9 @@ public class Ship implements Comparable<Ship>, Serializable {
         for (Coord coord : coords) {
             Coord[] aroundCoords = ship.getAroundCoords();
             for (Coord anotherCoords : aroundCoords) {
-                if (coord.equals(anotherCoords)) return true;
+                if (coord.equals(anotherCoords)) {
+                    return true;
+                }
             }
         }
         return false;
