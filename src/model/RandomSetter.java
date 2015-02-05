@@ -43,18 +43,6 @@ public class RandomSetter {
     }
 
     /**
-     * Расставляет корабль согласно его внутренним координатам
-     *
-     * @param ship
-     */
-    private void placeNewShip(Ship ship) {
-        List<Coord> coords = Arrays.asList(ship.getAroundCoords());
-        placeableCoords.removeAll(coords);
-        unPlaceableCoords.addAll(coords);
-        ship.setPlaced(true);
-    }
-
-    /**
      * Расставляет все корабли
      *
      * @return
@@ -125,14 +113,22 @@ public class RandomSetter {
         return new ShipPlacer().invoke();
     }
 
+    /**
+     * Расставляет корабль согласно его внутренним координатам
+     *
+     * @param ship
+     */
+    private void placeNewShip(Ship ship) {
+        List<Coord> coords = Arrays.asList(ship.getAroundCoords());
+        placeableCoords.removeAll(coords);
+        unPlaceableCoords.addAll(coords);
+//        ship.setPlaced(true);
+    }
+
     public void setShips(List<Ship> ships) {
         this.ships = ships;
     }
 
-
-    public List<Ship> getShipsPlaced() {
-        return shipsPlaced;
-    }
 
     /**
      * Заполняет массив свободных координат
@@ -161,7 +157,7 @@ public class RandomSetter {
     private boolean placeShipsToPlace() {
         for (Ship ship : shipsToPlace) {
             if (!set(ship)) return false;
-            ship.setPlaced(true);
+//            ship.setPlaced(true);
             shipsPlaced.add(ship);
         }
         return true;
@@ -170,6 +166,7 @@ public class RandomSetter {
     private void placeShipsPlaced() {
         for (Ship ship : shipsPlaced) {
             placeNewShip(ship);
+            ship.setPlaced(true);
         }
     }
 }

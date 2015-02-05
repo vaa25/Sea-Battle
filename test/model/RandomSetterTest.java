@@ -81,17 +81,4 @@ public class RandomSetterTest extends TestCase {
         assertTrue("Координаты заранее установленного корабля изменились", Arrays.deepEquals(coords4, ship4.getShipCoords()));
         assertTrue("Координаты заранее установленного корабля изменились", Arrays.deepEquals(coords7, ship7.getShipCoords()));
     }
-
-    @Test
-    public void testSetShips() throws Exception {
-
-        rs.setAll();
-        assertEquals(ships, rs.getShipsPlaced());
-    }
-
-    @Test
-    public void testGetShipsPlaced() throws Exception {
-        rs.setAll();
-        assertEquals(ships, rs.getShipsPlaced());
-    }
 }

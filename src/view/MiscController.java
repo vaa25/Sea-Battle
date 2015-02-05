@@ -69,7 +69,12 @@ public class MiscController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (!loadName()) {
-            name = nameTextField.getText();
+            name = System.getProperty("user.name");
+            if (name == null) {
+                name = nameTextField.getText();
+            } else {
+                nameTextField.setText(name);
+            }
         }
         person = new Person(name);
     }
