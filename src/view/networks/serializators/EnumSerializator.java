@@ -15,9 +15,9 @@ public class EnumSerializator implements SerializatorInterface {
         System.out.println(f.getDeclaringClass().getName());
         System.out.println(f.getClass());
         Serializator serializator = new Serializator();
-        byte[] bytes = serializator.debuild(f);
+        byte[] bytes = Serializator.debuild(f);
         System.out.println(Arrays.toString(bytes));
-        Enum o = (Enum) serializator.build(bytes);
+        Enum o = (Enum) Serializator.build(bytes);
         System.out.println(o);
     }
 
@@ -27,7 +27,7 @@ public class EnumSerializator implements SerializatorInterface {
         byte[] name = stringSerializator.debuild(anEnum.name());
         byte[] clazz = stringSerializator.debuild(anEnum.getDeclaringClass().getName());
         byte[] res = new byte[5 + name.length + clazz.length];
-        byte[] len = Serializator.setLength(5 + name.length + clazz.length);
+        byte[] len = Util.convertIntToBytes(5 + name.length + clazz.length);
         res[0] = Serializator.ENUM;
         System.arraycopy(len, 0, res, 1, 4);
         System.arraycopy(clazz, 0, res, 5, clazz.length);
@@ -43,7 +43,7 @@ public class EnumSerializator implements SerializatorInterface {
     public Object build(byte[] bytes, int off) {
         StringSerializator stringSerializator = new StringSerializator();
         String clazz = (String) stringSerializator.build(bytes, 5 + off);
-        int clazzL = Serializator.getLength(bytes, 5 + 1 + off);
+        int clazzL = Util.convertBytesToInt(bytes, 5 + 1 + off);
         System.out.println(clazzL);
         String name = (String) stringSerializator.build(bytes, 5 + clazzL + off);
         Enum res = null;

@@ -12,13 +12,13 @@ import java.util.Arrays;
  * <p>
  * Структура итогового массива байтов byte[]bytes:
  * <p>
- * xx xx xx xx - длина итогового массива (int), извлекается  getLength(byte[] bytes)
+ * xx xx xx xx - длина итогового массива (int), извлекается  convertBytesToInt(byte[] bytes)
  * xx - длина имени класса (byte)
  * xx ... xx - массив имени класса (String)
  * xx - количество полей (byte)
  * xx ... xx - поля
  * поля:
- * xx xx xx xx - длина массива поля, извлекается  getLength(byte[] bytes)
+ * xx xx xx xx - длина массива поля, извлекается  convertBytesToInt(byte[] bytes)
  * xx - длина имени класса поля (byte)
  * xx ... xx - массив имени класса поля
  * xx ... xx - массив значения поля, может содержать свои поля.
@@ -37,10 +37,10 @@ public class ObjectSerializator implements SerializatorInterface {
 
     private static void test(Serializator serializator, Object object) {
         System.out.println(serializator.getClass().getSimpleName());
-        byte[] bytes = serializator.debuild(object);
+        byte[] bytes = Serializator.debuild(object);
         System.out.println(Arrays.toString(bytes));
 
-        System.out.println(serializator.build(bytes));
+        System.out.println(Serializator.build(bytes));
         System.out.println();
     }
 
@@ -57,7 +57,7 @@ public class ObjectSerializator implements SerializatorInterface {
                 Class clazz = Class.forName(className);
                 Object object = (clazz.newInstance());
                 Field[] fields = clazz.getDeclaredFields();
-                byte[][] splitted = Serializator.split(bytes);
+                byte[][] splitted = Splitter.split(bytes);
                 int j = 0;
                 for (int i = 0; i < fields.length; i++) {
 
@@ -104,7 +104,7 @@ public class ObjectSerializator implements SerializatorInterface {
                 e.printStackTrace();
             }
         }
-        return Serializator.pack(clazz, bytes);
+        return Packer.pack(clazz, bytes);
     }
 
 

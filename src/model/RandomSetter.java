@@ -13,12 +13,12 @@ import java.util.Random;
  * @author Alexander Vlasov
  */
 public class RandomSetter {
+    private final int width, height;
     private List<Ship> ships;
     private List<Ship> shipsToPlace;
     private List<Ship> shipsPlaced;
-    private final int width, height;
-    private List<Coord> placeable;
-    private List<Coord> unPlaceable;
+    private List<Coord> placeableCoords;
+    private List<Coord> unPlaceableCoords;
 
     public RandomSetter(int width, int height) {
         this.shipsToPlace = new ArrayList<>();
@@ -34,8 +34,11 @@ public class RandomSetter {
         shipsToPlace.clear();
         shipsPlaced.clear();
         for (Ship ship : ships) {
-            if (ship.isPlaced()) shipsPlaced.add(ship);
-            else shipsToPlace.add(ship);
+            if (ship.isPlaced()) {
+                shipsPlaced.add(ship);
+            } else {
+                shipsToPlace.add(ship);
+            }
         }
     }
 
@@ -46,8 +49,8 @@ public class RandomSetter {
      */
     private void placeNewShip(Ship ship) {
         List<Coord> coords = Arrays.asList(ship.getAroundCoords());
-        placeable.removeAll(coords);
-        unPlaceable.addAll(coords);
+        placeableCoords.removeAll(coords);
+        unPlaceableCoords.addAll(coords);
         ship.setPlaced(true);
     }
 
@@ -82,41 +85,46 @@ public class RandomSetter {
      * @return
      */
     private boolean set(Ship ship) {
-        Random random = new Random();
-        List<Coord> placeable = new ArrayList<>(this.placeable);
-        boolean checked;
-        do {
-            int r = random.nextInt(placeable.size());
-            ship.setCoords(placeable.get(r));
-            if (random.nextBoolean()) ship.changeOrientation();
-            List<Coord> coords = Arrays.asList(ship.getShipCoords());
-            if (!(checked = checkCoords(coords))) {
-                ship.changeOrientation();
-                checked = checkCoords(coords);
+        class ShipPlacer {
+            private List<Coord> coordList;
+
+            public ShipPlacer() {
+                coordList = new ArrayList<>(placeableCoords);
             }
-            placeable.remove(r);
-            if (placeable.size() == 0) return false;
-        } while (!checked);
-        placeNewShip(ship);
-        return true;
+
+            boolean invoke() {
+                do {
+                    if (coordList.size() == 0) {
+                        return false;
+                    }
+                    setRandomPlaceableCoordsInShip();
+                    ship.setRandomOrientation();
+                } while (!trySetPlaceableOrientation());
+                placeNewShip(ship);
+                return true;
+            }
+
+            private void setRandomPlaceableCoordsInShip() {
+                int randomPlaceableCoordIndex = new Random().nextInt(coordList.size());
+                ship.setCoords(coordList.get(randomPlaceableCoordIndex));
+                coordList.remove(randomPlaceableCoordIndex);
+            }
+
+            private boolean trySetPlaceableOrientation() {
+                if (isShipPlaceable()) {
+                    return true;
+                }
+                ship.changeOrientation();
+                return isShipPlaceable();
+            }
+
+            private boolean isShipPlaceable() {
+                return placeableCoords.containsAll(Arrays.asList(ship.getShipCoords()));
+            }
+        }
+        return new ShipPlacer().invoke();
     }
 
-    /**
-     * Проверяет действительно ли данные координаты лежат в пределах незанятых
-     *
-     * @param coords
-     *
-     * @return
-     */
-    private boolean checkCoords(List<Coord> coords) {
-        return placeable.containsAll(coords);
-    }
-
-    /**
-     * Сеттер
-     *
-     * @param ships
-     */
     public void setShips(List<Ship> ships) {
         this.ships = ships;
     }
@@ -140,10 +148,11 @@ public class RandomSetter {
     /**
      * Заполняет массив свободных координат
      */
-    private void fillPlaceable() {
+    private void setPlaceableCoords() {
+        placeableCoords = new ArrayList<>();
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                placeable.add(new Coord(i, j));
+                placeableCoords.add(new Coord(i, j));
             }
         }
     }
@@ -154,18 +163,24 @@ public class RandomSetter {
      * @return
      */
     private boolean set() {
-        placeable = new ArrayList<>();
-        unPlaceable = new ArrayList<>();
-        fillPlaceable();
-        for (Ship ship : shipsPlaced) {
-            placeNewShip(ship);
-        }
+        unPlaceableCoords = new ArrayList<>();
+        setPlaceableCoords();
+        placeShipsPlaced();
+        return placeShipsToPlace();
+    }
 
+    private boolean placeShipsToPlace() {
         for (Ship ship : shipsToPlace) {
             if (!set(ship)) return false;
             ship.setPlaced(true);
             shipsPlaced.add(ship);
         }
         return true;
+    }
+
+    private void placeShipsPlaced() {
+        for (Ship ship : shipsPlaced) {
+            placeNewShip(ship);
+        }
     }
 }

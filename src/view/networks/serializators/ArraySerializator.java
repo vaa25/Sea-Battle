@@ -12,9 +12,9 @@ public class ArraySerializator implements SerializatorInterface {
         Integer[][] f = new Integer[][]{{1, 2, 3, 4, 5}, {1, 2, 3, 4, 5}};
         System.out.println(f.getClass().getComponentType());
         Serializator serializator = new Serializator();
-        byte[] bytes = serializator.debuild(f);
+        byte[] bytes = Serializator.debuild(f);
         System.out.println(Arrays.toString(bytes));
-        Integer[][] o = (Integer[][]) serializator.build(bytes);
+        Integer[][] o = (Integer[][]) Serializator.build(bytes);
         for (int i = 0; i < o.length; i++) {
             for (int j = 0; j < o[i].length; j++) {
                 System.out.println(o[i][j]);
@@ -30,7 +30,7 @@ public class ArraySerializator implements SerializatorInterface {
         for (int i = 0; i < elements.length; i++) {
             elements[i] = Serializator.debuild(v[i]);
         }
-        byte[] bytes = Serializator.pack(value.getClass().getComponentType(), elements);
+        byte[] bytes = Packer.pack(value.getClass().getComponentType(), elements);
         bytes[0] = Serializator.ARRAY;
         return bytes;
 
@@ -43,7 +43,7 @@ public class ArraySerializator implements SerializatorInterface {
     public Object build(byte[] bytes, int off) {
         StringSerializator serializator = new StringSerializator();
         String typeClassName = (String) serializator.build(bytes, off + 5);
-        byte[][] splitted = Serializator.split(bytes, off);
+        byte[][] splitted = Splitter.split(bytes, off);
         Class clazz = null;
         try {
             clazz = Class.forName(typeClassName);

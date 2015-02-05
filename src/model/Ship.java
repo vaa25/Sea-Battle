@@ -4,6 +4,7 @@ import common.Coord;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -218,5 +219,11 @@ public class Ship implements Comparable<Ship>, Serializable {
 
     public void kill() {
         health = 0;
+    }
+
+    void setRandomOrientation() {
+        if (new Random().nextBoolean()) {
+            changeOrientation();
+        }
     }
 }

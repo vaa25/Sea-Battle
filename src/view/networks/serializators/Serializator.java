@@ -9,14 +9,14 @@ import java.util.*;
  * <p>
  * Структура итогового массива байтов byte[]bytes:
  * xx - код примитивного класса (0 ... 126) или маркер непримитивного (127)
- * xx xx xx xx - длина итогового массива (int), извлекается getLength(byte[] bytes)
+ * xx xx xx xx - длина итогового массива (int), извлекается convertBytesToInt(byte[] bytes)
  * xx ... xx - массив имени класса (String)
  * xx - количество полей (byte)
  * xx ... xx - поля
  * <p>
  * непримитивные поля и классы: рассматриваются как классы внутри класса
  * xx - 127
- * xx xx xx xx - длина массива поля, извлекается  getLength(byte[] bytes)
+ * xx xx xx xx - длина массива поля, извлекается  convertBytesToInt(byte[] bytes)
  * xx ... xx - массив имени класса поля
  * xx ... xx - массив значения объекта поля, может содержать свои поля.
  * <p>
@@ -27,24 +27,23 @@ import java.util.*;
  * @author Alexander Vlasov
  */
 public class Serializator {
-    public static final byte STRING = 10;
-    public static final byte INTEGER = 9;
-    public static final byte BOOLEAN = 8;
-    public static final byte CLASS = 127;
-    public static final byte SHORT = 7;
-    public static final byte BYTE = 6;
-    public static final byte LONG = 5;
-    public static final byte FLOAT = 4;
-    public static final byte DOUBLE = 3;
-    public static final byte BIGINTEGER = 2;
-    public static final byte BIGDECIMAL = 1;
-    public static final byte ARRAY = 11;
-    public static final byte COLLECTION = 12;
-    public static final byte ENUM = 13;
+    static final byte STRING = 10;
+    static final byte INTEGER = 9;
+    static final byte BOOLEAN = 8;
+    static final byte CLASS = 127;
+    static final byte SHORT = 7;
+    static final byte BYTE = 6;
+    static final byte LONG = 5;
+    static final byte FLOAT = 4;
+    static final byte DOUBLE = 3;
+    static final byte BIGINTEGER = 2;
+    static final byte BIGDECIMAL = 1;
+    static final byte ARRAY = 11;
+    static final byte COLLECTION = 12;
+    static final byte ENUM = 13;
 
-
-    private static Map<Class, Byte> codes = new HashMap<>();
-    private static Map<Byte, Integer> lengths = new HashMap<>();
+    private static final Map<Class, Byte> codes = new HashMap<>();
+    private static final Map<Byte, Integer> lengths = new HashMap<>();
 
     static {
         codes.put(Boolean.class, BOOLEAN);
@@ -81,7 +80,6 @@ public class Serializator {
         lengths.put(BYTE, 2);
         lengths.put(LONG, 9);
         lengths.put(DOUBLE, 9);
-
     }
 
     private static SerializatorInterface selectSerializator(byte code) {
@@ -118,16 +116,17 @@ public class Serializator {
     }
 
     public static synchronized byte[] debuild(Object object) {
-        Class clazz = object.getClass();
-        byte code;
+        return selectSerializator(selectCode(object.getClass())).debuild(object);
+    }
+
+    private static byte selectCode(Class clazz) {
         if (clazz.isArray()) {
-            code = ARRAY;
+            return ARRAY;
         } else if (clazz.isEnum()) {
-            code = ENUM;
+            return ENUM;
         } else {
-            code = getCode(clazz);
+            return getCode(clazz);
         }
-        return selectSerializator(code).debuild(object);
     }
 
     public static synchronized Object build(byte[] bytes) {
@@ -136,8 +135,11 @@ public class Serializator {
     }
 
     public static byte getCode(Class clazz) {
-        if (containsCode(clazz)) return codes.get(clazz);
-        else return CLASS;
+        if (containsCode(clazz)) {
+            return codes.get(clazz);
+        } else {
+            return CLASS;
+        }
     }
 
     public static boolean containsCode(Class clazz) {
@@ -148,153 +150,11 @@ public class Serializator {
         }
     }
 
-    /**
-     * Извлекает длину массива преобразованного объекта
-     *
-     * @param bytes массив преобразованного объекта
-     *
-     * @return длина
-     */
-
-    public static int getLength(byte[] bytes) {
-        return getLength(bytes, 0);
-
-    }
-
     public static int getLength(byte code) {
-        if (lengths.containsKey(code)) return lengths.get(code);
-        return -1;
-
-    }
-
-    /**
-     * Длина в массиве указанная в массиве со смещением
-     *
-     * @param bytes массив
-     * @param off   смещение
-     *
-     * @return длина
-     */
-    static int getLength(byte[] bytes, int off) {
-        byte[] lengthB = new byte[4];
-        System.arraycopy(bytes, off, lengthB, 0, 4);
-        return (Byte.toUnsignedInt(lengthB[3]) << 24) +
-                (Byte.toUnsignedInt(lengthB[2]) << 16) +
-                (Byte.toUnsignedInt(lengthB[1]) << 8) +
-                Byte.toUnsignedInt(lengthB[0]);
-    }
-
-
-    /**
-     * Извлечение отдельных полей в виде массивов из главного массива
-     * <p>
-     * xx - код примитивного класса или маркер непримитивного
-     * xx xx xx xx - длина итогового массива (int), извлекается  getLength(byte[] bytes)
-     * xx - длина имени класса (byte)
-     * xx ... xx - массив имени класса (String)
-     * xx - количество полей (byte)
-     * xx ... xx - поля
-     * поля:
-     * xx - определенный примитивный класс или нет
-     * xx xx xx xx - длина массива поля, извлекается  getLength(byte[] bytes)
-     * xx - длина имени класса поля (byte)
-     * xx ... xx - массив имени класса поля
-     * xx ... xx - массив значения поля, может содержать свои поля.
-     * <p>
-     * для примитивных
-     * xx - код примитивного класса
-     * xx ... xx - данные фиксированной для каждого примитивного класса длины
-     * *длина имени класса (поля) включает в себя себя и остальные данные, принадлежащие классу (полю)
-     *
-     * @param bytes главный массив
-     *
-     * @return массив массивов полей
-     */
-    public static byte[][] split(byte[] bytes) {
-        return split(bytes, 0);
-    }
-
-    public static byte[][] split(byte[] bytes, int off) {
-//        if (codes.containsKey(bytes[off])) return new byte[][]{bytes};
-//        else {
-        int classNameLen = getLength(bytes, off + 6);
-        int startIndex = off + 6 + classNameLen;
-        int amount = bytes[startIndex - 1];
-        byte[][] res = new byte[amount][];
-        for (int i = 0; i < amount; i++) {
-            Integer len;
-            if ((len = lengths.get(bytes[startIndex])) == null) {
-                len = getLength(bytes, startIndex + 1);
-            }
-            byte[] body = new byte[len];
-            System.arraycopy(bytes, startIndex, body, 0, len);
-            res[i] = body;
-            startIndex += len;
+        if (lengths.containsKey(code)) {
+            return lengths.get(code);
+        } else {
+            return -1;
         }
-        return res;
-
-//        }
     }
-
-    /**
-     * xx xx xx xx - длина итогового массива (int), извлекается  getLength(byte[] bytes)
-     * xx - длина имени класса (byte)
-     * xx ... xx - массив имени класса (String)
-     * xx - количество полей (byte)
-     * xx ... xx - поля
-     * поля:
-     * xx xx xx xx - длина массива поля, извлекается  getLength(byte[] bytes)
-     * xx - длина имени класса поля (byte)
-     * xx ... xx - массив имени класса поля
-     * xx ... xx - массив значения поля, может содержать свои поля.
-     *
-     * @param clazz
-     * @param bytes
-     *
-     * @return
-     */
-    public static byte[] pack(Class clazz, byte[][] bytes) {
-//        if (!containsCode(clazz)) {                   // не примитивный класс
-        String className = clazz.getName();
-        StringSerializator serializator = new StringSerializator();
-        byte[] classNameB = serializator.debuild(className);
-        int length = 1 + 4 + 1 + classNameB.length;
-        for (int i = 0; i < bytes.length; i++) {
-            length += bytes[i].length;
-        }
-        byte[] res = new byte[length];
-        byte[] len = setLength(length);
-        res[0] = CLASS;
-        System.arraycopy(len, 0, res, 1, 4);
-        System.arraycopy(classNameB, 0, res, 5, classNameB.length);
-        int startIndex = 6 + classNameB.length;
-        res[startIndex - 1] = (byte) bytes.length;
-        for (int i = 0; i < bytes.length; i++) {
-            System.arraycopy(bytes[i], 0, res, startIndex, bytes[i].length);
-            startIndex += bytes[i].length;
-        }
-        return res;
-
-//        } else {
-//            return bytes[0];
-//        }
-    }
-
-    /**
-     * Разложение int в четыре байта. Используется как для данных.
-     *
-     * @param k int
-     *
-     * @return byte[4]
-     */
-    public static byte[] setLength(int k) {
-        byte[] res = new byte[4];
-        res[0] = (byte) (k);
-        res[1] = (byte) (k >> 8);
-        res[2] = (byte) (k >> 16);
-        res[3] = (byte) (k >> 24);
-        return res;
-    }
-
-
 }

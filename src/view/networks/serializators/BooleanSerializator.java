@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 /**
  * xx - код boolean
- * xx xx xx xx - длина массива поля, извлекается  getLength(byte[] bytes)
+ * xx xx xx xx - длина массива поля, извлекается  convertBytesToInt(byte[] bytes)
  * xx - длина имени класса поля (byte)
  * xx ... xx - массив имени класса поля
  * xx ... xx - массив значения поля, может содержать свои поля.
@@ -15,9 +15,9 @@ public class BooleanSerializator implements SerializatorInterface {
 
     public static void main(String[] args) {
         Serializator serializator = new Serializator();
-        byte[] bytes = serializator.debuild(false);
+        byte[] bytes = Serializator.debuild(false);
         System.out.println(Arrays.toString(bytes));
-        System.out.println(serializator.build(bytes));
+        System.out.println(Serializator.build(bytes));
     }
 
     public byte[] debuild(Object l) {

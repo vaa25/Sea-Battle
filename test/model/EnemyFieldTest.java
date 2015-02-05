@@ -5,8 +5,6 @@ import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 public class EnemyFieldTest extends TestCase {
 
     private EnemyField enemyField;
@@ -48,12 +46,12 @@ public class EnemyFieldTest extends TestCase {
     public void testGetReconstructedShips() throws Exception {
         enemyField.setHurt(coord);
         enemyField.setHurt(coord.getLeft());
-        assertEquals(0, new ArrayList<>(enemyField.getReconstructedShips()).size());
+        assertEquals(0, enemyField.getReconstructedShips().size());
         enemyField.setKilled(coord.getRight());
-        assertEquals(1, new ArrayList<>(enemyField.getReconstructedShips()).size());
+        assertEquals(1, enemyField.getReconstructedShips().size());
         Ship example = new Ship(3);
         example.setCoords(new Coord(0, 0));
-        assertEquals(example, new ArrayList<>(enemyField.getReconstructedShips()).get(0));
+        assertEquals(example, enemyField.getReconstructedShips().get(0));
         enemyField.setKilled(coord.getRightDown().getRightDown());
         assertFalse(example.equals(enemyField.getReconstructedShips().get(1)));
         Ship example2 = new Ship(1);

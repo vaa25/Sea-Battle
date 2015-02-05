@@ -4,6 +4,7 @@ package view.networks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import view.networks.serializators.Serializator;
+import view.networks.serializators.Util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,7 +69,7 @@ public class MyObjectInputStream implements Runnable {
                         }
                         length[i] = (byte) value;
                     }
-                    len = Serializator.getLength(length);
+                    len = Util.convertBytesToInt(length);
                 }
                 data = new byte[len];
                 data[0] = code;

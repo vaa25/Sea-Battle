@@ -12,10 +12,10 @@ public class BigDecimalSerializator implements SerializatorInterface {
         Serializator serializator = new Serializator();
         BigDecimal bigDecimal = new BigDecimal("445555555555555555555876597658975908756785697859765976597659056");
 
-        byte[] bytes = serializator.debuild(bigDecimal);
+        byte[] bytes = Serializator.debuild(bigDecimal);
         System.out.println();
         System.out.println(Arrays.toString(bytes));
-        System.out.println(serializator.build(bytes));
+        System.out.println(Serializator.build(bytes));
     }
 
     public byte[] debuild(Object k) {
@@ -23,7 +23,7 @@ public class BigDecimalSerializator implements SerializatorInterface {
         byte[] value = new StringSerializator().debuild(k.toString());
         byte[] res = new byte[5 + value.length];
         res[0] = Serializator.BIGDECIMAL;
-        byte[] length = Serializator.setLength(res.length);
+        byte[] length = Util.convertIntToBytes(res.length);
         System.arraycopy(length, 0, res, 1, 4);
         System.arraycopy(value, 0, res, 5, value.length);
         return res;
