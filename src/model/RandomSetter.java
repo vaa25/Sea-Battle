@@ -129,17 +129,6 @@ public class RandomSetter {
         this.ships = ships;
     }
 
-    /**
-     * Расставляет заданные корабли
-     *
-     * @param shipsToPlace
-     *
-     * @return true, если успешно
-     */
-    public boolean set(List<Ship> shipsToPlace) {
-        this.shipsToPlace = shipsToPlace;
-        return set();
-    }
 
     public List<Ship> getShipsPlaced() {
         return shipsPlaced;
