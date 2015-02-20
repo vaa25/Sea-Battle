@@ -61,27 +61,13 @@ public class MyObjectInputStream implements Runnable {
                 byte[] length = new byte[0];
                 if (len == -1) {
                     length = new byte[4];
-                    for (int i = 0; i < 4; i++) {
-                        value = in.read();
-                        if (value == -1) {
-                            closed = true;
-                            continue;
-                        }
-                        length[i] = (byte) value;
-                    }
+                    in.read(length);
                     len = Util.convertBytesToInt(length);
                 }
                 data = new byte[len];
                 data[0] = code;
                 System.arraycopy(length, 0, data, 1, length.length);
-                for (int i = 1 + length.length; i < len; i++) {
-                    value = in.read();
-                    if (value == -1) {
-                        closed = true;
-                        continue;
-                    }
-                    data[i] = (byte) value;
-                }
+                in.read(data, 1 + length.length, len - (1 + length.length));
                 Object received = Serializator.build(data);
                 logger.info("Принял " + received);
                 put(received);
