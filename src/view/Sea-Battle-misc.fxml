@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="Content"
-            fx:id="micsAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-            prefWidth="291.0" xmlns="http://javafx.com/javafx/8"
-            fx:controller="view.MiscController">
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="Content" fx:id="micsAnchorPane" minHeight="0.0" minWidth="0.0"
+            prefHeight="180.0" prefWidth="291.0" xmlns="http://javafx.com/javafx/8" fx:controller="view.MiscController">
     <children>
         <TextField fx:id="nameTextField" layoutX="14.0" layoutY="14.0" onAction="#nameEntered" prefWidth="200.0"
                    promptText="Имя" text="Саша"/>
+        <Label layoutX="195.0" layoutY="160.0" text="(C) Vlasov Alexander">
+            <font>
+                <Font size="9.0"/>
+            </font>
+        </Label>
     </children>
 </AnchorPane>

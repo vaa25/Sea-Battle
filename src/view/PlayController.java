@@ -57,9 +57,8 @@ public class PlayController implements Initializable {
 
     @FXML
     void myFieldClicked(MouseEvent event) {
-
-
     }
+
     @FXML
     void breakPlay(ActionEvent event) {
         printChatMessage.set(" Бой прерван мной\n");
@@ -72,6 +71,7 @@ public class PlayController implements Initializable {
         readyToggleButton.fire();
         readyToggleButton.setDisable(true);
     }
+
     @FXML
     void ready(ActionEvent event) {
         if (readyToggleButton.isSelected()) {
